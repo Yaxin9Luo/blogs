@@ -1,0 +1,217 @@
+---
+title: "Version Selection Is Not the Final Step: Selection Harnesses for Long-Horizon Artifact Systems"
+description: A field note on turning candidate generation, benchmark visualization, reference pools, and evaluator calibration into a selection harness for long-horizon artifact agents.
+date: 2026-06-05
+tags: [version-selection, selection-harness, benchmark, artifact-agents]
+status: active
+type: research
+sidebar:
+  order: 13
+  label: Version Selection
+---
+
+> Personal note: This article is based on public materials, personal notes, and sanitized project experience. It does not represent the official view of any company, team, or internship host. It does not include internal links, repository addresses, APIs, secret configuration, real benchmark samples/scores, real case IDs, raw screenshots, personal identifiers, customer information, or proprietary implementation details. All diagrams are redrawn conceptual figures and do not correspond to any internal system interface or real run record.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/selection-harness-loop.svg'} alt="A selection harness connects shared tasks, artifact candidates, evidence packs, selection boards, and repair routes" class="hero-visual" />
+
+## Core Claim
+
+Once a long-horizon multimodal artifact system starts running, the most underestimated layer is not generation. It is version selection.
+
+When the system produces only one artifact, the question is simple: is it good, and what should be repaired? Once the system can run multiple prompts, refiners, references, evaluators, and iterations in parallel, the question changes. Which candidate should become the seed for the next round? Which one only looks better but has weaker source grounding? Which one should be merged? Which one should be discarded? Which failure tells us to repair the compiler, renderer, rubric, or reference pool?
+
+Version selection should therefore not be aesthetic voting. It should be a **selection harness**: every candidate artifact is converted into a comparable evidence profile, then the system chooses the next move based on repair cost, regression risk, and learning value.
+
+This article follows [Verifiers and Benchmarks](./verifiers-and-benchmarks-for-multimodal-generation-systems/) and [Comparing Design Agents Without Leaderboards](./comparing-design-agents-without-leaderboards/). The first article discussed evaluation systems. The second discussed cross-agent comparison. This one focuses on candidate selection inside one evolving system.
+
+## Multiple Candidates Are Not A Retry Wall
+
+Candidate generation looks useful, and it is useful. It gives the system an exploration surface where different prompt strategies, layout hypotheses, content allocations, artifact archetypes, and repair strategies can be tested at the same time.
+
+But multiple candidates are not a retry wall. A retry wall means “run it many times and hope one looks good.” A selection harness means “deliberately create complementary candidates so each one exposes a different system hypothesis.”
+
+But more candidates also create more selection noise:
+
+| Surface Signal | Real Risk |
+|---|---|
+| A looks the best | It may only use larger visuals while weakening source fidelity |
+| B has the most content | It may repeat text and weaken panel ownership |
+| C has a novel layout | It may be expensive to repair and unstable in the next round |
+| D has the highest score | It may be matching evaluator bias rather than deliverability |
+| E looks closest to a reference | It may overfit one reference archetype |
+
+Without structured selection rules, multiple candidates turn exploration into a hallucination amplifier. The system gets better at producing plausible version walls without knowing which path deserves another iteration.
+
+## A Candidate Is An Evidence Pack
+
+An artifact candidate should not be only a screenshot or an HTML file. To be comparable, it needs an evidence pack.
+
+| Evidence | Purpose |
+|---|---|
+| Rendered view | Inspect final visual evidence: overlap, cropping, density, hierarchy, readability |
+| Source trace | Check whether claims, figures, tables, and numbers are grounded |
+| Artifact structure | Check editability, repairability, and exportability across DOM/PPT/PDF |
+| Failure report | Identify whether the failure belongs to content, layout, rendering, rubric, or grounding |
+| Repair notes | Estimate the next repair owner and repair cost |
+| Run metadata | Understand the strategy type behind the candidate, not just its visual surface |
+
+This is why I trust single-screenshot comparisons less and less. A screenshot helps humans scan visual direction, but it does not explain why a version is strong or how an agent should inherit it.
+
+## Selection Board: Dimensions Need Counterweights
+
+A selection harness needs a selection board. It does not have to be complex, but it must make quality dimensions counterbalance each other.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/candidate-evidence-profile.svg'} alt="A candidate evidence profile compares artifact versions by grounding, visual fit, coverage, risk, and repair owner" class="hero-visual" />
+
+| Dimension | Question | Common Mistake |
+|---|---|---|
+| Source fidelity | Is critical content traceable to source evidence? | Professional-looking source drift |
+| Information coverage | Are problem, method, result, and limitation covered? | A dense page that misses the central experiment |
+| Panel grammar | Does each panel structure match its content role? | Everything is forced into one card template |
+| Visual integrity | Is the final rendered artifact stable and readable? | The DOM looks filled, but the screenshot is sparse |
+| Style hypothesis | Does it provide a truly different design hypothesis? | Color swaps without structural difference |
+| Repair cost | Which owner is likely to need the next repair? | Choosing a pretty but unrepairable path |
+| Regression risk | Could this candidate bring back old failures? | High score with repeated old defects |
+
+The board should not output an aesthetic ranking. Its useful output is: keep this candidate as the seed, merge this local strength, discard this risky branch, and route the next repair to this owner.
+
+## From Winner Pick To Branch Routing
+
+The output of a selection harness should not be only `accept / reject`. Long-horizon artifact systems need branch routing.
+
+| Selection Result | Meaning | Next Step |
+|---|---|---|
+| Promote | This candidate is the most stable seed | Continue refining and preserve its evidence profile |
+| Repair | The direction is useful, but one owner is failing | Route to the compiler, renderer, rubric, or reference pool |
+| Merge | The candidate has a local strength | Extract panel grammar, style tokens, or evidence binding |
+| Archive | The candidate should not continue | Save the failure reason so it is not rediscovered next round |
+| Add to regression | The candidate exposed a new failure mode | Add it to fixed retests to prevent future regressions |
+
+This shift matters. Winner picking asks “which one is best?” Branch routing asks “what does each candidate teach the system?”
+
+## What The Selection Harness Needs As Input
+
+A public-safe abstraction looks like this:
+
+| Input | Role |
+|---|---|
+| Artifact contract | Define what this artifact must satisfy instead of sharing one aesthetic line across artifacts |
+| Rendered view | Ground selection in final visual evidence, not only source code or structure |
+| Source map | Check whether claims, figures, tables, and metrics have evidence |
+| Verifier report | Map candidate failures to owners and repair routes |
+| Human preference | Calibrate taste and use value that evaluators miss |
+| Reference archetype | Prevent every candidate from drifting toward one style |
+| Previous failures | Stop high-scoring candidates from bringing back old defects |
+
+These inputs are safe to discuss publicly because they are methodological components. They do not require reproducing internal task sets, candidate versions, evaluation logs, or raw visualization results.
+
+## The Prettiest Version May Not Be The Best System Path
+
+Artifact agents differ from ordinary design tools here.
+
+For ordinary design tools, version selection can focus on the currently preferred visual result. For long-horizon agentic systems, version selection must also ask what the system can learn from the candidate.
+
+Some versions look less polished today but have stronger source trace, clearer panel ownership, and lower repair cost. They may be better seeds. Another candidate may be visually strong because it relies on large visuals, decorations, or screenshot area. If the system keeps iterating along that path, it may amplify the wrong reward.
+
+The selection target I prefer is:
+
+> Choose the candidate that preserves evidence, exposes the right owner, lowers the next repair cost, and does not introduce high regression risk.
+
+That sentence is less intuitive than “pick the best-looking one,” but it fits long-horizon systems better.
+
+## Reference Pools Change Selection
+
+The selection harness cannot be separated from the reference pool. References are not just visual examples. They define what the system learns to reward.
+
+If the reference pool leans toward screenshot walls, the selection board will overvalue large screenshot area. If all good references are dense text boards, the system may overvalue text stuffing. If references cover only one discipline or artifact archetype, candidate selection drifts toward a single style.
+
+A safer approach is to split references by archetype:
+
+| Reference Archetype | What Selection Should Check |
+|---|---|
+| Text-heavy synthesis | Dense native text, tables, section organization, takeaways |
+| Theory board | Formulas, assumptions, reasoning path, low-image high-logic structure |
+| Benchmark/table-first | Leaderboards, ablations, metric bands, result readability |
+| Figure-evidence | Figure, caption, claim, source binding |
+| Web/deck style | Hierarchy, navigation, progressive disclosure |
+
+With this split, the selection board can say: this candidate is not “missing images,” it is a theory-board artifact; that other candidate is not “too sparse,” it is supposed to be a figure-evidence artifact.
+
+## Human Feedback Should Modify Rules, Not Only Pick Images
+
+Humans can directly pick the preferred version. But if every round is only image picking, the experience does not enter the system.
+
+Higher-value feedback should modify the selection harness:
+
+| Human Feedback | What It Should Become |
+|---|---|
+| This version feels good but its content is weak | Source fidelity weighting and evidence checks |
+| This version has more text but no main point | Information architecture and panel grammar checks |
+| This version looks templated | Style diversity and layout-hypothesis checks |
+| This version is repairable | Repair cost and owner routing |
+| The evaluator selected the wrong candidate | Calibration case and regression memory |
+
+This is system-level feedback. The human is not only choosing one version. They are teaching the selection harness how similar candidates should be compared in the future.
+
+## Selection Can Also Be Reward-Hacked
+
+Once a selection rule becomes an optimization target, candidates begin to cater to it.
+
+If the board rewards density, candidates fill space with text. If it rewards figure-text mixing, candidates insert irrelevant visuals. If it rewards source coverage, candidates stuff every detail into the artifact. If it rewards visual novelty, candidates become different for the sake of being different.
+
+Selection harnesses, like evaluators, need counter-checks:
+
+| Optimized Metric | Counter-Check |
+|---|---|
+| Density | Is the content repeated? Does each block carry independent information? |
+| Visual area | Does the visual support a claim, or only fill space? |
+| Coverage | Does coverage damage the reading path? |
+| Style diversity | Does novelty preserve the artifact contract? |
+| Source trace | Is it real synthesis or mechanical citation? |
+| Repair cost | Is the system choosing only safe low-ceiling paths? |
+
+A good selection rule is not a single score. It is a set of judgments that constrain each other.
+
+## From Version Wall To Regression Memory
+
+A version wall loses research value quickly if it is only used for display. A better use is to turn it into regression memory.
+
+Each selection should leave a record:
+
+- why this candidate was kept,
+- which candidates were discarded and why,
+- what failures remain in the strongest candidate,
+- which failure owner should be repaired next,
+- which old failures must be retested after the repair,
+- whether this selection rule agreed with human judgment.
+
+Then version selection becomes more than “choose one and continue.” It becomes long-term memory. After a system change, you can check whether old blank-area failures returned, whether source drift reappeared, whether panel grammar regressed, and whether the selection board is still choosing the right path.
+
+This is the same principle behind [self-improving design agents](./self-improving-design-agents/): every failure should become material for a better next system.
+
+## What This Means For Paper2Any
+
+Version selection matters even more in Paper2Any than in ordinary text tasks. Candidates differ not only by answer quality, but by artifact lifecycle.
+
+The same paper can become a poster, slides, a web page, or a video scene. Each artifact type can have multiple candidate versions. Differences may come from the source pack, panel grammar, layout renderer, reference archetype, visual assets, export format, or evaluator weighting.
+
+Without a selection harness, the system tends to fall into two bad states:
+
+1. It keeps the best-looking current result, so long-term system capability does not improve.
+2. It keeps the highest-scoring result, so evaluator bias is amplified.
+
+The better path is to make every candidate carry an evidence profile and turn version selection into system diagnosis. Only then does “which version is better?” become “how should the next system evolve?”
+
+## Takeaway
+
+Version selection is not post-processing for long-horizon multimodal systems. It is part of the harness.
+
+It connects generation, evaluation, human calibration, repair routing, and regression memory. A good selection harness does more than pick the prettiest current artifact. It helps the system preserve evidence, abandon bad directions, locate failure owners, and turn each selection into a more stable next iteration.
+
+When an artifact agent starts producing many candidates, the real question is not whether it can generate more versions. The real question is whether those versions help the system learn what should improve next.
+
+## Public Writing Boundary
+
+This article discusses methodology and failure taxonomy only. It does not reproduce internal task sets, real candidate versions, evaluation logs, raw benchmark visualization results, or any private operation workflow.
+
+Future figures should remain redrawn conceptual diagrams. Safe node names include `Task Set`, `Source Pack`, `Candidate A/B/C`, `Evidence Pack`, `Selection Decision`, `Repair Route`, and `Regression Memory`; real screenshots, scores, case IDs, and internal interface elements should stay out of the public site.

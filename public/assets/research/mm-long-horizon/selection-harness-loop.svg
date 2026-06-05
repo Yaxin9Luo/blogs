@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Selection harness loop</title>
+  <desc id="desc">A sanitized loop for selecting among multimodal artifact candidates through evidence packs, selection lenses, repair routing, and regression memory.</desc>
+  <rect width="1200" height="680" fill="#f8fbfa"/>
+  <rect x="52" y="46" width="1096" height="588" rx="22" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="88" y="98" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">Selection Harness for Artifact Candidates</text>
+  <text x="88" y="132" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">Version selection is a routing decision over evidence, not a beauty contest.</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3a514d"/>
+    </marker>
+  </defs>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="86" y="252" width="176" height="142" rx="16" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="174" y="292" text-anchor="middle" font-size="19" font-weight="700" fill="#0b4c40">Shared Task</text>
+    <text x="174" y="322" text-anchor="middle" font-size="13" fill="#31524b">source pack</text>
+    <text x="174" y="347" text-anchor="middle" font-size="13" fill="#31524b">artifact contract</text>
+    <text x="174" y="372" text-anchor="middle" font-size="13" fill="#31524b">quality rubric</text>
+
+    <rect x="342" y="180" width="182" height="74" rx="14" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="433" y="211" text-anchor="middle" font-size="16" font-weight="700" fill="#213f8b">Candidate A</text>
+    <text x="433" y="234" text-anchor="middle" font-size="13" fill="#405078">layout hypothesis</text>
+
+    <rect x="342" y="292" width="182" height="74" rx="14" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="433" y="323" text-anchor="middle" font-size="16" font-weight="700" fill="#213f8b">Candidate B</text>
+    <text x="433" y="346" text-anchor="middle" font-size="13" fill="#405078">content hypothesis</text>
+
+    <rect x="342" y="404" width="182" height="74" rx="14" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="433" y="435" text-anchor="middle" font-size="16" font-weight="700" fill="#213f8b">Candidate C</text>
+    <text x="433" y="458" text-anchor="middle" font-size="13" fill="#405078">style hypothesis</text>
+
+    <rect x="606" y="224" width="196" height="206" rx="16" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="704" y="263" text-anchor="middle" font-size="19" font-weight="700" fill="#7b3f13">Evidence Pack</text>
+    <rect x="638" y="294" width="132" height="30" rx="9" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="704" y="314" text-anchor="middle" font-size="13" fill="#6d543f">rendered view</text>
+    <rect x="638" y="336" width="132" height="30" rx="9" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="704" y="356" text-anchor="middle" font-size="13" fill="#6d543f">source trace</text>
+    <rect x="638" y="378" width="132" height="30" rx="9" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="704" y="398" text-anchor="middle" font-size="13" fill="#6d543f">repair notes</text>
+
+    <rect x="884" y="164" width="220" height="326" rx="16" fill="#f1edf8" stroke="#8467b8" stroke-width="2"/>
+    <text x="994" y="204" text-anchor="middle" font-size="19" font-weight="700" fill="#513c7e">Selection Board</text>
+    <rect x="920" y="238" width="148" height="30" rx="9" fill="#ffffff" stroke="#d0c4e8"/>
+    <text x="994" y="258" text-anchor="middle" font-size="13" fill="#5f536f">source fidelity</text>
+    <rect x="920" y="280" width="148" height="30" rx="9" fill="#ffffff" stroke="#d0c4e8"/>
+    <text x="994" y="300" text-anchor="middle" font-size="13" fill="#5f536f">layout stability</text>
+    <rect x="920" y="322" width="148" height="30" rx="9" fill="#ffffff" stroke="#d0c4e8"/>
+    <text x="994" y="342" text-anchor="middle" font-size="13" fill="#5f536f">coverage</text>
+    <rect x="920" y="364" width="148" height="30" rx="9" fill="#ffffff" stroke="#d0c4e8"/>
+    <text x="994" y="384" text-anchor="middle" font-size="13" fill="#5f536f">repair cost</text>
+    <rect x="920" y="406" width="148" height="30" rx="9" fill="#ffffff" stroke="#d0c4e8"/>
+    <text x="994" y="426" text-anchor="middle" font-size="13" fill="#5f536f">regression risk</text>
+
+    <rect x="574" y="526" width="252" height="56" rx="14" fill="#f5f8f7" stroke="#cbd8d5" stroke-width="2"/>
+    <text x="700" y="559" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">keep, discard, merge, or route to repair</text>
+
+    <path d="M262 323 H342" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M524 217 C568 217 564 294 606 294" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M524 329 H606" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M524 441 C568 441 564 386 606 386" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M802 327 H884" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M994 490 C994 548 880 554 826 554" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <text x="600" y="614" text-anchor="middle" font-size="15" fill="#52625f">The best next version is the one that preserves evidence and opens the cheapest reliable repair path.</text>
+  </g>
+</svg>

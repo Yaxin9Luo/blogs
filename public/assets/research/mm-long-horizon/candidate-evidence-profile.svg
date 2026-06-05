@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+  <title id="title">Candidate evidence profile</title>
+  <desc id="desc">A sanitized evidence profile matrix for comparing artifact candidates by quality dimensions and repair ownership.</desc>
+  <rect width="1200" height="640" fill="#f8fbfa"/>
+  <rect x="54" y="50" width="1092" height="536" rx="22" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="86" y="102" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">Candidate Evidence Profile</text>
+  <text x="86" y="136" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">A version wall becomes useful when each candidate carries comparable evidence and an owner route.</text>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="116" y="202" width="968" height="250" rx="14" fill="#fbfdfc" stroke="#d5dfdd"/>
+    <line x1="116" y1="264" x2="1084" y2="264" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="116" y1="326" x2="1084" y2="326" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="116" y1="388" x2="1084" y2="388" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="298" y1="202" x2="298" y2="452" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="456" y1="202" x2="456" y2="452" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="614" y1="202" x2="614" y2="452" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="772" y1="202" x2="772" y2="452" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="930" y1="202" x2="930" y2="452" stroke="#d5dfdd" stroke-width="2"/>
+
+    <text x="207" y="240" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Candidate</text>
+    <text x="377" y="240" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Grounding</text>
+    <text x="535" y="240" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Visual Fit</text>
+    <text x="693" y="240" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Coverage</text>
+    <text x="851" y="240" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Risk</text>
+    <text x="1007" y="240" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Owner</text>
+
+    <text x="207" y="303" text-anchor="middle" font-size="14" font-weight="700" fill="#213f8b">A</text>
+    <text x="377" y="303" text-anchor="middle" font-size="13" fill="#52625f">strong</text>
+    <text x="535" y="303" text-anchor="middle" font-size="13" fill="#52625f">medium</text>
+    <text x="693" y="303" text-anchor="middle" font-size="13" fill="#52625f">broad</text>
+    <text x="851" y="303" text-anchor="middle" font-size="13" fill="#52625f">layout drift</text>
+    <text x="1007" y="303" text-anchor="middle" font-size="13" fill="#52625f">renderer</text>
+
+    <text x="207" y="365" text-anchor="middle" font-size="14" font-weight="700" fill="#213f8b">B</text>
+    <text x="377" y="365" text-anchor="middle" font-size="13" fill="#52625f">weak</text>
+    <text x="535" y="365" text-anchor="middle" font-size="13" fill="#52625f">strong</text>
+    <text x="693" y="365" text-anchor="middle" font-size="13" fill="#52625f">partial</text>
+    <text x="851" y="365" text-anchor="middle" font-size="13" fill="#52625f">source drift</text>
+    <text x="1007" y="365" text-anchor="middle" font-size="13" fill="#52625f">compiler</text>
+
+    <text x="207" y="427" text-anchor="middle" font-size="14" font-weight="700" fill="#213f8b">C</text>
+    <text x="377" y="427" text-anchor="middle" font-size="13" fill="#52625f">medium</text>
+    <text x="535" y="427" text-anchor="middle" font-size="13" fill="#52625f">distinct</text>
+    <text x="693" y="427" text-anchor="middle" font-size="13" fill="#52625f">narrow</text>
+    <text x="851" y="427" text-anchor="middle" font-size="13" fill="#52625f">style overfit</text>
+    <text x="1007" y="427" text-anchor="middle" font-size="13" fill="#52625f">rubric</text>
+
+    <rect x="186" y="504" width="184" height="44" rx="12" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="278" y="532" text-anchor="middle" font-size="14" font-weight="700" fill="#0b4c40">select seed</text>
+    <rect x="426" y="504" width="184" height="44" rx="12" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="518" y="532" text-anchor="middle" font-size="14" font-weight="700" fill="#7b3f13">merge evidence</text>
+    <rect x="666" y="504" width="184" height="44" rx="12" fill="#f1edf8" stroke="#8467b8" stroke-width="2"/>
+    <text x="758" y="532" text-anchor="middle" font-size="14" font-weight="700" fill="#513c7e">route repair</text>
+
+    <text x="600" y="606" text-anchor="middle" font-size="15" fill="#52625f">Selection should preserve a path for learning, not just pick the current prettiest artifact.</text>
+  </g>
+</svg>

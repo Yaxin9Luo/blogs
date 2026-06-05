@@ -1,0 +1,249 @@
+---
+title: "From Effective Agents to Design Harnesses: Engineering Long-Horizon Multimodal Systems"
+description: A synthesis of Anthropic's engineering posts on effective agents, long-running harnesses, harness design, and managed agents, mapped onto Paper2Any and multimodal artifact generation.
+date: 2026-06-05
+tags: [agents, harness, long-horizon-agents, paper2any]
+status: active
+type: research
+sidebar:
+  order: 10
+  label: Agents and Harnesses
+---
+
+> Personal note: This article is based on Anthropic's public engineering posts, personal notes, and sanitized project experience. It does not represent the official view of any company, team, or internship host. It does not include internal repository links, APIs, secret configuration, private data, customer information, real benchmark scores, or proprietary implementation details.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/effective-agents-to-harnesses.svg'} alt="A complexity ladder from single LLM calls to workflows, agents, and long-horizon harnesses" class="hero-visual" />
+
+## Core Claim
+
+Read together, Anthropic's four engineering posts are not saying that more autonomous agents are always better. They point to a more practical engineering path:
+
+> Start with the simplest LLM call or workflow that solves the problem. Move toward agents only when the task truly needs open-ended decisions, durable progress, tool execution, environmental feedback, and quality gates.
+
+This matches the argument I have been building in [Why Long-Horizon Multimodal Agents Need a Harness](./harness-centered-design-agents/), [HTML-first Is Not a Universal Rubric](./html-first-artifact-contracts/), and [Long-Horizon Understanding Is Not Long Context](./long-horizon-understanding-is-not-long-context/). For Paper2Any, paper2poster, paper2slides, and design agents, the key question is not whether a model can produce a complete artifact in one pass. The key questions are:
+
+- Can the input material become a stable source state?
+- Can the task become an artifact contract?
+- Can every output be rendered and inspected?
+- Can failures route back to reading, planning, layout, evaluation, or repair?
+- Can handoff happen through artifacts rather than through lucky context retention?
+
+## What the Four Posts Say Together
+
+The four public sources I used are:
+
+| Post | Main Question | Implication for Multimodal Artifact Systems |
+|---|---|---|
+| [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents) | When should we use single calls, workflows, or agents? | Do not begin Paper2Any as a fully autonomous agent. First stabilize source packs, routing, parallel verification, and evaluator-optimizer loops. |
+| [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) | Why do long-running agents lose continuity, do too much, stop too early, or skip end-to-end testing? | For poster, slide, and web generation, progress logs, contract lists, incremental work, and rendered tests matter more than a longer prompt. |
+| [Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps) | How can planner, generator, and evaluator agents coordinate through sprint contracts and browser-based QA? | Design agents also need generator/evaluator contracts: define done first, generate second, then let the evaluator inspect the artifact like a user. |
+| [Scaling Managed Agents](https://www.anthropic.com/engineering/managed-agents) | How can the reasoning brain be decoupled from the execution hands? | Paper2Any needs a managed artifact runtime: source state, render sandbox, verifier, human checkpoints, and a repair queue. |
+
+The common thread is that agents are being reframed from "a model that calls tools" into "a long-running worker inside a controlled environment." The first framing focuses on model capability. The second focuses on how a system helps the model keep doing the right work.
+
+## Start With a Complexity Ladder
+
+The most useful idea from `Building effective agents` is the complexity ladder:
+
+- A single LLM call, often augmented with retrieval, examples, tools, or memory.
+- A workflow with predefined paths, such as chaining, routing, parallelization, orchestrator-workers, or evaluator-optimizer loops.
+- An agent that dynamically decides steps and tools based on environmental feedback.
+
+This ladder matters for Paper2Any. Many parts of the task should not begin as open-ended autonomy:
+
+| Subproblem | Better Shape | Why |
+|---|---|---|
+| Paper section parsing | workflow | Introduction, method, experiments, and limitations can be extracted with a fixed schema. |
+| Figure/evidence binding | routing + verification | Figures and tables should bind to claims instead of being guessed at generation time. |
+| Panel content allocation | orchestrator-workers | A planner can assign disjoint source packs to different panels. |
+| Repetition and omission checks | parallel evaluators | Coverage, visual density, and source grounding can be checked independently. |
+| Visual repair | evaluator-optimizer | When a failure report is clear, iterative repair is more stable than regeneration. |
+
+The places that need agents are the uncertain ones: unusual paper structure, ambiguous visual evidence, repeated panel failure, evaluator findings that point outside the current module, or user preferences that need interpretation. Those decisions should happen inside a harness, not inside one large prompt.
+
+## The Interface Matters More Than the Persona
+
+Agent discussions often focus on roles: planner, designer, critic, coder, researcher. Roles help, but the deeper layer is the agent-computer interface.
+
+When tools are awkward, the model spends capability fighting format. This is true for coding tasks and for multimodal artifacts. A design agent that only receives "make it prettier" cannot reliably improve. A design agent that receives a structured failure report can decide whether to fix panel density, source grounding, contrast, mobile layout, or caption alignment.
+
+For artifact generation, I would design the interface around these objects:
+
+| Interface Object | What It Gives the Agent | What It Constrains |
+|---|---|---|
+| Source pack | claims, figures, tables, sections, evidence ids | unsupported claims cannot appear casually |
+| Artifact contract | done conditions for panels, slides, sections, or scenes | completeness must be testable |
+| Render report | DOM audit, screenshot, overlap, clipping, whitespace, mobile issues | source-only self-evaluation is not enough |
+| Failure route | whether the bug belongs to reading, compiling, layout, style, evaluator, or user preference | not every problem becomes a generator rewrite |
+| Handoff log | what changed, what was tested, what remains, what is uncertain | the next session does not reconstruct state by guessing |
+
+This is why I like HTML-first as an intermediate base. HTML is useful because DOM, CSS, screenshots, rendered state, and editable nodes become inspectable interfaces.
+
+## Long-Horizon Failure Is a Handoff Problem
+
+The long-running harness post is valuable because it names practical failure modes: a long task spans multiple sessions; a new session may lose context; a model tries to do too much; a later session sees progress and prematurely calls the job done; and end-to-end behavior may not be tested.
+
+Multimodal generation has the same pattern. A poster agent might create the layout in round one, refine visuals in round two, add figures in round three, and fix repetition in round four. Without durable state, later sessions can lose track of:
+
+- which claims have already been used,
+- which figure caused a mismatch,
+- why the last evaluator failed the artifact,
+- whether the current artifact is safe to continue or should be rolled back,
+- whether a visually full canvas actually has full content coverage.
+
+This is why I do not think long context alone solves long-horizon work. Context helps short-term memory, but it does not replace engineering handoff. A better approach stores handoff in the workspace and the artifact:
+
+| Handoff Object | Paper2Any Equivalent |
+|---|---|
+| feature list | artifact contract checklist |
+| progress file | generation report and repair history |
+| git commit | rollbackable artifact snapshot |
+| init script | repeatable build, render, and test command |
+| end-to-end test | browser render, screenshot, DOM audit, source grounding check |
+
+The point is that these objects do not depend on a single model context. Any future agent or human reviewer can recover the project state from files and artifacts.
+
+## Generator/Evaluator Contracts Drive Quality
+
+`Harness design for long-running application development` adds another layer: a planner expands the spec, a generator works one sprint at a time, and an evaluator tests the running app through a browser. Before each sprint, the generator and evaluator agree on what "done" means.
+
+This is especially important for design harnesses. Many multimodal failures happen because the completion standard was not fixed before generation.
+
+For example, "improve the method panel" can mean many different things:
+
+- reduce text,
+- strengthen the pipeline diagram,
+- add missing input/output structure,
+- adjust visual hierarchy,
+- make the method/result relationship clearer.
+
+If generator and evaluator first negotiate a contract, the task becomes testable:
+
+| Contract Field | Example |
+|---|---|
+| Scope | Modify only the method panel; do not change global palette or other panel text. |
+| Success criteria | Include input, core modules, output, and evidence links. |
+| Visual criteria | Preserve readable font sizes, clear flow, and no overlap. |
+| Source criteria | Do not add claims outside the assigned source pack. |
+| Test method | Render the poster; inspect screenshot, DOM, source ids, and rubric results. |
+| Failure owner | Missing evidence returns to reader; dense content returns to compiler; overlap returns to layout. |
+
+The evaluator is no longer just an aesthetic judge. It becomes a co-designer of the sprint contract.
+
+## Managed Agents: Separate Brain and Hands
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/managed-agentic-artifact-stack.svg'} alt="A managed artifact-agent system separates model reasoning, tool execution, durable state, verification, and human checkpoints" class="hero-visual" />
+
+`Scaling Managed Agents` is closer to a platform abstraction. It separates the reasoning "brain" from execution "hands" and connects them through session state, sandboxes, tool interfaces, and multi-agent orchestration.
+
+For Paper2Any, I would map that into five layers:
+
+| Layer | Role | What Must Be Managed |
+|---|---|---|
+| Brain layer | planner, generator, evaluator, repair router | role boundaries, context, model choice, stopping rules |
+| Hands layer | files, browser, renderer, PDF/PPT/HTML exporters, visual checkers | permissions, sandboxing, commands, repeatability |
+| State layer | source pack, artifact state, contract, progress log, snapshots | persistence, versioning, traceability |
+| Verification layer | DOM audit, rendered screenshot, source grounding, rubric scores | thresholds, false positives, regression cases |
+| Governance layer | human checkpoint, public boundary, cost limit, quality bar | when to stop, when to ask, what not to publish |
+
+This avoids the common mistake of putting all intelligence into one super prompt. Long-horizon systems need managed tool effects, state consistency, verification loops, cost control, and disclosure boundaries.
+
+## How I Would Build Paper2Any
+
+If I combine the four posts into a Paper2Any architecture, I would build an artifact workbench rather than a single generation button.
+
+### 1. Source State Before Artifact
+
+The system should first compile source state:
+
+| State | Content |
+|---|---|
+| Claim graph | relationships among problem, method, contribution, result, and limitation |
+| Evidence map | figures, tables, and sections attached to each claim |
+| Asset registry | figures, screenshots, formulas, qualitative cases, reusable visual assets |
+| Coverage plan | which source packs feed each panel, slide, section, or scene |
+| Risk notes | unsupported claims, ambiguous numbers, visual evidence that may be misread |
+
+Without this layer, later generation depends too much on model memory and fluent language.
+
+### 2. Artifact Contracts Define the Output
+
+The same source state can produce posters, slides, web pages, or videos, but the contracts must split. Posters need panel grammar. Slides need story arc. Web pages need navigation and responsive structure. Videos need time segments and narration rhythm. A shared base does not mean a shared rubric.
+
+### 3. Workflows Handle Known Structure; Agents Handle Uncertainty
+
+Keep deterministic pieces deterministic:
+
+- source extraction uses schemas,
+- panel allocation uses a compiler,
+- overlap and clipping use programmatic checks,
+- source grounding uses id traces,
+- common repairs use structured routes.
+
+Use agents where judgment is needed:
+
+- trading off density and readability,
+- deciding whether a figure should become the central visual,
+- resolving conflict between user preference and artifact type,
+- diagnosing whether an evaluator failure is content, layout, or rubric drift.
+
+That is useful complexity. It buys measurable control.
+
+### 4. Every Round Leaves a Handoff Artifact
+
+Each generation round should leave:
+
+- an openable HTML/PDF/PPT/preview,
+- source coverage for the round,
+- a failure report,
+- checks that passed and checks that were not covered,
+- a next-step repair priority.
+
+If a round does not leave these objects behind, it is not ready for a long-running harness. The next agent will spend too much time figuring out where it is.
+
+## Lessons From Sanitized Project Experience
+
+The four posts also help me name a few project lessons in a public-safe form:
+
+| Lesson | Engineering Meaning |
+|---|---|
+| One-shot generation hits a ceiling quickly | Quality comes from evaluators and repair loops, not just longer prompts. |
+| Visual bugs cannot be read from code alone | DOM audits need rendered screenshots; many problems appear only after rendering. |
+| Repetition is not a small bug | If source packs are not disjoint, posters and slides repeat the same contribution. |
+| Evaluators shape generators | Rubric wording, weights, and few-shot examples directly influence system taste. |
+| Not every failure belongs to the generator | Some failures belong to the reader, compiler, layout, evaluator, or human preference layer. |
+| Public writing needs abstraction boundaries | Write system methods, failure taxonomies, and interface design; omit internal links, real configs, and private samples. |
+
+This is also why a personal technical site is a good medium for this work. It can preserve reusable engineering judgment without publishing private implementation details.
+
+## A Reusable Harness Template
+
+I would now describe a multimodal artifact harness with this template:
+
+1. **Task brief**: user goal, artifact type, audience, constraints.
+2. **Source compiler**: convert documents and visual materials into source packs.
+3. **Artifact planner**: allocate source packs to panels, slides, sections, or scenes.
+4. **Contract negotiation**: generator and evaluator agree on done conditions.
+5. **Generator sprint**: one clear scope at a time.
+6. **Rendered verification**: inspect results with browser, screenshots, and structural checks.
+7. **Failure routing**: route issues to reader, planner, compiler, layout, style, rubric, or human preference.
+8. **Handoff artifact**: write progress, snapshot, coverage, and remaining risks.
+9. **Managed execution**: control cost, permissions, stopping rules, and human checkpoints.
+
+This template is not limited to paper2poster. It can support paper2slides, paper2web, report generation, research dashboards, and even the maintenance of this technical blog. Whenever the output is a deliverable artifact rather than a chat answer, generation should become long-running, inspectable work.
+
+## Takeaway
+
+The strongest lesson from these Anthropic posts is that agent engineering is not mainly about making agents feel more human. It is about giving agents a better work environment.
+
+For long-horizon multimodal systems, that environment includes:
+
+- a simplicity-first complexity ladder,
+- a clear agent-computer interface,
+- durable source state and artifact state,
+- incremental progress and clean handoff,
+- generator/evaluator contracts,
+- rendered verification,
+- a managed execution interface that separates reasoning from tool use.
+
+That is why I will keep framing Paper2Any as a harness-centered research direction. Model capability matters, but the system must let the model see facts, take actions, receive feedback, preserve state, and turn failure into executable repair.

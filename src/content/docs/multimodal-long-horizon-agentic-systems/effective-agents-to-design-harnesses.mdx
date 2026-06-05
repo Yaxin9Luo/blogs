@@ -1,0 +1,251 @@
+---
+title: "从 Effective Agents 到 Design Harness：长程多模态系统的工程方法"
+description: 串联 Anthropic 关于 effective agents、long-running harness、harness design 和 managed agents 的四篇工程文章，整理成 Paper2Any 与多模态 artifact 生成系统的长期工程方法。
+date: 2026-06-05
+tags: [agents, harness, long-horizon-agents, paper2any]
+status: active
+type: research
+sidebar:
+  order: 10
+  label: Agent 与 Harness
+---
+
+> 个人声明：本文是个人研究记录，基于 Anthropic 公开工程文章、个人 notes 和已脱敏的项目经验整理，不代表任何公司、团队或实习单位的官方观点。文中不包含内部仓库地址、API、密钥配置、未公开数据、客户信息、真实实验分数或专有实现细节。
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/effective-agents-to-harnesses.svg'} alt="从单次 LLM 调用、workflow、agent 到 long-horizon harness 的复杂度阶梯" class="hero-visual" />
+
+## 核心判断
+
+Anthropic 这四篇工程文章连起来看，讲的不是“agent 越自治越好”，而是一条更实用的工程路线：
+
+> 先用最简单的 LLM 调用和 workflow 解决明确问题；当任务真的需要开放式决策、跨会话进度、工具执行、环境反馈和质量门槛时，再把 agent 放进一个可观测、可交接、可验证的 harness 里。
+
+这条路线和我在 [为什么长程多模态智能体需要 Harness](./harness-centered-design-agents/)、[HTML-first 不是万能格式](./html-first-artifact-contracts/) 和 [长程理解不是长上下文](./long-horizon-understanding-is-not-long-context/) 里反复写的判断是一致的。对 Paper2Any、paper2poster、paper2slides、design agent 这类任务来说，关键不是“模型能不能一次生成完整 artifact”，而是：
+
+- 输入材料能不能被编译成稳定的 source state。
+- 任务能不能被拆成 artifact contract。
+- 每一轮输出能不能被真实渲染和检查。
+- 失败信号能不能路由到 reading、planning、layout、evaluator 或 repair owner。
+- 跨轮次、跨会话、跨 agent 的交接能不能靠 artifact 本身完成，而不是靠上下文运气。
+
+## 四篇文章合起来在讲什么
+
+这次参考的公开来源有四篇：
+
+| 文章 | 我吸收的核心问题 | 对多模态 artifact 系统的启发 |
+|---|---|---|
+| [Building effective agents](https://www.anthropic.com/engineering/building-effective-agents) | 什么时候用单次调用、workflow、agent；为什么复杂度要逐步增加。 | 不要把 Paper2Any 一上来做成“全自治 agent”。先把 source pack、routing、parallel verification、evaluator-optimizer 这些 workflow 做稳。 |
+| [Effective harnesses for long-running agents](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents) | 长程 agent 会跨 context window 断片、做太多、提前宣布完成、缺少端到端测试。 | 对 poster/slides/web 生成来说，progress log、feature/contract list、增量推进和真实渲染测试比更长 prompt 更重要。 |
+| [Harness design for long-running application development](https://www.anthropic.com/engineering/harness-design-long-running-apps) | Planner、generator、evaluator 如何通过 sprint contract 和 Playwright 式测试构成长期开发 harness。 | Design agent 也需要 generator/evaluator 合约：先谈清楚 done condition，再生成，再让 evaluator 像用户一样检查 artifact。 |
+| [Scaling Managed Agents](https://www.anthropic.com/engineering/managed-agents) | 把“脑”和“手”解耦，让模型推理、工具执行、sandbox、session state 和多 agent 调度成为可托管接口。 | Paper2Any 需要的不只是模型调用，而是可管理的 artifact runtime：source state、render sandbox、verifier、human checkpoint 和 repair queue。 |
+
+这四篇文章的共同点是：它们把 agent 从“一个会调用工具的模型”改写成“一个运行在受控环境里的长期工作者”。这个区别很重要。前者关注模型能做什么，后者关注系统如何让模型持续做对。
+
+## 从复杂度阶梯开始，而不是从自治开始
+
+`Building effective agents` 最值得吸收的一点，是它把 agentic system 拆成复杂度阶梯：
+
+- 单次 LLM 调用，加 retrieval、examples、tools。
+- 固定流程的 workflow，比如 prompt chaining、routing、parallelization、orchestrator-workers、evaluator-optimizer。
+- 更开放的 agent，让模型根据环境反馈动态决定步骤和工具。
+
+这个阶梯对 Paper2Any 很关键。很多时候，真正有用的不是一开始就让 agent 自己决定所有事情，而是把任务中已经明确的部分先做成 workflow。
+
+比如 paper2poster 里，下面这些步骤不需要完全自治：
+
+| 子问题 | 更合适的形态 | 原因 |
+|---|---|---|
+| 论文 section 解析 | workflow | Introduction、Method、Experiments、Limitations 可以按固定 schema 抽取。 |
+| 图表证据绑定 | routing + verification | figure/table 应该绑定到 claim，而不是让 generator 临场猜。 |
+| panel 内容分配 | orchestrator-workers | planner 可以分配互斥 source pack，不同 worker 处理不同 panel。 |
+| 重复和遗漏检查 | parallel evaluator | claim coverage、visual density、source grounding 可以分开检查。 |
+| 视觉修复 | evaluator-optimizer | 有明确 failure report 时，迭代修复比重写更稳。 |
+
+真正需要 agent 的地方，是任务路径无法预先写死的时候：论文结构异常、图表证据复杂、某个 panel 反复失败、evaluator 发现错误来源不在当前模块、用户偏好需要重新解释。这些场景需要模型做判断，但这个判断应该发生在 harness 里，而不是漂浮在一次大 prompt 里。
+
+## Agent 的接口比 Agent 的人格更重要
+
+很多 agent 讨论会把重点放在角色设定：planner、designer、critic、coder、researcher。角色当然有用，但更底层的是 agent-computer interface。
+
+如果工具接口难用，模型会把很多能力浪费在格式挣扎上。对代码任务是这样，对多模态 artifact 任务也是这样。一个 design agent 如果只能收到“请修得更漂亮”，它很难稳定进步；如果它收到的是结构化 failure report，就能知道该改 panel density、source grounding、color contrast、mobile breakpoint 还是 caption alignment。
+
+我现在更倾向于把工具接口设计成这些对象：
+
+| 接口对象 | 提供给 agent 的信息 | 约束 agent 的行为 |
+|---|---|---|
+| Source pack | claim、figure、table、section、evidence id | 不能随便编未绑定结论。 |
+| Artifact contract | poster panel、slide page、web section、video scene 的 done condition | 不能只生成“看起来完整”的结果。 |
+| Render report | DOM audit、截图、overlap、裁切、空白、移动端问题 | 不能只看源码自评。 |
+| Failure route | 错误属于 reading、compiler、layout、style、evaluator 还是 user preference | 不能所有问题都交给 generator 重写。 |
+| Handoff log | 本轮做了什么、验证了什么、还剩什么、哪些判断不能覆盖 | 下一轮不用靠猜恢复上下文。 |
+
+这也是我喜欢 HTML-first 的原因。HTML 不是因为它时髦，而是因为 DOM、CSS、截图、渲染状态和可编辑节点都能形成工具接口。agent 能看到的不只是文字评价，而是可以操作和验证的 artifact state。
+
+## 长程失败不是“上下文不够”，而是“交接不够”
+
+`Effective harnesses for long-running agents` 对我最有用的部分，是它把长程 agent 的失败讲得很工程化。长任务会被切成多个会话，每个新会话都可能失去前文；模型容易一口气做太多，留下半成品；也容易看到已有进度后过早判断任务完成；还可能没有真正端到端测试。
+
+这和多模态生成非常像。比如一个 poster agent 可能在第一轮完成布局框架，第二轮改视觉，第三轮加图表，第四轮修重复。但如果没有 durable state，后面的 agent 会遇到几类问题：
+
+- 不知道哪些 claim 已经被用过。
+- 不知道哪个 figure 曾经导致图文错配。
+- 不知道上一轮 evaluator 为什么判失败。
+- 不知道当前 artifact 是“可继续修”的状态，还是应该回滚。
+- 看到画面已经很满，就误以为内容覆盖完整。
+
+所以我不太相信“长上下文会自然解决长程任务”。上下文可以缓解短期记忆，但无法替代工程交接。更可靠的做法是把交接写进工作目录和 artifact：
+
+| 长程交接对象 | 在 Paper2Any 里对应什么 |
+|---|---|
+| feature list | artifact contract checklist |
+| progress file | generation report + repair history |
+| git commit | 每轮可回滚的 artifact snapshot |
+| init script | 可重复运行的 render/build/test command |
+| end-to-end test | 浏览器渲染、截图、DOM audit、source grounding check |
+
+这类对象的价值在于：它们不依赖某一次模型上下文。任何下一轮 agent、任何人类 reviewer，都能从文件和产物本身恢复项目状态。
+
+## Generator/Evaluator 合约是长程质量的核心
+
+`Harness design for long-running application development` 把上一层经验推进了一步：planner 扩写 spec，generator 一次做一个 sprint，evaluator 像用户一样点开应用做 QA；在每个 sprint 开始前，generator 和 evaluator 先协商 done condition。
+
+这对 design harness 特别重要。很多多模态 artifact 失败，并不是模型不会生成，而是“完成标准”在生成之前没有被固定下来。
+
+一个 poster sprint 如果只说“优化 method panel”，结果可能有很多解释：
+
+- 是减少文字。
+- 是增强 pipeline 图。
+- 是把公式和模块关系补全。
+- 是调整视觉层级。
+- 是让 method 与 result 的因果关系更清楚。
+
+如果 generator 和 evaluator 先协商 contract，任务就会变成可验证的东西：
+
+| Contract 字段 | 例子 |
+|---|---|
+| Scope | 只修改 method panel，不改全局 palette 和其他 panel 文本。 |
+| Success criteria | panel 中必须包含 input、core modules、output、关键 evidence link。 |
+| Visual criteria | 字号不小于指定阈值，模块之间有明确 flow，图文不重叠。 |
+| Source criteria | 不新增 source pack 之外的 claim。 |
+| Test method | 渲染 poster，检查截图、DOM、source ids 和 evaluator rubric。 |
+| Failure owner | 如果缺证据回 reader；如果信息太密回 compiler；如果重叠回 layout。 |
+
+这种 contract 有一个朴素好处：它让 evaluator 不再只是“审美裁判”，而是 sprint 的共同设计者。生成之前先定义检查方式，生成之后才能真的判断是否完成。
+
+## Managed Agents：把脑和手解耦
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/managed-agentic-artifact-stack.svg'} alt="托管式 artifact agent 系统把模型推理、工具执行、持久状态、验证和人工 checkpoint 分层管理" class="hero-visual" />
+
+`Scaling Managed Agents` 提出的抽象更靠近平台层：把推理的“脑”和执行的“手”拆开，再通过可管理的 session、sandbox、tool interface 和多 agent 调度连接起来。
+
+我把它映射到 Paper2Any，会变成这样：
+
+| 层 | 作用 | 需要管理什么 |
+|---|---|---|
+| Brain layer | planner、generator、evaluator、repair router 做判断 | 角色边界、上下文、模型选择、停止条件 |
+| Hands layer | 文件、浏览器、渲染器、PDF/PPT/HTML exporter、visual checker | 权限、sandbox、命令、可重复运行 |
+| State layer | source pack、artifact state、contract、progress log、git snapshots | 持久化、版本、可追溯性 |
+| Verification layer | DOM audit、rendered screenshot、source grounding、rubric score | 阈值、false positive、回归样本 |
+| Governance layer | human checkpoint、公开边界、成本上限、质量门槛 | 何时停、何时问人、哪些内容不能生成 |
+
+这个分层能避免一个常见误区：把所有智能都塞进一个超级 prompt。长程系统真正需要托管的，不只是模型思考，还包括工具副作用、状态一致性、验证闭环、成本和公开边界。
+
+## 落到 Paper2Any：我会怎么设计系统
+
+如果把这四篇文章的经验合到 Paper2Any，我会把系统设计成一个“artifact workbench”，而不是一个“生成按钮”。
+
+### 1. Source state 先于 artifact
+
+系统第一步不是生成 poster，而是编译 source state：
+
+| State | 内容 |
+|---|---|
+| Claim graph | problem、method、contribution、result、limitation 的关系 |
+| Evidence map | 每个 claim 对应 figure/table/section |
+| Asset registry | 图表、截图、公式、定性案例、可复用视觉素材 |
+| Coverage plan | 每个 panel/slide/section/scene 使用哪些 source pack |
+| Risk notes | 哪些结论可能 unsupported，哪些图表容易误读 |
+
+如果没有这层，后面所有生成都会靠模型记忆和语言流畅度硬撑。
+
+### 2. Artifact contract 决定输出形态
+
+同一份 source state 可以生成 poster、slides、webpage 或 video，但 contract 必须分开。poster 看 panel grammar，slides 看 story arc，webpage 看 navigation 和 responsive layout，video 看 time segment 和 narration rhythm。这和我在 [HTML-first 不是万能格式](./html-first-artifact-contracts/) 里写的一样：共享底座不等于共享 rubric。
+
+### 3. Workflow 解决确定性任务，agent 处理不确定性
+
+能固定的就固定：
+
+- source extraction 用 schema。
+- panel 分配用 compiler。
+- overlap/crop 用程序检查。
+- source grounding 用 id trace。
+- common repair 用规则化 route。
+
+不确定的再交给 agent：
+
+- 如何在 information density 和 readability 之间取舍。
+- 某个图表是否值得作为主视觉。
+- 用户偏好和 artifact 类型冲突时怎么折中。
+- evaluator 发现的错误到底是内容问题还是布局问题。
+
+这样系统复杂度才是有购买力的，而不是为了显得 agentic。
+
+### 4. 每轮都必须留下可交接 artifact
+
+每一轮生成结束，应该留下：
+
+- 可打开的 HTML/PDF/PPT/preview。
+- 本轮 source coverage。
+- 本轮 failure report。
+- 哪些检查通过、哪些检查没有覆盖。
+- 下一轮优先修什么。
+
+如果一轮工作没有留下这些东西，它就不适合进入 long-running harness。因为下一轮 agent 会把大量时间浪费在“我现在在哪”上。
+
+## 实习经验里最有用的几条
+
+这四篇文章帮我重新整理了一下我在多模态生成项目里感受到的工程经验。脱敏后可以写成几条：
+
+| 经验 | 抽象后的工程含义 |
+|---|---|
+| 一次生成的上限很快会撞到 | 真正的质量来自 evaluator 和 repair loop，而不是更长 prompt。 |
+| 视觉问题不能只读代码 | DOM audit 必须接 rendered screenshot，很多问题只有渲染后可见。 |
+| 内容重复不是小 bug | 如果 source pack 不互斥，poster/slides 会重复讲同一个贡献。 |
+| evaluator 会塑造生成器 | rubric 的措辞、权重和 few-shot 会直接决定系统偏好的方向。 |
+| 不能把所有失败都交给 generator | 有些失败属于 reader，有些属于 compiler，有些属于 layout，有些属于 rubric。 |
+| 公开写作要抽象边界 | 写系统方法、failure taxonomy、interface design，不写内部链接、真实配置、私有样本。 |
+
+这也是我觉得“个人网站”适合记录这类内容的原因：它不需要发布内部实现，但可以持续积累可复用的工程判断。
+
+## 一个可复用的长程多模态 harness 模板
+
+我现在会把一类多模态 artifact 系统拆成以下模板：
+
+1. **Task brief**：用户目标、artifact 类型、读者、限制。
+2. **Source compiler**：把输入文档和视觉材料变成 source packs。
+3. **Artifact planner**：把 source packs 分配给 panel/slide/section/scene。
+4. **Contract negotiation**：generator 和 evaluator 先约定 done condition。
+5. **Generator sprint**：一次只做一个明确 scope。
+6. **Rendered verification**：用真实浏览器、截图和结构检查评估结果。
+7. **Failure routing**：把问题分给 reader、planner、compiler、layout、style、rubric 或 human preference。
+8. **Handoff artifact**：写 progress、snapshot、coverage、remaining risks。
+9. **Managed execution**：控制成本、权限、停止条件和人工 checkpoint。
+
+这套模板不是只服务 paper2poster。paper2slides、paper2web、report generation、research dashboard、甚至技术博客站点维护都可以使用。只要输出是可交付 artifact，而不是一次聊天答案，就需要把“生成”改造成“长期可验证工作”。
+
+## 小结
+
+Anthropic 这四篇文章给我的最大启发是：agent 工程的主线不是追求更拟人化的 agent，而是把 agent 放进更好的工作环境。
+
+对长程多模态系统来说，这个环境包含：
+
+- 简单优先的复杂度阶梯。
+- 清晰的 agent-computer interface。
+- 可持久化的 source state 和 artifact state。
+- 增量推进和干净交接。
+- generator/evaluator 共同认可的 contract。
+- 真实渲染后的 verification。
+- 能把“脑”和“手”分层管理的托管式执行接口。
+
+所以我会把 Paper2Any 继续写成一个 harness-centered research direction。模型能力当然重要，但更重要的是系统能不能让模型在长任务里持续看见事实、执行动作、接受反馈、保存状态，并把失败变成下一轮可执行的修复。

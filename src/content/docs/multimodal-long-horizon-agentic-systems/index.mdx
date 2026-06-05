@@ -19,7 +19,7 @@ sidebar:
 
 <img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/paper2any-pipeline.svg'} alt="Paper2Any 的 HTML-first pipeline 示意图" class="hero-visual" />
 
-> 个人声明：这个系列是个人研究记录，基于公开资料、个人 KM notes 和已脱敏的项目经验整理，不代表任何公司、团队或实习单位的官方观点。站点文章不包含内部仓库地址、API、密钥配置、未公开数据、客户信息或专有实现细节。
+> 个人声明：这个系列是个人研究记录，基于公开资料、个人 notes 和已脱敏的项目经验整理，不代表任何公司、团队或实习单位的官方观点。站点文章不包含内部仓库地址、API、密钥配置、未公开数据、客户信息或专有实现细节。
 
 ## 这个方向要回答什么
 
@@ -35,11 +35,10 @@ sidebar:
 - **verification and benchmark**：不仅比较系统分数，还要判断单个产物是否真的能交付、能编辑、能复用。
 - **human-in-the-loop iteration**：人提供偏好、正反例和质量判断，agent 负责把判断沉淀成 evaluator、contract 和 regression loop。
 
-## 文档空间已整理
+## 已发布文章
 
-我已经从 KM 的“长程任务专项文档”空间抽取了结构化素材：20 篇文档、约 2.8 万字、12 个附件记录、43 个图片节点。第一版不会把内部链接和原始截图直接发布，而是先沉淀成以下公开可读材料：
+这个栏目会把公开论文/技术文章阅读、个人 notes 和脱敏项目经验整理成可长期维护的公开博客。文章关注的是系统方法、工程判断和 failure taxonomy，而不是发布原始内部文档或截图。
 
-- [KM 文档空间摘要](./document-space-digest/)：逐篇总结 20 篇 notes 的作用、可吸收观点和发布处理方式。
 - [为什么长程多模态智能体需要 Harness](./harness-centered-design-agents/)：第一篇正式研究博客，围绕 design harness、verifier、benchmark 和自迭代闭环展开。
 - [从一次生成到持续变好：自优化设计智能体的闭环](./self-improving-design-agents/)：第二篇正式研究博客，围绕十轮左右的自动迭代、content compiler、panel grammar 和两层 harness 展开。
 - [海报生成不是审美问题，而是可迭代的系统问题](./poster-generation-iterative-systems-problem/)：第三篇正式研究博客，把 paper2poster 拆成 Poster Contract、Panel Grammar、Evaluator 和 Repair Route。
@@ -47,6 +46,7 @@ sidebar:
 - [生成效果对比不是排行榜：Design Agent 比较的方法论](./comparing-design-agents-without-leaderboards/)：第五篇正式研究博客，把 design agent 对比改写成 evidence profile、failure mode 和 repair cost 的诊断协议。
 - [HTML-first 不是万能格式：Paper2Any 的统一底座与分化 Rubric](./html-first-artifact-contracts/)：第六篇正式研究博客，解释 poster、slides、webpage 和 video 为什么能共享 HTML 底座，但必须分开定义 contract、rubric 和 repair route。
 - [长程理解不是长上下文：从游戏智能体到 Paper2Any](./long-horizon-understanding-is-not-long-context/)：第七篇正式研究博客，从 game-agent benchmark 的公开论文阅读出发，讨论 source state、action validity、verifiable outcome 和 repair loop。
+- [从 Effective Agents 到 Design Harness：长程多模态系统的工程方法](./effective-agents-to-design-harnesses/)：第八篇正式研究博客，串联 Anthropic 的 agent、long-running harness、harness design 和 managed agents 工程经验。
 
 ## 知识地图
 
@@ -67,11 +67,12 @@ sidebar:
 5. [生成效果对比不是排行榜：Design Agent 比较的方法论](./comparing-design-agents-without-leaderboards/)。
 6. [HTML-first 不是万能格式：Paper2Any 的统一底座与分化 Rubric](./html-first-artifact-contracts/)。
 7. [长程理解不是长上下文：从游戏智能体到 Paper2Any](./long-horizon-understanding-is-not-long-context/)。
-8. 实习项目复盘：长程多模态 agent 的工程难点。
+8. [从 Effective Agents 到 Design Harness：长程多模态系统的工程方法](./effective-agents-to-design-harnesses/)。
+9. 实习项目复盘：长程多模态 agent 的工程难点。
 
-## 图片和附件处理
+## 素材处理原则
 
-KM 文档里有几类有价值的图：agent 流程图、benchmark 可视化、版本对比、海报迭代截图、远程工作流截图。第一版先不直接嵌入这些内网图片；后续会按两种方式处理：
+个人 notes 和项目经验里会有一些有价值的流程图、版本对比、海报迭代截图和工作流截图。公开站点不会直接嵌入内网图片；后续会按两种方式处理：
 
 - 适合公开表达的图，重绘成抽象示意图或脱敏流程图。
 - 需要保留原始视觉细节的图，先人工确认没有内部域名、账号、路径、未公开指标，再复制到站点资源目录。

@@ -19,7 +19,7 @@ sidebar:
 
 <img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/paper2any-pipeline.svg'} alt="HTML-first Paper2Any pipeline diagram" class="hero-visual" />
 
-> Personal note: This series is based on public materials, personal KM notes, and sanitized project experience. It does not represent the official view of any company, team, or internship host. The articles do not include internal repository links, APIs, secret configuration, private data, customer information, or proprietary implementation details.
+> Personal note: This series is based on public materials, personal notes, and sanitized project experience. It does not represent the official view of any company, team, or internship host. The articles do not include internal repository links, APIs, secret configuration, private data, customer information, or proprietary implementation details.
 
 ## What This Direction Is About
 
@@ -35,11 +35,10 @@ The main task shapes are:
 - **verification and benchmarks**: comparing systems while also checking whether a single artifact is deliverable, editable, and reusable.
 - **human-in-the-loop iteration**: humans provide preferences, references, and quality judgments; agents turn those signals into evaluators, contracts, and regression loops.
 
-## Source Notes Organized
+## Published Articles
 
-I extracted structured material from the KM document space around long-horizon tasks: 20 documents, roughly 28K Chinese characters, 12 attachment records, and 43 image nodes. The first version does not publish internal links or raw screenshots. It turns them into publishable notes:
+This section turns public paper/article reading, personal notes, and sanitized project experience into maintainable public writing. The articles focus on system methods, engineering judgment, and failure taxonomies rather than publishing raw internal documents or screenshots.
 
-- [KM Document Space Digest](./document-space-digest/): a document-by-document summary of the 20 notes.
 - [Why Long-Horizon Multimodal Agents Need a Harness](./harness-centered-design-agents/): the first research article in this series.
 - [From One-Shot Generation to Self-Improving Design Agents](./self-improving-design-agents/): the second research article, based on the automatic-iteration route, content compiler, panel grammar, and nested harnesses.
 - [Poster Generation Is an Iterative Systems Problem](./poster-generation-iterative-systems-problem/): the third research article, decomposing paper2poster into poster contracts, panel grammar, evaluators, and repair routes.
@@ -47,6 +46,7 @@ I extracted structured material from the KM document space around long-horizon t
 - [Comparing Design Agents Without Turning Results into a Leaderboard](./comparing-design-agents-without-leaderboards/): the fifth research article, turning design-agent comparison into evidence profiles, failure modes, and repair cost.
 - [HTML-first Is Not a Universal Rubric: Artifact Contracts in Paper2Any](./html-first-artifact-contracts/): the sixth research article, explaining why posters, slides, web pages, and videos can share an HTML base while still needing separate contracts, rubrics, and repair routes.
 - [Long-Horizon Understanding Is Not Long Context: From Game Agents to Paper2Any](./long-horizon-understanding-is-not-long-context/): the seventh research article, using public game-agent benchmark papers to discuss source state, action validity, verifiable outcomes, and repair loops.
+- [From Effective Agents to Design Harnesses: Engineering Long-Horizon Multimodal Systems](./effective-agents-to-design-harnesses/): the eighth research article, synthesizing Anthropic's engineering posts on agents, long-running harnesses, harness design, and managed agents.
 
 ## Knowledge Map
 
@@ -67,11 +67,12 @@ I extracted structured material from the KM document space around long-horizon t
 5. [Comparing design agents without turning it into a leaderboard](./comparing-design-agents-without-leaderboards/).
 6. [HTML-first is not a universal rubric: artifact contracts in Paper2Any](./html-first-artifact-contracts/).
 7. [Long-horizon understanding is not long context: from game agents to Paper2Any](./long-horizon-understanding-is-not-long-context/).
-8. Internship retrospective: engineering lessons from long-horizon multimodal agents.
+8. [From effective agents to design harnesses: engineering long-horizon multimodal systems](./effective-agents-to-design-harnesses/).
+9. Internship retrospective: engineering lessons from long-horizon multimodal agents.
 
-## Image and Attachment Handling
+## Material Handling Principles
 
-The KM space contains several useful image categories: agent flow diagrams, benchmark visualizations, version comparisons, poster iteration screenshots, and remote workflow screenshots. The first public version does not embed raw intranet images.
+Personal notes and project experience may include useful flow diagrams, benchmark visualizations, version comparisons, poster iteration screenshots, and workflow screenshots. The public site does not embed raw intranet images.
 
 - Public-facing diagrams will be redrawn as abstract or sanitized figures.
 - Raw screenshots will only be copied into the site after checking that they do not contain internal domains, accounts, paths, private metrics, or unpublished details.

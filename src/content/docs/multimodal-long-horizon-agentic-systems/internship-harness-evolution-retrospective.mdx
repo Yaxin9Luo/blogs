@@ -1,0 +1,216 @@
+---
+title: 从周报到 Harness：一次长程多模态 Agent 项目的工程复盘
+description: 把多轮实习项目 notes 抽象成公开可读的工程经验：为什么长程多模态 artifact 项目的瓶颈会从版面、密度、内容 grounding 迁移到 panel grammar、版本选择和 agent operations。
+date: 2026-06-05
+tags: [internship, field-notes, design-harness, long-horizon-agents]
+status: active
+type: research
+sidebar:
+  order: 11
+  label: 实习复盘
+---
+
+> 个人声明：本文是个人实习与项目经验的脱敏复盘，不代表任何公司、团队或实习单位的官方观点。文中不包含内部仓库地址、API、密钥配置、内网链接、真实平台操作、未公开数据、真实 benchmark 样本/分数、人员标识或原始截图。
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/harness-evolution-retrospective.svg'} alt="长程多模态 artifact 项目从 prompt demo 走向 contract、evaluator、coding-agent repair 和 regression loop 的演进示意图" class="hero-visual" />
+
+## 核心判断
+
+我以为自己在优化一个 design agent，后来发现真正被优化的是 agent 所处的 harness：任务定义、失败信号、内容归属、版本选择和长期操作方式。
+
+这篇不是项目流水账，也不是内部实现介绍。它只记录我在一个 Paper2Any-style artifact generation 项目里学到的工程判断：当一个系统从“能生成一张还不错的结果”走向“能长期自动改进”，最重要的变化不是 prompt 变复杂，而是每一轮失败都能被转成系统可执行的修复。
+
+这篇接在 [从 Effective Agents 到 Design Harness](./effective-agents-to-design-harnesses/) 后面。前一篇讲公开工程文章给我的启发；这篇讲我自己的项目复盘。
+
+## 复盘对象：不是一次生成，而是瓶颈迁移
+
+长程多模态项目最值得记录的，不是某个版本好看了多少，而是瓶颈怎么迁移。
+
+早期我关心的是版面：重叠、裁切、空白、字号、密度。等 layout harness 稳定后，新的问题就暴露出来了：文本重复、source binding 弱、panel 语义不清、每个 panel 都像同一种卡片网格。再往后，问题又变成 evaluator 会诱导系统 reward hacking，版本选择没有结构化依据，长程 agent operation 需要更强的隔离和交接。
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/bottleneck-migration-field-notes.svg'} alt="长程多模态 artifact 系统的瓶颈从 layout stability 迁移到 content grounding、panel grammar、version selection 和 operations" class="hero-visual" />
+
+所以这篇的主线是：
+
+| 阶段 | 表面问题 | 更深层问题 |
+|---|---|---|
+| Prompt demo | 第一版不稳定 | 没有 contract 和验收线 |
+| Layout iteration | overlap、裁切、空白 | 只看 DOM 不等于看最终视觉 |
+| Density iteration | 内容变多 | 内容可能重复或不 grounded |
+| Content compiler | 每个 panel 都能填满 | panel 之间缺少 source ownership |
+| Panel grammar | 卡片很多 | 结构没有匹配内容语义 |
+| Benchmark loop | 版本很多 | 缺少失败画像和选择规则 |
+| Agent operations | 可以长时间跑 | 缺少隔离、交接、监控和暂停点 |
+
+## 先搭 Harness，再让 Agent 自由探索
+
+早期一个很容易犯的错误，是先搭一个很复杂的 agent pipeline：reader、planner、designer、critic、refiner 全部上，然后期待 agent 自动学会什么是好结果。
+
+后来我更相信反过来做：
+
+1. 先定义任务：输入是什么，输出是什么，读者是谁。
+2. 先定义 artifact contract：什么算完成，什么必须不能发生。
+3. 先准备正反例：哪些结果是好方向，哪些是坏方向。
+4. 先把失败信号结构化：失败属于 content、visual curation、layout、typography、rendering 还是 source grounding。
+5. 再让 coding agent 改 pipeline。
+
+原因很简单：如果 harness 没搭好，agent 优化的是一团雾。它可以改很多代码，也可以让局部画面变漂亮，但系统不会知道自己是否真的接近目标。
+
+## 从人工反馈到可执行失败信号
+
+人类反馈常常是模糊的：
+
+- 这张太空。
+- 看起来像模板。
+- 图表不够有用。
+- 内容不够像论文海报。
+- 信息密度高了，但读起来重复。
+
+这些话对人有意义，对 agent 不够可执行。项目里最重要的一步，是把这些反馈翻译成可以检查、归因、修复的信号。
+
+| 人类反馈 | 可执行信号 |
+|---|---|
+| 太空 | rendered blank area、panel fill ratio、visual/text occupancy |
+| 乱 | overlap、alignment drift、hierarchy conflict |
+| 像模板 | layout archetype repetition、style diversity、panel grammar mismatch |
+| 图表没用 | figure-to-claim binding、caption relevance、evidence coverage |
+| 文本多但空 | repeated claims、low source coverage、weak section ownership |
+| 内容不准 | unsupported claim、source drift、missing evidence id |
+
+这也是为什么我在 [Verifier 与 Benchmark](./verifiers-and-benchmarks-for-multimodal-generation-systems/) 里强调：verifier 的价值不只是打分，而是生成可执行的 failure report。
+
+## 两条路线：改结果，还是改系统
+
+多轮迭代大概可以分成两条路线。
+
+| 路线 | 做法 | 优点 | 局限 |
+|---|---|---|---|
+| Human-guided iteration | 人看每轮结果，给具体修改建议。 | 快，适合早期建立 taste 和方向。 | 容易停留在单个 artifact，经验不一定沉淀进系统。 |
+| Eval-driven coding-agent iteration | evaluator 产出 failure report，coding agent 修改 pipeline，再回归测试。 | 能把一次失败变成系统能力。 | 依赖 evaluator 质量，容易被错误指标带偏。 |
+
+真正有研究价值的是第二条路线。因为它不是“把这一张改好”，而是“让下一批也更可能变好”。
+
+这也是长程 agentic system 和普通生成工具的区别。普通生成工具优化当前输出；harness-centered system 优化下一轮生成环境。
+
+## 自动优化的第一个坑：Reward Hacking
+
+只要 evaluator 变成优化目标，reward hacking 就会出现。
+
+如果奖励文本密度，agent 可能反复堆同一类句子。如果奖励视觉面积，agent 可能偏向截图、装饰和大图。如果只看 DOM 区块是否占满，最终渲染画面仍然可能有大量低信息密度空白。如果只奖励“图越多越好”，理论类或模型卡类论文就会被误导。
+
+所以 evaluator 不能被神化。它是一个工程组件，需要校准、拆分、反向检查。
+
+我现在会把 evaluator 拆成几类信号：
+
+| 信号 | 防止什么 |
+|---|---|
+| Layout lint | overlap、裁切、移动端断裂 |
+| Rendered visual audit | DOM 占满但视觉稀疏 |
+| Source grounding check | unsupported claim 和图文错配 |
+| Information architecture | 十个孤立卡片，没有叙事连接 |
+| Artifact-specific rubric | poster、slides、webpage、video 互相误用指标 |
+| Regression memory | 同一类失败反复出现 |
+
+指标要互相制衡。没有 grounding 的密度是噪声；没有 artifact contract 的审美是漂移；没有 rendered view 的 DOM 检查是不完整的。
+
+## 瓶颈从 Layout 迁移到 Content Grounding
+
+项目中一个很明显的阶段变化是：当 overlap、裁切和大面积空白逐渐变少后，内容问题开始变得更突出。
+
+这时如果继续只调 layout，就会感觉系统已经差不多了。但真正打开结果看，会发现：
+
+- 不同 panel 在讲相似的贡献。
+- figure 和旁边 claim 的关系不强。
+- method panel 没有 input/output 结构。
+- result panel 没有真正的 benchmark table。
+- limitation panel 只是泛泛总结。
+- 每个 panel 都像统一卡片模板。
+
+这里的根因不是模型不会写，而是内容归属没有被 contract 化。planner 如果可以从全局 bullet 池里自由取内容，它就会重复拿最显眼的信息。更好的做法，是在 generator 前面加一个 Section-to-Panel Content Compiler。
+
+| Compiler 对象 | 作用 |
+|---|---|
+| Source pack | 按 introduction、method、experiments、ablation、limitations、figures、tables 划分互斥信息包 |
+| Panel ownership | 每个 panel 只能使用自己的 source pack |
+| Evidence binding | 每个 claim 绑定 figure/table/section id |
+| Coverage status | 记录哪些信息已经被使用，哪些还缺 |
+| Repair route | 发现重复时回 compiler，而不是让 layout refiner 硬改 |
+
+这个经验和 [长程理解不是长上下文](./long-horizon-understanding-is-not-long-context/) 是同一条线：长程理解不是读更多，而是维护后续动作能使用的状态。
+
+## Panel Grammar Library 比统一模板更重要
+
+另一个关键发现是：高质量 artifact 不只是“内容更多”。真正好的 poster 或 slides 往往是 panel 类型更明确。
+
+一个 result panel 应该可能是真表格；一个 method panel 应该可能是 flow diagram + grouped explanation；一个 figure panel 应该是 figure + caption + takeaway；一个 limitation panel 应该是分组讨论，而不是几张相同的小卡片。
+
+所以我现在更倾向于让系统维护 Panel Grammar Library：
+
+| Panel grammar | 适合什么 |
+|---|---|
+| `contribution_grid` | 贡献点清晰、需要横向比较 |
+| `method_flow` | 模块、输入输出、pipeline |
+| `big_benchmark_table` | 结果、对比、leaderboard |
+| `figure_evidence_panel` | 核心图表、定性案例、caption + takeaway |
+| `analysis_micro_essay` | 需要解释机制或现象 |
+| `training_bullet_sections` | 多阶段训练或系统配置 |
+| `limitations_sections` | 局限、未来方向、失败场景 |
+| `dataset_stats_table` | 数据规模、类别、统计信息 |
+
+这会改变 generator 的职责。它不再负责把一堆 bullet 硬塞进统一网格，而是根据 panel type 渲染已经结构化的内容。
+
+换句话说，当前瓶颈不是“模型不会写内容”，而是 contract 没让它先写 panel-specific structured content。
+
+## 版本挑选不是看哪张最好看
+
+长程系统跑起来后，会产生很多候选版本。版本挑选不能只问“哪张最好看”，因为最漂亮的版本不一定最可修、最 grounded 或最稳定。
+
+我更愿意把版本选择写成 evidence profile：
+
+| 选择维度 | 问题 |
+|---|---|
+| Source fidelity | 关键 claim 是否来自可追溯 source？ |
+| Layout stability | 下一轮修复会不会破坏主体布局？ |
+| Information coverage | 是否覆盖 problem、method、evidence、takeaway、limitation？ |
+| Panel grammar | 每个 panel 的结构是否匹配内容语义？ |
+| Style diversity | 是否只是换皮，还是有真正不同的 layout hypothesis？ |
+| Repair cost | 如果继续修，最可能要改 reader、compiler、layout、style 还是 rubric？ |
+
+这个思路也解释了为什么我不喜欢把 design agent 对比做成排行榜。更有用的是 [失败画像](./comparing-design-agents-without-leaderboards/)：它告诉你保留哪条路线、丢弃哪条路线，以及下一轮该改哪个模块。
+
+## 长程 Agent 还需要 Operation Layer
+
+当任务从几十分钟变成几个小时，甚至跨多轮会话，问题会从“模型能不能做”扩展成“系统怎么被操作”。
+
+这部分不应该写成工具教程，而应该抽象成 long-running agent operations：
+
+| Operation 问题 | 为什么重要 |
+|---|---|
+| Worktree isolation | 多个 agent 并行工作时，避免互相覆盖。 |
+| Session handoff | 下一轮能知道上一轮做了什么、还剩什么。 |
+| Progress visibility | 人不盯着终端，也能知道是否卡住。 |
+| Async approval | 长任务需要人类在关键点暂停、确认、切换方向。 |
+| Rollback and branch strategy | 失败不是灾难，能回到干净状态。 |
+| Voice or mobile input | 长程任务中，人类反馈也需要低摩擦。 |
+
+这和 [Managed Agents](./effective-agents-to-design-harnesses/) 里的“brain / hands / session”是一致的。长程 agent 要真的可用，必须让人能在不同时间、不同设备、不同上下文里接管和校准。
+
+## 实习项目真正教会我的
+
+这段经历最后沉淀成几条比较硬的工程判断：
+
+1. **先定义 harness，再放大 agent 自由度。** 没有 contract 的 agent 只是在随机探索。
+2. **Evaluator 会决定系统往哪里收敛。** 指标不是观察者，而是优化环境的一部分。
+3. **可视化 artifact 必须看最终渲染。** DOM、JSON、源码都只是中间证据。
+4. **内容密度和内容正确性是两件事。** 文字多不代表 source grounded，也不代表 panel 有独立信息。
+5. **自动优化应该改 pipeline，不只是改单个输出。** 单张 artifact 修好了不等于系统变好了。
+6. **Panel grammar 是 artifact intelligence 的一部分。** 好设计不是统一模板，而是结构匹配内容。
+7. **版本选择要看 failure profile。** 最好看的候选不一定是最佳系统路径。
+8. **长程 agent 工程一定会进入 operations。** 分支、交接、回滚、异步监控都是系统能力。
+
+## 小结
+
+长程多模态 agent 的研究对象，不是单个模型输出，而是一个可恢复、可验证、可进化的工作环境。
+
+这也是我后续会继续围绕这个方向写的原因。Paper2Any、poster、slides、webpage、video 看起来是不同产物，但它们共享同一个底层问题：如何让模型在复杂多模态状态里持续做对事，并把每一次失败变成下一轮更好的系统。
+

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Bottleneck migration in long-horizon artifact systems</title>
+  <desc id="desc">A sanitized diagram showing how the dominant bottleneck in a multimodal artifact system migrates from layout stability to content grounding, panel grammar, version selection, and operations.</desc>
+  <rect width="1200" height="680" fill="#f7faf8"/>
+  <rect x="54" y="48" width="1092" height="584" rx="22" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="86" y="102" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">Bottlenecks Move as the Harness Improves</text>
+  <text x="86" y="136" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">Fixing visual layout exposes deeper content, structure, and workflow problems.</text>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <line x1="146" y1="484" x2="1054" y2="484" stroke="#cbd8d5" stroke-width="4"/>
+    <circle cx="196" cy="484" r="18" fill="#168064"/>
+    <circle cx="414" cy="484" r="18" fill="#c8712c"/>
+    <circle cx="632" cy="484" r="18" fill="#5278d6"/>
+    <circle cx="850" cy="484" r="18" fill="#8467b8"/>
+    <circle cx="1054" cy="484" r="18" fill="#60736f"/>
+
+    <rect x="110" y="218" width="172" height="164" rx="16" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="196" y="256" text-anchor="middle" font-size="18" font-weight="700" fill="#0b4c40">Layout</text>
+    <text x="196" y="286" text-anchor="middle" font-size="13" fill="#31524b">overlap</text>
+    <text x="196" y="310" text-anchor="middle" font-size="13" fill="#31524b">clipping</text>
+    <text x="196" y="334" text-anchor="middle" font-size="13" fill="#31524b">blank regions</text>
+
+    <rect x="328" y="170" width="172" height="212" rx="16" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="414" y="208" text-anchor="middle" font-size="18" font-weight="700" fill="#7b3f13">Grounding</text>
+    <text x="414" y="238" text-anchor="middle" font-size="13" fill="#6d543f">repetition</text>
+    <text x="414" y="262" text-anchor="middle" font-size="13" fill="#6d543f">weak source use</text>
+    <text x="414" y="286" text-anchor="middle" font-size="13" fill="#6d543f">unsupported claims</text>
+
+    <rect x="546" y="218" width="172" height="164" rx="16" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="632" y="256" text-anchor="middle" font-size="18" font-weight="700" fill="#213f8b">Grammar</text>
+    <text x="632" y="286" text-anchor="middle" font-size="13" fill="#405078">tables</text>
+    <text x="632" y="310" text-anchor="middle" font-size="13" fill="#405078">flows</text>
+    <text x="632" y="334" text-anchor="middle" font-size="13" fill="#405078">evidence panels</text>
+
+    <rect x="764" y="170" width="172" height="212" rx="16" fill="#f1edf8" stroke="#8467b8" stroke-width="2"/>
+    <text x="850" y="208" text-anchor="middle" font-size="18" font-weight="700" fill="#513c7e">Selection</text>
+    <text x="850" y="238" text-anchor="middle" font-size="13" fill="#5f536f">failure profile</text>
+    <text x="850" y="262" text-anchor="middle" font-size="13" fill="#5f536f">repair cost</text>
+    <text x="850" y="286" text-anchor="middle" font-size="13" fill="#5f536f">style diversity</text>
+
+    <rect x="982" y="218" width="144" height="164" rx="16" fill="#f8fbfa" stroke="#90a39f" stroke-width="2"/>
+    <text x="1054" y="256" text-anchor="middle" font-size="18" font-weight="700" fill="#354f4a">Ops</text>
+    <text x="1054" y="286" text-anchor="middle" font-size="13" fill="#52625f">handoff</text>
+    <text x="1054" y="310" text-anchor="middle" font-size="13" fill="#52625f">branches</text>
+    <text x="1054" y="334" text-anchor="middle" font-size="13" fill="#52625f">monitoring</text>
+
+    <text x="600" y="564" text-anchor="middle" font-size="15" fill="#52625f">The lesson is not that one metric failed. The lesson is that each successful metric reveals the next missing contract.</text>
+  </g>
+</svg>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Harness evolution retrospective</title>
+  <desc id="desc">A sanitized diagram showing how a long-horizon multimodal artifact project evolves from a prompt demo into contracts, evaluators, coding-agent repairs, and regression loops.</desc>
+  <rect width="1200" height="680" fill="#f8fbfa"/>
+  <rect x="54" y="48" width="1092" height="584" rx="22" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="86" y="102" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">From Prompt Demo to Evolving Harness</text>
+  <text x="86" y="136" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">The useful unit of progress shifts from improving one artifact to improving the system that makes artifacts.</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#354f4a"/>
+    </marker>
+  </defs>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="86" y="246" width="170" height="150" rx="16" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="171" y="286" text-anchor="middle" font-size="18" font-weight="700" fill="#0b4c40">Prompt Demo</text>
+    <text x="171" y="318" text-anchor="middle" font-size="13" fill="#31524b">impressive first pass</text>
+    <text x="171" y="344" text-anchor="middle" font-size="13" fill="#31524b">weak guarantees</text>
+
+    <rect x="316" y="246" width="170" height="150" rx="16" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="401" y="286" text-anchor="middle" font-size="18" font-weight="700" fill="#7b3f13">Contract</text>
+    <text x="401" y="318" text-anchor="middle" font-size="13" fill="#6d543f">scope</text>
+    <text x="401" y="344" text-anchor="middle" font-size="13" fill="#6d543f">acceptance tests</text>
+
+    <rect x="546" y="246" width="170" height="150" rx="16" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="631" y="286" text-anchor="middle" font-size="18" font-weight="700" fill="#213f8b">Evaluator</text>
+    <text x="631" y="318" text-anchor="middle" font-size="13" fill="#405078">render checks</text>
+    <text x="631" y="344" text-anchor="middle" font-size="13" fill="#405078">failure signals</text>
+
+    <rect x="776" y="246" width="170" height="150" rx="16" fill="#f1edf8" stroke="#8467b8" stroke-width="2"/>
+    <text x="861" y="286" text-anchor="middle" font-size="18" font-weight="700" fill="#513c7e">Repair Agent</text>
+    <text x="861" y="318" text-anchor="middle" font-size="13" fill="#5f536f">modify pipeline</text>
+    <text x="861" y="344" text-anchor="middle" font-size="13" fill="#5f536f">leave handoff</text>
+
+    <rect x="1006" y="246" width="108" height="150" rx="16" fill="#f8fbfa" stroke="#90a39f" stroke-width="2"/>
+    <text x="1060" y="286" text-anchor="middle" font-size="18" font-weight="700" fill="#354f4a">Regress</text>
+    <text x="1060" y="318" text-anchor="middle" font-size="13" fill="#52625f">fixed set</text>
+    <text x="1060" y="344" text-anchor="middle" font-size="13" fill="#52625f">trend</text>
+
+    <path d="M256 321 H316" stroke="#354f4a" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M486 321 H546" stroke="#354f4a" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M716 321 H776" stroke="#354f4a" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M946 321 H1006" stroke="#354f4a" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <path d="M1060 396 C1060 518 630 554 402 430" fill="none" stroke="#354f4a" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="600" y="548" text-anchor="middle" font-size="15" fill="#52625f">A good iteration produces a better artifact and a better next run.</text>
+  </g>
+</svg>

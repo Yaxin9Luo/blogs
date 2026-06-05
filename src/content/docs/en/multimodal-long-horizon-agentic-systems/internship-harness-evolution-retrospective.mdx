@@ -1,0 +1,216 @@
+---
+title: "From Weekly Notes to a Harness: An Engineering Retrospective on Long-Horizon Multimodal Agents"
+description: A sanitized field-notes retrospective on how a long-horizon multimodal artifact project moved from layout, density, and content grounding problems toward panel grammar, version selection, and agent operations.
+date: 2026-06-05
+tags: [internship, field-notes, design-harness, long-horizon-agents]
+status: active
+type: research
+sidebar:
+  order: 11
+  label: Field Notes
+---
+
+> Personal note: This article is a sanitized retrospective on internship and project experience. It does not represent the official view of any company, team, or internship host. It does not include internal repository links, APIs, secret configuration, intranet links, real platform operations, private data, real benchmark samples/scores, personal identifiers, or raw screenshots.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/harness-evolution-retrospective.svg'} alt="A long-horizon multimodal artifact project evolving from a prompt demo into contracts, evaluators, coding-agent repair, and regression loops" class="hero-visual" />
+
+## Core Claim
+
+I thought I was optimizing a design agent. In practice, the thing being optimized was the harness around the agent: task definition, failure signals, content ownership, version selection, and long-running operations.
+
+This is not a project log or an implementation disclosure. It is a public-safe engineering retrospective from a Paper2Any-style artifact generation project. The central lesson is that once a system moves from "generate one impressive result" to "improve over many rounds," every failure needs to become an executable system repair.
+
+This article follows [From Effective Agents to Design Harnesses](./effective-agents-to-design-harnesses/). That article summarized public engineering ideas; this one records my own sanitized field notes.
+
+## Retrospective Object: Bottleneck Migration
+
+The most useful thing to record from a long-horizon multimodal project is not which version looked best. It is how the bottleneck moved.
+
+Early on, I cared about layout: overlap, clipping, whitespace, font size, and density. Once the layout harness became more stable, deeper problems surfaced: repeated text, weak source binding, unclear panel semantics, and too many panels sharing the same card-grid structure. Later, the problem shifted again: the evaluator could induce reward hacking, version selection lacked structured evidence, and long-running agent operations needed stronger isolation and handoff.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/bottleneck-migration-field-notes.svg'} alt="Bottlenecks in long-horizon multimodal artifact systems migrating from layout stability to content grounding, panel grammar, version selection, and operations" class="hero-visual" />
+
+The pattern looked like this:
+
+| Stage | Surface Problem | Deeper Problem |
+|---|---|---|
+| Prompt demo | the first pass is unstable | no contract or acceptance line |
+| Layout iteration | overlap, clipping, whitespace | DOM fullness is not rendered fullness |
+| Density iteration | more content appears | content can repeat or lose grounding |
+| Content compiler | panels are filled | panels lack source ownership |
+| Panel grammar | many cards exist | structure does not match content semantics |
+| Benchmark loop | many versions exist | no failure profile or selection rule |
+| Agent operations | the system can run long | weak isolation, handoff, monitoring, and pause points |
+
+## Build the Harness Before Expanding Autonomy
+
+One early mistake is to build a complex agent pipeline first: reader, planner, designer, critic, refiner, all running before the environment is clear.
+
+I now prefer the reverse:
+
+1. Define the task: input, output, audience.
+2. Define the artifact contract: what counts as done and what must never happen.
+3. Prepare positive and negative references.
+4. Structure the failure signals: content, visual curation, layout, typography, rendering, or source grounding.
+5. Then let a coding agent modify the pipeline.
+
+If the harness is weak, the agent optimizes fog. It can change many files and make a local result look nicer, but the system still does not know whether it is approaching the target.
+
+## Translating Human Feedback Into Executable Signals
+
+Human feedback is often vague:
+
+- this feels too empty,
+- it looks templated,
+- the figures are not useful,
+- the artifact does not feel like a paper poster,
+- information density improved, but the content repeats.
+
+That feedback is meaningful to humans but not executable enough for agents. A key step was translating it into checkable, attributable, repairable signals.
+
+| Human Feedback | Executable Signal |
+|---|---|
+| too empty | rendered blank area, panel fill ratio, visual/text occupancy |
+| messy | overlap, alignment drift, hierarchy conflict |
+| templated | layout archetype repetition, style diversity, panel grammar mismatch |
+| figures are not useful | figure-to-claim binding, caption relevance, evidence coverage |
+| dense but empty | repeated claims, low source coverage, weak section ownership |
+| inaccurate | unsupported claim, source drift, missing evidence id |
+
+This is why I argued in [Verifiers and Benchmarks](./verifiers-and-benchmarks-for-multimodal-generation-systems/) that a verifier is valuable not because it produces a score, but because it produces an executable failure report.
+
+## Two Routes: Fix the Output or Fix the System
+
+Multiround iteration roughly splits into two routes.
+
+| Route | Method | Strength | Limitation |
+|---|---|---|---|
+| Human-guided iteration | a human reviews each result and gives direct edits | fast, useful for early taste and direction | can stay trapped at the single-artifact level |
+| Eval-driven coding-agent iteration | an evaluator writes a failure report; a coding agent modifies the pipeline; the system reruns regressions | turns one failure into system capability | depends on evaluator quality and can optimize the wrong signal |
+
+The second route is more interesting from a research perspective. It does not merely improve one artifact. It changes the probability that the next batch will improve.
+
+That is the difference between a generation tool and a long-horizon agentic system. A generation tool optimizes the current output. A harness-centered system optimizes the next run environment.
+
+## The First Trap: Reward Hacking
+
+Once the evaluator becomes an optimization target, reward hacking appears.
+
+If text density is rewarded, the agent may repeat similar claims. If visual area is rewarded, it may prefer screenshots, decoration, or large images. If the system only checks whether DOM boxes are filled, the rendered page can still contain low-information empty regions. If "more images" is rewarded without artifact type awareness, theory-heavy or model-card-style papers are pushed in the wrong direction.
+
+So evaluators should not be romanticized. They are engineering components that need calibration, decomposition, and adversarial checks.
+
+I now split evaluator signals into several groups:
+
+| Signal | What It Prevents |
+|---|---|
+| Layout lint | overlap, clipping, mobile breakage |
+| Rendered visual audit | DOM appears full while the rendered view is sparse |
+| Source grounding check | unsupported claims and mismatched figures |
+| Information architecture | isolated cards without narrative structure |
+| Artifact-specific rubric | poster, slides, web page, and video metrics leaking into each other |
+| Regression memory | the same failure recurring across runs |
+
+Metrics need to balance one another. Density without grounding is noise. Aesthetic judgment without an artifact contract drifts. DOM checks without rendered views are incomplete.
+
+## The Bottleneck Moved From Layout to Content Grounding
+
+A clear phase change happened when overlap, clipping, and large blank regions became less frequent. Content problems became more visible.
+
+At that point, continuing to tune layout gives a false sense of progress. The artifact may look stable, but close reading reveals:
+
+- different panels repeat the same contribution,
+- figures are weakly connected to nearby claims,
+- method panels lack input/output structure,
+- result panels lack real benchmark tables,
+- limitation panels become generic summaries,
+- every panel looks like the same card template.
+
+The root cause is not that the model cannot write. The issue is that content ownership was not part of the contract. If the planner can draw from a global bullet pool, it will repeatedly reuse the most salient information. A better design inserts a Section-to-Panel Content Compiler before generation.
+
+| Compiler Object | Role |
+|---|---|
+| Source pack | divide introduction, method, experiments, ablation, limitations, figures, and tables into mutually exclusive information packs |
+| Panel ownership | each panel can only use its assigned source pack |
+| Evidence binding | each claim attaches to a figure, table, or section id |
+| Coverage status | track used and missing information |
+| Repair route | repetition returns to the compiler, not to a layout refiner |
+
+This matches the argument in [Long-Horizon Understanding Is Not Long Context](./long-horizon-understanding-is-not-long-context/): long-horizon understanding is not reading more; it is maintaining state that future actions can use.
+
+## Panel Grammar Beats One Universal Template
+
+Another key lesson: a strong artifact is not just one with more content. Strong posters and slides usually have clearer panel types.
+
+A result panel may need a real table. A method panel may need a flow diagram plus grouped explanations. A figure panel may need the figure, a caption, and a takeaway. A limitation panel may need grouped discussion, not another set of identical mini-cards.
+
+So I would maintain a Panel Grammar Library:
+
+| Panel Grammar | Best Fit |
+|---|---|
+| `contribution_grid` | clear contribution points that need comparison |
+| `method_flow` | modules, inputs, outputs, pipelines |
+| `big_benchmark_table` | results, comparisons, leaderboards |
+| `figure_evidence_panel` | core figures, qualitative cases, caption plus takeaway |
+| `analysis_micro_essay` | mechanism or phenomenon explanation |
+| `training_bullet_sections` | multistage training or system configuration |
+| `limitations_sections` | limitations, future directions, failure cases |
+| `dataset_stats_table` | data scale, categories, statistics |
+
+This changes the generator's job. It no longer jams bullets into a generic grid. It renders structured content according to the panel type.
+
+In other words, the bottleneck is not "the model cannot write content." The bottleneck is that the contract did not ask for panel-specific structured content.
+
+## Version Selection Is Not a Beauty Contest
+
+Once a long-running system produces many candidates, selection cannot be based only on which version looks best. The prettiest version may not be the most repairable, grounded, or stable.
+
+I prefer treating version selection as an evidence profile:
+
+| Selection Dimension | Question |
+|---|---|
+| Source fidelity | do important claims trace back to source evidence? |
+| Layout stability | will the next repair break the main structure? |
+| Information coverage | are problem, method, evidence, takeaway, and limitation covered? |
+| Panel grammar | does each panel structure fit its semantic role? |
+| Style diversity | is this a real layout hypothesis or a skin change? |
+| Repair cost | should the next change target reader, compiler, layout, style, or rubric? |
+
+This is why I do not like turning design-agent comparison into a leaderboard. A [failure profile](./comparing-design-agents-without-leaderboards/) is more useful: it tells you which route to keep, which route to discard, and which module to fix next.
+
+## Long-Horizon Agents Need an Operation Layer
+
+When a task runs for hours or spans multiple sessions, the question expands from "can the model do it?" to "how is the system operated?"
+
+This should not become a tool tutorial. It is a long-running agent operations problem:
+
+| Operation Problem | Why It Matters |
+|---|---|
+| Worktree isolation | prevent parallel agents from overwriting each other |
+| Session handoff | let the next session know what changed and what remains |
+| Progress visibility | know whether the run is stuck without watching a terminal |
+| Async approval | let humans pause, confirm, or redirect at key points |
+| Rollback and branch strategy | make failure recoverable |
+| Voice or mobile input | lower the friction of human feedback during long tasks |
+
+This matches the "brain / hands / session" framing from [Managed Agents](./effective-agents-to-design-harnesses/). Long-horizon agents become useful when humans can monitor, pause, resume, and calibrate them across time and context.
+
+## What the Project Taught Me
+
+The experience distilled into a few hard engineering lessons:
+
+1. **Define the harness before expanding autonomy.** An agent without a contract is exploring randomly.
+2. **The evaluator shapes convergence.** Metrics are not observers; they are part of the optimization environment.
+3. **Visual artifacts must be judged after rendering.** DOM, JSON, and source code are intermediate evidence.
+4. **Content density and content correctness are different.** More text does not imply source grounding or panel-level information ownership.
+5. **Automatic optimization should improve the pipeline, not only the current output.** A fixed artifact does not mean a better system.
+6. **Panel grammar is part of artifact intelligence.** Good design is not one template; it is structure matching content.
+7. **Version selection needs a failure profile.** The prettiest candidate is not always the best system path.
+8. **Long-horizon agent engineering eventually becomes operations.** Branches, handoff, rollback, and monitoring are system capabilities.
+
+## Takeaway
+
+The research object in long-horizon multimodal agents is not a single model output. It is a recoverable, verifiable, evolvable work environment.
+
+That is why I want to keep writing in this direction. Paper2Any, posters, slides, web pages, and videos look like different artifacts, but they share the same underlying problem: how to help a model keep doing the right thing inside complex multimodal state, and how to turn each failure into a better next system.
+

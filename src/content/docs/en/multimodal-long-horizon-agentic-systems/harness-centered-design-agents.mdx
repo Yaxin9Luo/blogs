@@ -1,0 +1,117 @@
+---
+title: Why Long-Horizon Multimodal Agents Need a Harness
+description: A research note on why harnesses, verifiers, and artifact contracts matter more than one-shot prompting for paper2any and design artifact generation.
+date: 2026-06-05
+tags: [design-harness, multimodal-agents, verification, paper2any]
+status: active
+type: research
+sidebar:
+  order: 3
+  label: Why Harness
+---
+
+> Personal note: This article is based on public materials, personal KM notes, and sanitized project experience. It does not represent the official view of any company, team, or internship host. It does not include internal repository links, APIs, secret configuration, private data, customer information, or proprietary implementation details.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/harness-loop.svg'} alt="Harness loop for multimodal long-horizon agents" class="hero-visual" />
+
+## Core Claim
+
+The key to multimodal long-horizon agentic systems is not another “design agent.” It is an environment in which agents can keep improving. That environment needs to tell the agent:
+
+- what artifact the task is supposed to produce;
+- whether intermediate state satisfies the contract;
+- whether the final artifact renders, reads well, and remains editable;
+- where the failure occurred, and whether the next iteration should modify the generator, planner, content compiler, layout, or evaluator.
+
+This is why I prefer the word **harness** over **agent** for this research direction.
+
+## Why One-Shot Generation Is Not Enough
+
+Take paper2poster as the concrete example. The input is a paper; the output is an academic poster. It sounds like “read the paper and lay it out,” but it contains several transformations:
+
+1. Paper content must be compressed into poster language instead of copied from the abstract.
+2. Method, experiment, ablation, and limitation sections need to become a scan-friendly narrative path.
+3. Figures and tables should be selected by evidence value, not by image count.
+4. Layout must satisfy hierarchy, information density, readability, and editability.
+5. The final HTML, PPT, or PDF must actually render.
+
+A single prompt can look successful at one layer while failing at another: the layout is good but content repeats; the text is dense but inaccurate; there are many images but weak figure relevance; the screenshot looks fine but the source structure is not editable.
+
+## Harness Turns Subjective Feedback into Executable Signals
+
+Human feedback is often vague: “not academic enough,” “too promotional,” “the information is scattered,” “it does not look like a good poster.” Those statements are not executable enough for the next agent iteration. Harnesses decompose them into checkable signals.
+
+| Human Intuition | Harness Signal |
+|---|---|
+| It does not look like an academic poster | Background strategy, type hierarchy, section density, and chart placement violate the academic-poster contract |
+| The information is scattered | Missing motivation -> method -> evidence -> takeaway path |
+| There is a lot of text, but not much value | Panels repeat each other, source-pack coverage is weak, section titles and content do not align |
+| There are many images, but quality is low | Figure relevance is weak, screenshot area is overweighted, charts do not support core claims |
+| The repair made it worse | The repair route was not stage-aware, and local patching damaged global layout |
+
+The goal is not only to give a score. The evaluator should produce a **stage-aware failure report**: did the issue happen during ingestion, planning, content allocation, layout, rendering, visual polish, or final verification?
+
+## A More Stable Generation Loop
+
+I currently break the system into these layers:
+
+| Layer | Role | Typical Failure |
+|---|---|---|
+| Input contract | Define task, materials, output type, and disclosure boundaries | Goal drift, output-type confusion |
+| Content compiler | Split source material into mutually exclusive information packs | Repeated panels, factual mismatch |
+| Planner | Decide sections, panels, charts, and narrative path | Missing core contribution, weak structure |
+| Generator | Produce HTML, CSS, blocks, and layout | Overlap, style regression, non-editable structure |
+| Renderer | Produce screenshots, PDF, PPT, or web pages | Render failure, missing assets |
+| Verifier | Run deterministic QA, visual checks, and rubric scoring | Surface-level checks, missed factual errors |
+| Repair loop | Turn failure reports into the next change | Local patching that makes the artifact worse |
+
+One important lesson: **do not ask one model to emit an overly large complex object at once**. When the model must output DesignSpec, HTML, CSS, blocks, bounding boxes, source IDs, and storyboard semantics in one pass, fields drift out of sync. A steadier design is to ask the model for smaller, verifiable modules, then use a deterministic compiler to assemble the final artifact.
+
+## Benchmarking and Verification Should Be Separate
+
+Both are important, but they answer different questions.
+
+| Type | Purpose | Example | Risk |
+|---|---|---|---|
+| Benchmark | Compare systems or versions | Compare poster quality across a fixed paper set | Scores may drift away from real delivery quality |
+| Verification | Decide whether one artifact can be delivered | Render checks, overlap checks, content coverage, image-text consistency | More task-specific and costly |
+
+For long-horizon multimodal agents, verification should stay close to the final artifact. Checking logs, prompts, or intermediate JSON is not enough. Many real failures appear only in the final screenshot, DOM, PPT structure, PDF export, or chart readability.
+
+## Reference Pools Are Not Just Pretty Examples
+
+References shape the optimization target. If the reference pool is full of visually strong screenshot walls, the system may learn that “more image area” means “higher quality.” But text-heavy paper posters, theory boards, and benchmark/table-first posters require different density and structure.
+
+A better reference pool is grouped by artifact archetype:
+
+- **text-heavy synthesis**: rewards dense native text, tables, model cards, and coherent sections.
+- **theory board**: rewards assumptions, theorem intuition, derivation path, and conclusion structure.
+- **benchmark/table-first**: rewards leaderboards, ablations, metric bands, and experimental alignment.
+- **GUI/video paper**: emphasizes screenshot strips, process bands, and qualitative cases.
+
+This also means the evaluator cannot use one static rubric. It needs to know the artifact type and the paper archetype.
+
+## Where Humans Belong in the Loop
+
+This direction is not about removing humans. Human work simply moves earlier:
+
+1. Define the task boundary and desired artifact.
+2. Collect good and bad references.
+3. Identify where evaluator scores diverge from human judgment.
+4. Turn important preferences into contracts, rubrics, and regression cases.
+
+Coding agents are better at changing the pipeline, evaluator, compiler, and repair route based on those signals. They are not updating model weights; they are improving the system environment.
+
+## Open Research Questions
+
+- How should artifact contracts differ across posters, slides, web pages, and videos?
+- What visual QA signals get close to human judgments about layout, density, and readability?
+- How can benchmarks avoid being biased by one reference style?
+- Once visual layout converges, how should the system improve factual accuracy, deduplication, and source grounding?
+- Can HTML serve as the unified intermediate representation for multimodal artifacts?
+
+## Summary
+
+The hard part of long-horizon multimodal agents is not whether a model can generate an image or a page once. The hard part is whether a system can turn complex artifact-quality failures into observable, verifiable, repairable signals.
+
+The real unit of study is therefore **agent + harness + verifier + artifact contract + regression loop**. A long-horizon agentic workflow only starts to converge when that system can produce grounded failure reports and turn them into the next iteration.

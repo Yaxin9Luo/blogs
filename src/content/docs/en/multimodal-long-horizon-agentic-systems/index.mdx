@@ -1,0 +1,69 @@
+---
+title: Multimodal Long-Horizon Agents
+description: Research notes, internship reflections, and blog drafts around multimodal long-horizon agentic systems.
+date: 2026-06-05
+tags: [multimodal, long-horizon-agents, design-harness, paper2any]
+status: active
+type: research
+sidebar:
+  order: 1
+  label: Overview
+---
+
+<div class="hero">
+  <p class="eyebrow">Research Direction</p>
+  <h1>Multimodal long-horizon agentic systems</h1>
+  <p class="tagline">This section records my research thinking, internship lessons, and engineering notes around long-horizon multimodal agents. The core question is not how to make a model generate one impressive result, but how to let an agent plan, verify, repair, and converge across documents, images, code, web pages, and design artifacts.</p>
+  <img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/harness-loop.svg'} alt="Harness loop for multimodal long-horizon agents" class="hero-visual" />
+</div>
+
+> Personal note: This series is based on public materials, personal KM notes, and sanitized project experience. It does not represent the official view of any company, team, or internship host. The articles do not include internal repository links, APIs, secret configuration, private data, customer information, or proprietary implementation details.
+
+## What This Direction Is About
+
+My current definition is:
+
+> Build an executable, observable, verifiable, and iterative harness for complex multimodal tasks, so coding agents or design agents can improve through grounded feedback instead of relying on one-shot prompting.
+
+The main task shapes are:
+
+- **paper2any**: converting papers into posters, slides, web pages, reports, or video scenes.
+- **artifact-producing agents**: producing HTML, PPT, PDF, charts, design artifacts, or runnable pages rather than chat answers.
+- **long-horizon workflows**: document ingestion, content planning, asset selection, layout generation, rendering, visual critique, and repair loops.
+- **verification and benchmarks**: comparing systems while also checking whether a single artifact is deliverable, editable, and reusable.
+- **human-in-the-loop iteration**: humans provide preferences, references, and quality judgments; agents turn those signals into evaluators, contracts, and regression loops.
+
+## Source Notes Organized
+
+I extracted structured material from the KM document space around long-horizon tasks: 20 documents, roughly 28K Chinese characters, 12 attachment records, and 43 image nodes. The first version does not publish internal links or raw screenshots. It turns them into publishable notes:
+
+- [KM Document Space Digest](./document-space-digest/): a document-by-document summary of the 20 notes.
+- [Why Long-Horizon Multimodal Agents Need a Harness](./harness-centered-design-agents/): the first research article in this series.
+
+## Knowledge Map
+
+| Theme | Question | Writing Format |
+|---|---|---|
+| Systems & Harness | How should long tasks be decomposed, stateful, and repairable? | System notes, architecture retrospectives, failure-mode tables |
+| Verification & Benchmark | How should multimodal artifacts like posters, slides, web pages, and videos be evaluated? | Evaluation methods, rubrics, benchmark design, visual retrospectives |
+| Paper2Any | How does a paper become different publishable artifacts? | paper2poster, paper2slides, paper2web series |
+| Design Agent Iteration | How can generated artifacts keep improving? | human feedback, reference pools, repair routes, regression loops |
+| Internship Field Notes | What engineering lessons came from the project? | weekly synthesis, tradeoffs, workflows, research taste |
+
+## First Article Roadmap
+
+1. Why long-horizon multimodal agents need a harness.
+2. From one-shot generation to self-improving design agents.
+3. Poster generation as an iterative systems problem.
+4. Verifiers and benchmarks for multimodal generation systems.
+5. Comparing design agents without turning it into a leaderboard.
+6. Paper reading for long-horizon understanding and artifact generation.
+7. Why slides and posters need different agentic contracts.
+8. Internship retrospective: engineering lessons from long-horizon multimodal agents.
+
+## Image and Attachment Handling
+
+The KM space contains several useful image categories: agent flow diagrams, benchmark visualizations, version comparisons, poster iteration screenshots, and remote workflow screenshots. The first public version does not embed raw intranet images.
+
+- Public-facing diagrams will be redrawn as abstract or sanitized figures.
+- Raw screenshots will only be copied into the site after checking that they do not contain internal domains, accounts, paths, private metrics, or unpublished details.

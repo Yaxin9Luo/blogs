@@ -1,0 +1,117 @@
+---
+title: 为什么长程多模态智能体需要 Harness
+description: 从 paper2any 和 design artifact 生成经验出发，解释为什么 harness、verifier 和 artifact contract 比一次性 prompt 更关键。
+date: 2026-06-05
+tags: [design-harness, multimodal-agents, verification, paper2any]
+status: active
+type: research
+sidebar:
+  order: 3
+  label: 为什么需要 Harness
+---
+
+> 个人声明：本文是个人研究记录，基于公开资料、个人 KM notes 和已脱敏的项目经验整理，不代表任何公司、团队或实习单位的官方观点。文中不包含内部仓库地址、API、密钥配置、未公开数据、客户信息或专有实现细节。
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/harness-loop.svg'} alt="长程多模态智能体 harness 闭环" class="hero-visual" />
+
+## 核心判断
+
+多模态 long-horizon agentic system 的关键，不是再写一个“会设计”的 agent，而是给 agent 一个能持续改进的环境。这个环境需要告诉它：
+
+- 任务到底要产出什么 artifact。
+- 中间状态是否符合 contract。
+- 最终产物能不能渲染、能不能读、能不能编辑。
+- 失败发生在哪个阶段，下一轮应该修 generator、planner、content compiler、layout 还是 evaluator。
+
+这就是我现在更愿意用 **harness** 而不是 **agent** 来描述这个方向的原因。
+
+## 为什么一次性生成不够
+
+以 paper2poster 为例，输入是一篇论文，输出是一张学术海报。这个任务表面上像“读论文然后排版”，但实际包含多层转换：
+
+1. 论文内容要被压缩成 poster language，而不是把 abstract 粘过去。
+2. 方法、实验、消融、局限需要重新组织成读者能扫读的路径。
+3. 图表需要按证据价值选择，不是图片越多越好。
+4. 版面必须同时满足视觉层级、信息密度、可读性和可编辑性。
+5. 最终 HTML、PPT 或 PDF 要真实渲染通过。
+
+一次 prompt 很容易在某一层看起来完成，但在另一层失败：布局不错但内容重复，文本密集但事实不准，图片很多但和 section 没关系，或者截图正常但源结构完全不可编辑。
+
+## Harness 把主观反馈变成可执行信号
+
+人类评价常常是模糊的：“不够学术”、“太像宣传图”、“信息太散”、“看起来不像好海报”。这些话对下一轮 agent 不够可执行。Harness 的作用，是把这些判断拆成可检查的信号。
+
+| 人类直觉 | Harness 里的信号 |
+|---|---|
+| 不像学术海报 | 背景策略、字体层级、section 密度、图表位置不符合 academic poster contract |
+| 信息太散 | 缺少 motivation -> method -> evidence -> takeaway 的信息架构 |
+| 文字很多但没用 | panel 之间重复，source pack 覆盖不足，section title 和内容不一致 |
+| 图很多但质量低 | figure relevance 低，截图面积权重过高，图表没有支撑主要 claim |
+| 修了反而变差 | repair route 没有按失败阶段分类，局部 patch 破坏整体布局 |
+
+关键不是让 evaluator 给一个总分，而是让它输出 **stage-aware failure report**：这个问题发生在 ingest、planning、content allocation、layout、rendering、visual polish 还是 final verification。
+
+## 一个更稳定的生成闭环
+
+我现在更倾向于把系统拆成这些层：
+
+| 层 | 职责 | 典型失败 |
+|---|---|---|
+| Input contract | 定义任务、素材、输出类型、禁止内容 | 目标漂移，输出类型混乱 |
+| Content compiler | 把论文或文档拆成互斥的信息包 | panel 重复，事实错配 |
+| Planner | 决定 section、panel、图表和叙事路径 | 漏掉核心贡献，结构散 |
+| Generator | 生成 HTML、CSS、blocks、layout | overlap、样式退化、结构不可编辑 |
+| Renderer | 产出截图、PDF、PPT、网页等可检查 artifact | 渲染失败，资源缺失 |
+| Verifier | 做 deterministic QA、视觉检查、rubric 评分 | 只看表面，不抓事实错误 |
+| Repair loop | 把失败报告转成下一轮修改 | 局部修补，越改越碎 |
+
+这里一个重要经验是：**不要让一个模型一次性输出过大的复杂结构**。当模型同时负责 DesignSpec、HTML、CSS、blocks、bbox、source id 和 storyboard 时，局部字段很容易不一致。更稳的方式是让模型输出更小、更可验证的模块，再由 deterministic compiler 合成最终 artifact。
+
+## Benchmark 和 verification 要分开
+
+Benchmark 和 verification 都重要，但它们不是一回事。
+
+| 类型 | 目的 | 例子 | 风险 |
+|---|---|---|---|
+| Benchmark | 横向比较不同系统或版本 | 同一批 paper 上比较 poster 质量 | 分数可能偏离真实交付体验 |
+| Verification | 判断一个 artifact 是否能交付 | 渲染检查、布局重叠、内容覆盖、图文一致 | 更任务特定，成本更高 |
+
+对 long-horizon multimodal agents 来说，verification 应该尽量靠近最终产物。只检查日志、prompt 或中间 JSON 不够；真正的问题往往出现在最终截图、DOM、PPT 结构、PDF 导出或图表可读性里。
+
+## Reference pool 不是越漂亮越好
+
+参考样本会直接塑造优化方向。如果 reference pool 里全是视觉冲击很强的 screenshot wall，系统可能学到“图越大越好”；但 text-heavy paper poster、theory board、benchmark/table-first poster 需要的是完全不同的密度和结构。
+
+更合理的做法是按 artifact archetype 建 reference：
+
+- **text-heavy synthesis**：奖励 dense native text、表格、model card、逻辑 section。
+- **theory board**：奖励假设、定理直觉、推导路径和结论组织。
+- **benchmark/table-first**：奖励 leaderboard、ablation、metric bands 和实验对齐。
+- **GUI/video paper**：才更强调 screenshot strip、process band 和 qualitative cases。
+
+这说明 evaluator 也不能只有一套静态 rubric。rubric 至少要知道当前 artifact 类型和论文类型。
+
+## 人在闭环里的位置
+
+这个方向不是要把人完全拿掉。相反，人最重要的工作更前置：
+
+1. 定义任务边界和想要的 artifact。
+2. 收集好坏 references。
+3. 判断 evaluator 哪些分数和人类直觉不一致。
+4. 把关键偏好转成 contract、rubric 和 regression cases。
+
+coding agent 更适合做的是：根据这些反馈改 pipeline、改 evaluator、改 compiler、改 repair route，并持续跑验证。它改的不是模型参数，而是系统环境本身。
+
+## 目前的研究问题
+
+- 怎么定义 poster、slides、webpage、video 各自的 artifact contract？
+- 什么样的 visual QA 能接近人类对布局、密度和可读性的判断？
+- 如何让 benchmark 不被单一 reference style 带偏？
+- 当视觉布局已经收敛后，如何继续优化内容准确、去重和 source grounding？
+- HTML 是否可以成为多模态 artifact 的统一中间表示？
+
+## 小结
+
+长程多模态智能体的难点不在于“模型会不会生成一张图”这么单点，而在于系统能不能把复杂 artifact 的质量问题拆成可观察、可验证、可修复的信号。
+
+所以这个方向的核心研究对象不是一个孤立 agent，而是 **agent + harness + verifier + artifact contract + regression loop** 组成的系统。只有这个系统能稳定产生失败报告，并把失败报告转化为下一轮改进，long-horizon agentic workflow 才可能真正收敛。

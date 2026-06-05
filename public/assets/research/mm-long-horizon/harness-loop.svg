@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">Multimodal long-horizon agent harness loop</title>
+  <desc id="desc">A diagram showing source context flowing through planning, generation, verification, repair, and artifact delivery.</desc>
+  <rect width="1200" height="620" fill="#f8fbfa"/>
+  <rect x="54" y="54" width="1092" height="512" rx="20" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="86" y="103" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">Long-Horizon Multimodal Agentic Harness</text>
+  <text x="86" y="137" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">The artifact is the contract. The agent improves through grounded feedback, not one-shot prompting.</text>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="86" y="208" width="170" height="100" rx="12" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="171" y="246" text-anchor="middle" font-size="17" font-weight="700" fill="#0b4c40">Source Context</text>
+    <text x="171" y="273" text-anchor="middle" font-size="13" fill="#31524b">paper, image, table,</text>
+    <text x="171" y="292" text-anchor="middle" font-size="13" fill="#31524b">brief, reference</text>
+
+    <rect x="316" y="208" width="170" height="100" rx="12" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="401" y="246" text-anchor="middle" font-size="17" font-weight="700" fill="#213f8b">Planner</text>
+    <text x="401" y="273" text-anchor="middle" font-size="13" fill="#405078">task split, contract,</text>
+    <text x="401" y="292" text-anchor="middle" font-size="13" fill="#405078">stage gates</text>
+
+    <rect x="546" y="208" width="170" height="100" rx="12" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="631" y="246" text-anchor="middle" font-size="17" font-weight="700" fill="#7b3f13">Generator</text>
+    <text x="631" y="273" text-anchor="middle" font-size="13" fill="#6d543f">HTML, slides, poster,</text>
+    <text x="631" y="292" text-anchor="middle" font-size="13" fill="#6d543f">report, video scene</text>
+
+    <rect x="776" y="208" width="170" height="100" rx="12" fill="#f1edf8" stroke="#8467b8" stroke-width="2"/>
+    <text x="861" y="246" text-anchor="middle" font-size="17" font-weight="700" fill="#513c7e">Verifier</text>
+    <text x="861" y="273" text-anchor="middle" font-size="13" fill="#5f536f">render, DOM, image,</text>
+    <text x="861" y="292" text-anchor="middle" font-size="13" fill="#5f536f">rubric, benchmark</text>
+
+    <rect x="1006" y="208" width="86" height="100" rx="12" fill="#e9f2f5" stroke="#2e6f87" stroke-width="2"/>
+    <text x="1049" y="250" text-anchor="middle" font-size="16" font-weight="700" fill="#1d4b5c">Artifact</text>
+    <text x="1049" y="278" text-anchor="middle" font-size="13" fill="#375866">editable</text>
+    <text x="1049" y="296" text-anchor="middle" font-size="13" fill="#375866">output</text>
+
+    <path d="M256 258 H316" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M486 258 H546" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M716 258 H776" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M946 258 H1006" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <path d="M861 318 C861 430 401 430 401 318" fill="none" stroke="#9b4b2e" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#arrow-red)"/>
+    <text x="630" y="458" text-anchor="middle" font-size="15" font-weight="700" fill="#7b3f13">failure report -> repair route -> next iteration</text>
+
+    <rect x="222" y="372" width="180" height="80" rx="10" fill="#f6fbf9" stroke="#cbd8d5"/>
+    <text x="312" y="405" text-anchor="middle" font-size="15" font-weight="700" fill="#2c3d39">Explicit State</text>
+    <text x="312" y="430" text-anchor="middle" font-size="13" fill="#5b6865">memory, logs, traces</text>
+
+    <rect x="800" y="372" width="180" height="80" rx="10" fill="#f6fbf9" stroke="#cbd8d5"/>
+    <text x="890" y="405" text-anchor="middle" font-size="15" font-weight="700" fill="#2c3d39">Human Prior</text>
+    <text x="890" y="430" text-anchor="middle" font-size="13" fill="#5b6865">good / bad references</text>
+  </g>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3a514d"/>
+    </marker>
+    <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#9b4b2e"/>
+    </marker>
+  </defs>
+</svg>

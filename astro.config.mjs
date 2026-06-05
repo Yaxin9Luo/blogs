@@ -56,6 +56,11 @@ export default defineConfig({
           items: [{ autogenerate: { directory: 'research' } }]
         },
         {
+          label: '多模态长程智能体',
+          translations: { en: 'Multimodal Long-Horizon Agents' },
+          items: [{ autogenerate: { directory: 'multimodal-long-horizon-agentic-systems' } }]
+        },
+        {
           label: '工程日志',
           translations: { en: 'Engineering Logs' },
           items: [{ autogenerate: { directory: 'engineering' } }]

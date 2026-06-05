@@ -1,0 +1,101 @@
+---
+title: KM 文档空间摘要
+description: 对长程任务专项文档空间中 20 篇 notes 的结构化总结。
+date: 2026-06-05
+tags: [km-notes, long-horizon-agents, internship, digest]
+status: active
+type: research
+sidebar:
+  order: 2
+  label: 文档空间摘要
+---
+
+> 个人声明：这篇是我把个人 KM 空间中的项目 notes 改写成公开知识库索引的中间层。它保留研究问题、系统经验和工程判断；内部仓库地址、API、密钥配置、原始附件链接、未公开指标和可识别项目细节不会进入正文。
+
+## 抽取概况
+
+| 项 | 数量 |
+|---|---:|
+| 文档 | 20 |
+| 最深层级 | 3 |
+| 正文素材 | 约 2.8 万字 |
+| 附件记录 | 12 |
+| 图片节点 | 43 |
+
+这批 notes 的中心问题很清楚：**如何把多模态设计生成从一次性 prompt 变成一个可评测、可诊断、可自我改进的 long-horizon agentic system**。
+
+## 总体脉络
+
+1. 主文档先提出方向：多模态 in、多模态 out 的系统不缺单点模型能力，缺的是面向设计任务的 harness、feedback signal 和 artifact-level verification。
+2. 海报生成拆分把问题落到具体 artifact：学术海报不是宣传图，核心是信息重组、版式密度、图文证据、可编辑性和内容准确性。
+3. Verifier & Benchmark 把“看起来好不好”拆成 deterministic checks、VLM critic、rubric、reference pool、paper quiz 和 benchmark 可视化。
+4. 路线 2 的迭代 notes 记录了从人工调 prompt 到 coding agent 根据 eval 自动优化 pipeline 的演进。
+5. 每周同步记录了中期关键问题：排版几乎收敛后，文本准确性、重复率、section-to-panel 内容分配和 memory 机制变成主要瓶颈。
+
+## 逐篇摘要
+
+| 文档 | 主要内容 | 可沉淀到网站的观点 |
+|---|---|---|
+| 长程任务专项文档 | 方向总览：paper2poster、paper2slides、paper2page、HTML 统一输出、harness、evaluator、benchmark、训练数据讨论。 | 长程多模态 agent 的核心不是单模型生成，而是 artifact contract + feedback loop。 |
+| Slides生成优化-任务拆分 | 空文档或占位状态。 | 后续作为 slides 与 poster 差异分析的入口，不单独成文。 |
+| Verifier & Benchmark | evaluator 是否合并进 pipeline、reference pool 如何影响方向、benchmark 与 harness 的关系。 | evaluator 应该既服务在线修复，也能沉淀成离线 benchmark。 |
+| 长程理解任务 | 空文档或占位状态。 | 与 Paper Reading 合并，作为长程理解材料入口。 |
+| 海报生成优化-任务拆分 | 将 poster 生成拆成 PDF 解析、内容 brief、layout、panel filling、overall judge；列出背景、字体、内容提取、图表选择、overlap 等问题。 | 审美问题可以转化为 contract、panel plan、layout lint 和 critic report。 |
+| 每周讨论内容 | 每周同步的父目录。 | 用作时间线，不作为独立文章。 |
+| 内容梳理 | 论文/项目写作框架：不是单独 design agent，而是 design-domain Codex/Claude Code style harness；列 contribution、related work、method、experiment。 | 公开表达时应强调 design harness，而不是闭源产品或公司项目。 |
+| 手机操纵远程工作流 | 用移动端监督远程 coding agents、管理 worktree、降低异步操作成本。 | 长程 agent 系统还需要“操作界面”和异步监督机制，不只是模型能力。 |
+| 在.env里配置公司的API | 内部 API 和模型配置。 | 不进入公开站点。只抽象成一条经验：运行时配置必须隔离、脱敏、可替换。 |
+| 整个系统Harness的改进 | 把人类质量判断拆成 planning constraint、deterministic QA、independent evaluator、stage-aware repair、benchmark loop。 | Harness 的价值是把“人觉得不好”变成 agent 能执行的失败信号。 |
+| Benchmarks里的生成可视化 | 多类别论文生成效果的旧版/新版视觉对比。 | benchmark 需要可视化样本墙，帮助发现风格收敛、信息密度和类别偏差。 |
+| 生成的效果跟别的Design Agent的对比 | 对比不同 design agent 在同一 paper2poster prompt 下的输出。 | 对比不应该只做排行榜，要看输入约束、artifact 类型、可编辑性、忠实性和失败模式。 |
+| Paper Reading | 长程理解方向的论文链接集合。 | 作为 gaming/world model/long-context understanding 的公开阅读清单入口。 |
+| （Backup）路线1:人工去按拆分的问题和features迭代 | 空文档或备份入口。 | 可作为“人工迭代路线”在自优化文章里对照，不单独成文。 |
+| （主要）路线2: 让coding agent根据eval自动优化 | 记录十轮左右的 harness 迭代：reference pool、文本密度、panel compiler、重复率、content accuracy、模块化输出。 | 从一次性 DesignSpec 到 deterministic compiler，是长程系统稳定性的关键工程转折。 |
+| 每周同步-0525 | 记录排版密集、模块化输出、文本准确、memory 机制、content compiler 等进展。 | 当视觉布局收敛后，系统瓶颈会转向内容分配、事实准确和去重。 |
+| 每周同步-0601 | 记录 benchmark 类别、100 篇 paper 规划、poster 问题、slides/web/video 延伸、设计 memory。 | paper2any 可以共享 HTML/harness 底座，但每种 artifact 的 rubric 不同。 |
+| 每周同步-0608 | 周报模板占位。 | 不单独成文。 |
+| 版本挑选 | 多个 preview 版本对比。 | 适合写成“版本挑选不是审美投票，而是 benchmark sample selection”的方法论。 |
+| Harness Evolving Agent System经验 | 总结先搭 harness、再让 coding agent 迭代 pipeline；evaluator 可被人类反馈校准；HTML 是统一输出格式。 | 人类主要定义任务、正反例和评价对齐，agent 负责把这些反馈固化成系统改进。 |
+
+## 核心研究判断
+
+### 1. Artifact-first，而不是 agent-first
+
+如果目标是 poster、slides、web page 或 video，先定义 artifact contract 比先写 agent prompt 更重要。contract 需要规定内容覆盖、图表使用、视觉密度、可编辑结构、渲染方式和失败条件。
+
+### 2. Harness 是把主观判断工程化的接口
+
+“这张海报不好看”对 agent 没有用；“信息架构缺少 method -> evidence -> takeaway 的路径、三个 panel 重复同一结论、图表引用没有对应 source pack”才是可执行反馈。
+
+### 3. Benchmark 不能替代 verification
+
+Benchmark 负责横向比较系统能力；verification 负责判断单个 artifact 是否可交付。长程多模态任务必须同时有两者。
+
+### 4. Reference pool 会改变优化方向
+
+如果参考样本全是视觉墙或截图墙，generator 会把“图多”误解成“质量高”。reference 应按 artifact archetype 拆开：text-heavy synthesis、theory board、benchmark/table-first、GUI/video 等。
+
+### 5. 自动迭代的难点会迁移
+
+早期问题是布局、overlap、渲染失败；中期问题会转向文本重复、事实错误、panel 内容分配、source grounding 和 metric 权重错位。
+
+## 图片素材索引
+
+KM 中有意义的图片主要分成五类：
+
+| 类型 | 来源文档 | 当前处理 |
+|---|---|---|
+| agent 流程图 | 海报生成优化-任务拆分 | 后续重绘为抽象流程图 |
+| benchmark 样本墙 | Benchmarks里的生成可视化 | 先保留私有索引，公开版重画统计视图 |
+| agent 对比截图 | 生成的效果跟别的Design Agent的对比 | 需要脱敏后再考虑展示 |
+| 版本选择 preview | 版本挑选 | 可改写成选择标准表，不直接贴内网图 |
+| 远程工作流截图 | 手机操纵远程工作流 | 可重画为操作流，不公开原截图 |
+
+## 可以立刻扩写的文章
+
+- [为什么长程多模态智能体需要 Harness](./harness-centered-design-agents/)
+- 从“一次生成”到“持续变好”：自优化设计智能体的闭环。
+- 海报生成任务拆分：把审美问题变成可迭代系统问题。
+- Verifier 与 Benchmark：如何评估多模态生成系统。
+- Slides、Poster、Webpage 和 Video 为什么能共用 HTML 底座但不能共用同一套 rubric。
+

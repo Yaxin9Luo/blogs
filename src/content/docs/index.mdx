@@ -20,7 +20,7 @@ import Insight from '../../components/Insight.astro';
       这里不是普通日记流，而是一个可复用的技术档案：论文怎么读、项目怎么做、实习里学到了什么、哪些想法值得继续追。
     </div>
   </div>
-  <img src={import.meta.env.BASE_URL + 'knowledge-map.svg'} alt="研究、工程、实习、想法和长文之间的知识地图" class="hero-visual" />
+  <img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/knowledge-map.svg'} alt="研究、工程、实习、想法和长文之间的知识地图" class="hero-visual" />
 </section>
 
 <Insight title="站点原则" tone="research">

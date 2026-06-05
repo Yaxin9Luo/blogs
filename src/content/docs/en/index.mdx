@@ -20,7 +20,7 @@ import Insight from '../../../components/Insight.astro';
       This is not a chronological diary. It is a reusable technical archive: how papers are read, how projects are built, what internships teach, and which ideas are worth revisiting.
     </div>
   </div>
-  <img src={import.meta.env.BASE_URL + 'knowledge-map.svg'} alt="A knowledge map connecting research, engineering, internship, ideas, and essays" class="hero-visual" />
+  <img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/knowledge-map.svg'} alt="A knowledge map connecting research, engineering, internship, ideas, and essays" class="hero-visual" />
 </section>
 
 <Insight title="Site Principle" tone="research">

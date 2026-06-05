@@ -1,0 +1,99 @@
+---
+title: KM Document Space Digest
+description: A structured summary of 20 notes from the long-horizon task document space.
+date: 2026-06-05
+tags: [km-notes, long-horizon-agents, internship, digest]
+status: active
+type: research
+sidebar:
+  order: 2
+  label: Document Digest
+---
+
+> Personal note: This page turns my private KM notes into a publishable knowledge-base index. It preserves research questions, systems lessons, and engineering judgment. Internal repository links, APIs, secret configuration, raw attachment links, private metrics, and identifiable project details are intentionally excluded.
+
+## Extraction Overview
+
+| Item | Count |
+|---|---:|
+| Documents | 20 |
+| Max depth | 3 |
+| Text material | around 28K Chinese characters |
+| Attachment records | 12 |
+| Image nodes | 43 |
+
+The center of gravity is clear: **how to turn multimodal design generation from one-shot prompting into a verifiable, diagnosable, self-improving long-horizon agentic system**.
+
+## Overall Thread
+
+1. The root document frames the direction: multimodal-in and multimodal-out systems do not only need stronger models; they need design-task harnesses, feedback signals, and artifact-level verification.
+2. The poster-generation notes make the problem concrete: academic posters are not promotional graphics. The challenge is content synthesis, information density, visual evidence, editability, and factual accuracy.
+3. The verifier and benchmark notes separate deterministic checks, VLM critique, rubrics, reference pools, paper quizzes, and benchmark visualization.
+4. The main automatic-iteration route records the shift from manual prompt tuning to coding-agent-driven pipeline improvement based on eval signals.
+5. The weekly notes show a key transition: after layout nearly converges, the bottleneck moves to text accuracy, repetition, section-to-panel allocation, and memory.
+
+## Document-by-Document Summary
+
+| Document | Main Content | What It Contributes |
+|---|---|---|
+| Long-Horizon Task Master Doc | Overview of paper2poster, paper2slides, paper2page, unified HTML output, harness, evaluator, benchmark, and data discussions. | The core is artifact contract plus feedback loop, not a single stronger generator. |
+| Slides Generation Task Split | Placeholder or empty page. | Keep as a future entry for slide-vs-poster comparison. |
+| Verifier & Benchmark | Whether evaluator logic should be merged into the pipeline, how reference pools influence direction, and how benchmark relates to harness. | The evaluator should support online repair and later become an offline benchmark component. |
+| Long-Horizon Understanding | Placeholder or empty page. | Merge with Paper Reading as the entry point for long-horizon understanding. |
+| Poster Generation Task Split | PDF parsing, content brief, layout, panel filling, overall judge, and issues around background, fonts, content extraction, chart selection, and overlap. | Aesthetic problems can be translated into contracts, panel plans, layout lint, and critic reports. |
+| Weekly Discussions | Parent directory for weekly sync notes. | Use as a timeline, not a standalone article. |
+| Content Synthesis | Writing frame for a project/paper: not a standalone design agent, but a design-domain Codex/Claude Code style harness. | Public positioning should emphasize design harness instead of a closed product or company project. |
+| Mobile-Controlled Remote Workflow | Mobile supervision of remote coding agents, worktree management, and asynchronous operations. | Long-horizon agent systems also need an operational interface, not only model capability. |
+| Company API in .env | Internal API and model configuration. | Excluded from public content. Only abstract the lesson: runtime configuration must be isolated, sanitized, and replaceable. |
+| Whole-System Harness Improvements | Breaks human quality judgment into planning constraints, deterministic QA, independent evaluator, stage-aware repair, and benchmark loop. | Harness turns “this looks wrong” into failure signals agents can act on. |
+| Benchmark Generation Visualization | Visual comparison of old and new generations across paper categories. | Benchmark visualization helps reveal style convergence, density issues, and category bias. |
+| Comparison with Other Design Agents | Compares outputs from different design agents under one paper2poster prompt. | Comparison should inspect constraints, artifact type, editability, faithfulness, and failure modes rather than becoming a leaderboard. |
+| Paper Reading | Links and notes around gaming/world-model/long-context understanding papers. | Seed for a public reading-list entry. |
+| Backup Route: Manual Iteration | Empty or backup entry. | Use as contrast for the automatic-iteration route. |
+| Main Route: Coding Agent Optimizes from Eval | Around ten rounds of harness iteration: reference pool, text density, panel compiler, repetition, content accuracy, modular output. | Moving from one-shot DesignSpec to deterministic compilation is a key stability shift. |
+| Weekly Sync 0525 | Dense layout, modular output, text accuracy, memory, and content compiler. | Once visual layout converges, content allocation, factual accuracy, and deduplication become the bottleneck. |
+| Weekly Sync 0601 | Benchmark categories, 100-paper plan, poster issues, slides/web/video extension, and design memory. | paper2any can share an HTML/harness base, but each artifact type needs its own rubric. |
+| Weekly Sync 0608 | Weekly-report template placeholder. | No standalone article yet. |
+| Version Selection | Multiple preview-version comparisons. | Version selection should be about benchmark sample selection, not aesthetic voting. |
+| Harness Evolving Agent System Lessons | Start with harness before pipeline, calibrate evaluator with human judgment, use HTML as a unified output format. | Humans define task, references, and evaluation alignment; agents turn feedback into system improvements. |
+
+## Core Research Judgments
+
+### 1. Artifact-first, not agent-first
+
+If the goal is a poster, slide deck, web page, or video, define the artifact contract before writing the agent prompt. The contract should specify content coverage, chart usage, visual density, editable structure, rendering path, and failure conditions.
+
+### 2. Harness is the engineering interface for subjective quality
+
+“The poster does not look good” is not useful enough. “The information architecture lacks a method-to-evidence-to-takeaway path, three panels repeat the same conclusion, and chart references are not tied to source packs” is actionable.
+
+### 3. Benchmark does not replace verification
+
+Benchmarking compares systems. Verification decides whether one artifact is deliverable. Long-horizon multimodal tasks need both.
+
+### 4. Reference pools steer optimization
+
+If references are mostly visual walls or screenshot-heavy posters, the generator may learn that “more image area” means “better.” References should be grouped by artifact archetype: text-heavy synthesis, theory board, benchmark/table-first, GUI/video, and so on.
+
+### 5. Bottlenecks migrate during automatic iteration
+
+Early issues are layout, overlap, and rendering. Later issues become text repetition, factual errors, panel content allocation, source grounding, and metric weighting.
+
+## Image Material Index
+
+| Type | Source Document | Current Treatment |
+|---|---|---|
+| Agent flow diagram | Poster Generation Task Split | Redraw as an abstract public diagram |
+| Benchmark sample wall | Benchmark Generation Visualization | Keep private index; publish a recreated statistical view later |
+| Agent comparison screenshots | Design Agent Comparison | Sanitize before any public use |
+| Version-selection previews | Version Selection | Convert into selection criteria instead of embedding raw images |
+| Remote workflow screenshots | Mobile-Controlled Remote Workflow | Redraw as an operation flow |
+
+## Ready-to-Expand Articles
+
+- [Why Long-Horizon Multimodal Agents Need a Harness](./harness-centered-design-agents/)
+- From one-shot generation to self-improving design agents.
+- Poster generation as an iterative systems problem.
+- Verifiers and benchmarks for multimodal generation systems.
+- Why slides, posters, web pages, and videos can share an HTML base but need different rubrics.
+

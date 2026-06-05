@@ -1,0 +1,69 @@
+---
+title: 多模态长程智能体
+description: 围绕 multimodal long-horizon agentic systems 的研究经验、实习项目复盘和博客索引。
+date: 2026-06-05
+tags: [multimodal, long-horizon-agents, design-harness, paper2any]
+status: active
+type: research
+sidebar:
+  order: 1
+  label: 方向总览
+---
+
+<div class="hero">
+  <p class="eyebrow">Research Direction</p>
+  <h1>多模态 long-horizon agentic systems</h1>
+  <p class="tagline">这个栏目记录我对长程多模态智能体的研究判断、实习项目经验和工程反思。核心问题不是“让模型一次生成一个漂亮结果”，而是如何让 agent 在文档、图像、代码、网页和设计产物之间持续规划、验证、修复并收敛到可交付 artifact。</p>
+  <img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/harness-loop.svg'} alt="多模态长程智能体 harness 闭环示意图" class="hero-visual" />
+</div>
+
+> 个人声明：这个系列是个人研究记录，基于公开资料、个人 KM notes 和已脱敏的项目经验整理，不代表任何公司、团队或实习单位的官方观点。站点文章不包含内部仓库地址、API、密钥配置、未公开数据、客户信息或专有实现细节。
+
+## 这个方向要回答什么
+
+我把这个方向先定义成一句话：
+
+> 给复杂多模态任务搭一个可执行、可观测、可验证、可迭代的 harness，让 coding agent 或 design agent 能在里面持续改进，而不是只靠一次 prompt 赌结果。
+
+目前最关心的任务形态包括：
+
+- **paper2any**：从论文生成 poster、slides、web page、report、video scene。
+- **artifact-producing agents**：输出不是聊天答案，而是 HTML、PPT、PDF、图表、设计稿、可运行页面。
+- **long-horizon workflows**：任务需要文档摄取、内容规划、素材选择、布局生成、渲染验证、视觉 critic、修复循环。
+- **verification and benchmark**：不仅比较系统分数，还要判断单个产物是否真的能交付、能编辑、能复用。
+- **human-in-the-loop iteration**：人提供偏好、正反例和质量判断，agent 负责把判断沉淀成 evaluator、contract 和 regression loop。
+
+## 文档空间已整理
+
+我已经从 KM 的“长程任务专项文档”空间抽取了结构化素材：20 篇文档、约 2.8 万字、12 个附件记录、43 个图片节点。第一版不会把内部链接和原始截图直接发布，而是先沉淀成以下公开可读材料：
+
+- [KM 文档空间摘要](./document-space-digest/)：逐篇总结 20 篇 notes 的作用、可吸收观点和发布处理方式。
+- [为什么长程多模态智能体需要 Harness](./harness-centered-design-agents/)：第一篇正式研究博客，围绕 design harness、verifier、benchmark 和自迭代闭环展开。
+
+## 知识地图
+
+| 主题 | 问题 | 会写成什么 |
+|---|---|---|
+| Systems & Harness | 长程任务怎么拆、怎么保存状态、怎么让失败反馈可执行 | 系统设计笔记、架构复盘、失败模式表 |
+| Verification & Benchmark | 怎么评价 poster/slides/webpage/video 这类多模态 artifact | 评测方法、rubric、benchmark 设计、可视化复盘 |
+| Paper2Any | 论文结构如何转成不同可交付产物 | paper2poster、paper2slides、paper2web 系列 |
+| Design Agent Iteration | agent 生成结果如何越改越好 | human feedback、reference pool、repair route、regression loop |
+| Internship Field Notes | 实习项目里学到的工程判断 | 每周沉淀、工程取舍、操作流程、研究 taste |
+
+## 首批文章路线
+
+1. 长程多模态智能体为什么需要 Harness。
+2. 从“一次生成”到“持续变好”：自优化设计智能体的闭环。
+3. 海报生成任务拆分：把审美问题变成可迭代系统问题。
+4. Verifier 与 Benchmark：如何评估多模态生成系统。
+5. 生成效果对比不是排行榜：Design Agent 比较的方法论。
+6. 长程理解任务中的 Paper Reading：从读懂论文到驱动产物生成。
+7. Slides 与 Poster 的差异：两类设计产物对 agent 的不同要求。
+8. 实习项目复盘：长程多模态 agent 的工程难点。
+
+## 图片和附件处理
+
+KM 文档里有几类有价值的图：agent 流程图、benchmark 可视化、版本对比、海报迭代截图、远程工作流截图。第一版先不直接嵌入这些内网图片；后续会按两种方式处理：
+
+- 适合公开表达的图，重绘成抽象示意图或脱敏流程图。
+- 需要保留原始视觉细节的图，先人工确认没有内部域名、账号、路径、未公开指标，再复制到站点资源目录。

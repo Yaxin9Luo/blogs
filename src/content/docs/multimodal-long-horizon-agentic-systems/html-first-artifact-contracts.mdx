@@ -1,0 +1,126 @@
+---
+title: HTML-first 不是万能格式：Paper2Any 的统一底座与分化 Rubric
+description: 总结为什么 poster、slides、webpage 和 video 可以共享 HTML-first 底座，但必须拥有不同的 artifact contract、reading unit 和 evaluator。
+date: 2026-06-05
+tags: [paper2any, html-first, artifact-contract, evaluation]
+status: active
+type: research
+sidebar:
+  order: 8
+  label: HTML-first 与 Rubric
+---
+
+> 个人声明：本文是个人研究记录，基于公开资料、个人 KM notes 和已脱敏的项目经验整理，不代表任何公司、团队或实习单位的官方观点。文中不包含内部仓库地址、API、密钥配置、未公开数据、客户信息或专有实现细节。
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/paper2any-artifact-contracts.svg'} alt="Paper2Any 可以共享 HTML-first 中间表示，但 poster、slides、webpage 和 video 需要不同 artifact contract" class="hero-visual" />
+
+## 核心判断
+
+HTML-first 很适合作为 paper2any 的统一底座，但它不是万能 rubric。
+
+同一篇论文可以先被解析成 source pack、semantic blocks、figure/table evidence、layout rules 和可渲染 HTML。这个底座能同时支持 poster、slides、webpage、video scene，因为它让内容结构、可编辑性、渲染视图和自动检查都变得更可控。
+
+但真正决定质量的不是“都能导出成 HTML”，而是系统知不知道自己最终在生成哪一种 artifact：
+
+| Artifact | 主要阅读方式 | 质量重点 |
+|---|---|---|
+| Poster | 一张大画布上的扫读 | 信息密度、panel grammar、图文证据、全局布局 |
+| Slides | 按页推进的讲述 | 每页一个主意、节奏、过渡、演讲顺序 |
+| Webpage | 滚动阅读和跳转 | 响应式结构、导航层级、section 路径 |
+| Video | 时间轴上的镜头 | pacing、视觉连续性、字幕/旁白节奏、scene transition |
+
+所以 Paper2Any 的关键不是把所有格式都压成一个 prompt，而是让它们共享基础设施，然后分化 contract 和 evaluator。
+
+## HTML-first 的价值在哪里
+
+HTML-first 的优势不是“网页看起来好做”，而是它把多模态 artifact 变成了一个可检查对象。
+
+| 能力 | 为什么重要 |
+|---|---|
+| DOM structure | 可以保留 panel、section、source id、data block 和可编辑节点 |
+| CSS layout | 可以把视觉规则显式化，而不是只靠图片输出 |
+| Rendered view | 可以检查 overlap、裁切、空白和视觉层级 |
+| Deterministic compiler | 可以减少模型一次性输出大 JSON 或复杂页面时的漂移 |
+| Export route | 可以继续导出 PDF、slides、静态网页或视频帧 |
+
+这也是我前几篇一直强调 artifact-first 的原因。只要最终产物有结构，harness 就能检查；只要失败能被定位，agent 才能修。
+
+## 共享底座不等于共享任务
+
+Poster 做得更好，不代表 slides 自动做好。Webpage 能滚动，不代表 video scene 就有节奏。原因是这些 artifact 的 reading unit 不同。
+
+| Artifact | Reading unit | 常见错误 |
+|---|---|---|
+| Poster | panel 和整张画布 | 每个 panel 看似填满，但信息重复或低密度 |
+| Slides | single slide 和 slide sequence | 一页塞太多，或者每页都像 poster card |
+| Webpage | section、fold、navigation | 首屏漂亮但后续层级散，移动端阅读断裂 |
+| Video | shot、beat、caption window | 画面好看但上下文丢失，节奏和信息量不匹配 |
+
+如果 evaluator 不知道 reading unit，就会奖励错误行为。比如 poster evaluator 奖励“全画布密度”，套到 slides 上就可能把每页变成信息过载；webpage evaluator 奖励“首屏吸引力”，套到 paper poster 上就可能弱化实验表格和 source trace。
+
+## Rubric 必须按 Artifact 分开
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/artifact-rubric-split.svg'} alt="Poster、slides、webpage 和 video 虽然可以共享渲染器，但需要不同评价 rubric" class="hero-visual" />
+
+一个统一总分会隐藏很多问题。更合理的是先分 artifact contract，再定义各自 rubric。
+
+| 维度 | Poster | Slides | Webpage | Video |
+|---|---|---|---|---|
+| Density | 画布和 panel 是否充分利用 | 每页信息是否适中 | section 是否展开充分 | 每个时间段是否承载合适信息 |
+| Structure | problem -> method -> evidence -> takeaway 是否可扫读 | story arc 是否一页一推进 | scroll path 和导航是否清楚 | scene order 是否保留因果关系 |
+| Visual evidence | 图表是否支撑 panel claim | 图是否服务当前 slide | 图文是否随 section 组织 | 视觉是否和 narration 同步 |
+| Editability | HTML/PPT/PDF 是否可定位修改 | deck 是否能逐页改 | component 是否可复用 | scene、caption、asset 是否可替换 |
+| Failure signal | overlap、裁切、低密度白区 | overloaded slide、节奏断裂 | responsive break、层级散 | pacing drift、上下文丢失 |
+
+这张表也解释了为什么我不想把 Paper2Any 写成“一个模型生成一切”。更准确的说法是：一个 source understanding 和 artifact compiler 可以复用，但每个 artifact 都要有自己的 contract。
+
+## Poster 是试验台，不是终点
+
+Poster 很适合作为第一类 artifact，是因为它足够难，也足够可验证：
+
+- 它要求长文理解，而不是短摘要。
+- 它要求图、表、公式和文本在同一画布里协作。
+- 它要求高信息密度，但不能牺牲可读性。
+- 它能暴露 DOM 检查和渲染视图之间的不一致。
+- 它可以用 panel-level failure report 驱动修复。
+
+但 poster 的成功经验不能直接复制到 slides。Slides 的核心不是“把海报切成几页”，而是把论文主线改写成讲述节奏。每页最好回答一个问题，上一页和下一页之间要有 transition，听众不应该在每页里重新找主线。
+
+Webpage 又不同。Webpage 可以比 slides 更长，也可以比 poster 更解释性。它需要导航、anchor、responsive layout 和 section hierarchy。一个网页如果只有首屏好看，后面只是堆卡片，就不算好的 paper webpage。
+
+Video 更不是简单导出。Video 把 artifact 从空间问题变成时间问题。字幕窗口、镜头停留、图表出现顺序、转场、旁白节奏都会影响理解。
+
+## 统一 Pipeline 应该长什么样
+
+我会把 paper2any 拆成共享层和分化层。
+
+| 层 | 是否共享 | 作用 |
+|---|---|---|
+| Source ingestion | 共享 | 解析论文、图表、公式、claim、section |
+| Content memory | 共享 | 保存贡献、方法、实验、局限、可用证据 |
+| Semantic blocks | 共享 | 形成 problem、method、evidence、takeaway 等结构块 |
+| Artifact contract | 分化 | poster/slides/web/video 各自定义 reading unit 和验收条件 |
+| Layout compiler | 部分共享 | HTML/CSS 可以复用，但布局策略不同 |
+| Renderer | 部分共享 | 都能渲染页面或视图，但导出目标不同 |
+| Evaluator | 分化 | rubric 必须知道当前 artifact 类型 |
+| Repair route | 分化 | poster 修 panel，slides 修 story arc，video 修 scene timing |
+
+这套拆法的好处是，系统不会在每个新 artifact 上从零开始，也不会假装所有 artifact 都是同一个问题。
+
+## 对 Agent 设计的启发
+
+如果要让 coding agent 或 design agent 真正自动优化 pipeline，我觉得最重要的是让它看到这三个边界：
+
+1. **Shared representation boundary**：哪些东西可以复用，比如 source pack、semantic blocks、HTML render、DOM audit。
+2. **Artifact contract boundary**：哪些东西必须分开，比如 poster panel、slide page、web section、video scene。
+3. **Evaluator boundary**：哪些指标只能用于当前 artifact，不能跨格式误用。
+
+很多系统失败不是生成能力不够，而是边界混了。把 poster 的密度指标拿去压 slides，会产生 overloaded deck；把 landing page 的视觉指标拿去评 paper webpage，会弱化 source evidence；把大图拼贴式 reference 拿去指导 benchmark poster，会让系统过度奖励图片面积。
+
+## 小结
+
+HTML-first 是一个很好的工程底座，因为它让多模态 artifact 变得可渲染、可编辑、可检查、可修复。
+
+但 Paper2Any 的研究问题不只是“能不能统一输出格式”。更关键的是：统一底座之上，系统能不能识别不同 artifact 的阅读方式、质量标准和失败类型。
+
+真正稳定的 long-horizon multimodal agentic system，应该共享 source understanding 和渲染基础设施，但分开定义 poster、slides、webpage、video 的 contract、rubric 和 repair route。

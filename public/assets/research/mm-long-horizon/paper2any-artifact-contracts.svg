@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Paper2Any artifact contracts</title>
+  <desc id="desc">A sanitized diagram showing how one source pack and HTML-first representation can branch into different artifact contracts for posters, slides, web pages, and video scenes.</desc>
+  <rect width="1200" height="680" fill="#f8fbfa"/>
+  <rect x="54" y="48" width="1092" height="584" rx="22" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="86" y="102" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">One HTML Base, Multiple Artifact Contracts</text>
+  <text x="86" y="136" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">Paper2Any can share ingestion and rendering infrastructure, but each output type needs its own contract.</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3a514d"/>
+    </marker>
+  </defs>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="84" y="250" width="184" height="164" rx="16" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="176" y="286" text-anchor="middle" font-size="19" font-weight="700" fill="#0b4c40">Source Pack</text>
+    <text x="176" y="320" text-anchor="middle" font-size="13" fill="#31524b">claims</text>
+    <text x="176" y="348" text-anchor="middle" font-size="13" fill="#31524b">figures</text>
+    <text x="176" y="376" text-anchor="middle" font-size="13" fill="#31524b">tables</text>
+
+    <rect x="350" y="218" width="214" height="228" rx="18" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="457" y="258" text-anchor="middle" font-size="20" font-weight="700" fill="#7b3f13">HTML-first Core</text>
+    <rect x="386" y="294" width="142" height="32" rx="10" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="457" y="315" text-anchor="middle" font-size="13" fill="#6d543f">semantic blocks</text>
+    <rect x="386" y="342" width="142" height="32" rx="10" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="457" y="363" text-anchor="middle" font-size="13" fill="#6d543f">layout rules</text>
+    <rect x="386" y="390" width="142" height="32" rx="10" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="457" y="411" text-anchor="middle" font-size="13" fill="#6d543f">render checks</text>
+
+    <rect x="678" y="170" width="178" height="108" rx="14" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="767" y="208" text-anchor="middle" font-size="18" font-weight="700" fill="#213f8b">Poster</text>
+    <text x="767" y="236" text-anchor="middle" font-size="13" fill="#405078">dense scan path</text>
+    <text x="767" y="258" text-anchor="middle" font-size="13" fill="#405078">single canvas</text>
+
+    <rect x="900" y="170" width="178" height="108" rx="14" fill="#f1edf8" stroke="#8467b8" stroke-width="2"/>
+    <text x="989" y="208" text-anchor="middle" font-size="18" font-weight="700" fill="#513c7e">Slides</text>
+    <text x="989" y="236" text-anchor="middle" font-size="13" fill="#5f536f">page sequence</text>
+    <text x="989" y="258" text-anchor="middle" font-size="13" fill="#5f536f">speaker rhythm</text>
+
+    <rect x="678" y="394" width="178" height="108" rx="14" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="767" y="432" text-anchor="middle" font-size="18" font-weight="700" fill="#0b4c40">Web Page</text>
+    <text x="767" y="460" text-anchor="middle" font-size="13" fill="#31524b">scroll narrative</text>
+    <text x="767" y="482" text-anchor="middle" font-size="13" fill="#31524b">responsive layout</text>
+
+    <rect x="900" y="394" width="178" height="108" rx="14" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="989" y="432" text-anchor="middle" font-size="18" font-weight="700" fill="#7b3f13">Video Scene</text>
+    <text x="989" y="460" text-anchor="middle" font-size="13" fill="#6d543f">time segments</text>
+    <text x="989" y="482" text-anchor="middle" font-size="13" fill="#6d543f">motion cues</text>
+
+    <path d="M268 332 H350" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M564 300 C612 262 626 224 678 224" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M564 316 C690 318 774 224 900 224" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M564 370 C612 408 626 448 678 448" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M564 354 C690 356 774 448 900 448" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <text x="600" y="584" text-anchor="middle" font-size="15" fill="#52625f">The shared representation is useful only when the final evaluator knows which artifact it is judging.</text>
+  </g>
+</svg>

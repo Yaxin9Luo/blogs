@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+  <title id="title">Artifact-specific rubric split</title>
+  <desc id="desc">A sanitized matrix comparing how poster, slide, web page, and video artifacts require different evaluation rubrics even when generated from the same HTML-first base.</desc>
+  <rect width="1200" height="640" fill="#f8fbfa"/>
+  <rect x="54" y="54" width="1092" height="530" rx="20" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="86" y="106" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">Shared Renderer, Split Rubrics</text>
+  <text x="86" y="140" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">A single score hides whether the artifact failed as a poster, a slide deck, a page, or a scene.</text>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="120" y="218" width="960" height="250" rx="14" fill="#fbfdfc" stroke="#d5dfdd"/>
+    <line x1="120" y1="268" x2="1080" y2="268" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="120" y1="318" x2="1080" y2="318" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="120" y1="368" x2="1080" y2="368" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="120" y1="418" x2="1080" y2="418" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="300" y1="218" x2="300" y2="468" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="500" y1="218" x2="500" y2="468" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="700" y1="218" x2="700" y2="468" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="900" y1="218" x2="900" y2="468" stroke="#d5dfdd" stroke-width="2"/>
+
+    <text x="210" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Artifact</text>
+    <text x="400" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Reading Unit</text>
+    <text x="600" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Density Signal</text>
+    <text x="800" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Failure Signal</text>
+    <text x="990" y="249" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Repair Target</text>
+
+    <text x="210" y="299" text-anchor="middle" font-size="15" font-weight="700" fill="#5278d6">Poster</text>
+    <text x="400" y="299" text-anchor="middle" font-size="13" fill="#405078">panel scan</text>
+    <text x="600" y="299" text-anchor="middle" font-size="13" fill="#405078">canvas coverage</text>
+    <text x="800" y="299" text-anchor="middle" font-size="13" fill="#405078">blank regions</text>
+    <text x="990" y="299" text-anchor="middle" font-size="13" fill="#405078">panel grammar</text>
+
+    <text x="210" y="349" text-anchor="middle" font-size="15" font-weight="700" fill="#8467b8">Slides</text>
+    <text x="400" y="349" text-anchor="middle" font-size="13" fill="#5f536f">one idea/page</text>
+    <text x="600" y="349" text-anchor="middle" font-size="13" fill="#5f536f">talk rhythm</text>
+    <text x="800" y="349" text-anchor="middle" font-size="13" fill="#5f536f">overloaded slide</text>
+    <text x="990" y="349" text-anchor="middle" font-size="13" fill="#5f536f">story arc</text>
+
+    <text x="210" y="399" text-anchor="middle" font-size="15" font-weight="700" fill="#168064">Web Page</text>
+    <text x="400" y="399" text-anchor="middle" font-size="13" fill="#31524b">scroll section</text>
+    <text x="600" y="399" text-anchor="middle" font-size="13" fill="#31524b">responsive flow</text>
+    <text x="800" y="399" text-anchor="middle" font-size="13" fill="#31524b">broken hierarchy</text>
+    <text x="990" y="399" text-anchor="middle" font-size="13" fill="#31524b">content route</text>
+
+    <text x="210" y="449" text-anchor="middle" font-size="15" font-weight="700" fill="#c8712c">Video</text>
+    <text x="400" y="449" text-anchor="middle" font-size="13" fill="#6d543f">time segment</text>
+    <text x="600" y="449" text-anchor="middle" font-size="13" fill="#6d543f">motion pacing</text>
+    <text x="800" y="449" text-anchor="middle" font-size="13" fill="#6d543f">lost context</text>
+    <text x="990" y="449" text-anchor="middle" font-size="13" fill="#6d543f">scene plan</text>
+
+    <rect x="258" y="518" width="684" height="34" rx="17" fill="#e8f5f1" stroke="#b9dcd2"/>
+    <text x="600" y="540" text-anchor="middle" font-size="14" fill="#31524b">Rubric choice decides what the agent learns to optimize.</text>
+  </g>
+</svg>

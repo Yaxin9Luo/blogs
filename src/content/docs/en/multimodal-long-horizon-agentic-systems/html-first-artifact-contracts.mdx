@@ -1,0 +1,126 @@
+---
+title: "HTML-first Is Not a Universal Rubric: Artifact Contracts in Paper2Any"
+description: A research note on why posters, slides, web pages, and videos can share an HTML-first base but still need separate artifact contracts, reading units, and evaluators.
+date: 2026-06-05
+tags: [paper2any, html-first, artifact-contract, evaluation]
+status: active
+type: research
+sidebar:
+  order: 8
+  label: HTML-first and Rubrics
+---
+
+> Personal note: This article is based on public materials, personal KM notes, and sanitized project experience. It does not represent the official view of any company, team, or internship host. It does not include internal repository links, APIs, secret configuration, private data, customer information, or proprietary implementation details.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/paper2any-artifact-contracts.svg'} alt="Paper2Any can share an HTML-first intermediate representation, but posters, slides, web pages, and video scenes need different artifact contracts" class="hero-visual" />
+
+## Core Claim
+
+HTML-first is a strong shared base for paper2any, but it is not a universal rubric.
+
+The same paper can first become a source pack, semantic blocks, figure/table evidence, layout rules, and renderable HTML. That base can support posters, slides, web pages, and video scenes because it makes content structure, editability, rendered views, and automated checks easier to control.
+
+But quality does not come from “everything exports to HTML.” Quality comes from whether the system knows which artifact it is producing:
+
+| Artifact | Main Reading Mode | Quality Focus |
+|---|---|---|
+| Poster | scanning one large canvas | information density, panel grammar, visual evidence, global layout |
+| Slides | page-by-page narration | one idea per page, rhythm, transitions, talk sequence |
+| Web page | scrolling and navigation | responsive structure, navigation hierarchy, section route |
+| Video | shots on a timeline | pacing, visual continuity, caption/narration rhythm, scene transition |
+
+So the key to Paper2Any is not to compress every format into one prompt. It is to share infrastructure, then split contracts and evaluators.
+
+## Where HTML-first Helps
+
+HTML-first is not useful merely because web pages are easy to render. It is useful because it turns multimodal artifacts into inspectable objects.
+
+| Capability | Why It Matters |
+|---|---|
+| DOM structure | preserves panels, sections, source ids, data blocks, and editable nodes |
+| CSS layout | makes visual rules explicit instead of hiding them in a flat image |
+| Rendered view | exposes overlap, clipping, whitespace, and visual hierarchy |
+| Deterministic compiler | reduces drift when models emit large JSON or complex pages |
+| Export route | can continue into PDF, slides, static pages, or video frames |
+
+This is why I keep returning to artifact-first thinking. When the final artifact has structure, the harness can inspect it. When failures can be localized, the agent can repair them.
+
+## A Shared Base Is Not A Shared Task
+
+A better poster does not automatically produce a better slide deck. A scrollable web page does not automatically become a well-paced video scene. The reason is that these artifacts have different reading units.
+
+| Artifact | Reading Unit | Common Failure |
+|---|---|---|
+| Poster | panel and full canvas | panels look filled but repeat low-density information |
+| Slides | single slide and slide sequence | each page is overloaded or behaves like a poster card |
+| Web page | section, fold, navigation | the first view is polished but the rest loses hierarchy |
+| Video | shot, beat, caption window | visuals are attractive but context disappears over time |
+
+If the evaluator does not know the reading unit, it rewards the wrong behavior. A poster evaluator that rewards full-canvas density can overload slides. A web evaluator that rewards first-view appeal can weaken experimental tables and source trace in an academic poster.
+
+## Rubrics Must Split by Artifact
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/artifact-rubric-split.svg'} alt="Posters, slides, web pages, and videos can share a renderer, but need different evaluation rubrics" class="hero-visual" />
+
+A single overall score hides too much. A better approach is to define the artifact contract first, then define the corresponding rubric.
+
+| Dimension | Poster | Slides | Web Page | Video |
+|---|---|---|---|---|
+| Density | canvas and panels are fully used | each page carries a reasonable amount | sections unfold with enough detail | each time segment carries appropriate information |
+| Structure | problem -> method -> evidence -> takeaway is scannable | story arc advances one page at a time | scroll path and navigation are clear | scene order preserves causal context |
+| Visual evidence | figures support panel claims | visuals support the current slide | image/text follow section structure | visuals synchronize with narration |
+| Editability | HTML/PPT/PDF can be modified locally | deck can be edited page by page | components can be reused | scenes, captions, and assets can be replaced |
+| Failure signal | overlap, clipping, low-density blank regions | overloaded slide, broken rhythm | responsive break, weak hierarchy | pacing drift, lost context |
+
+This table explains why I do not want to describe Paper2Any as “one model generates everything.” A source understanding and artifact compiler can be reused, but each artifact needs its own contract.
+
+## Poster Is a Testbed, Not the Endpoint
+
+Poster is a good first artifact because it is hard enough and verifiable enough:
+
+- It requires long-document understanding, not short summarization.
+- It forces figures, tables, formulas, and text to cooperate on one canvas.
+- It needs high information density without destroying readability.
+- It exposes mismatches between DOM checks and rendered views.
+- It can use panel-level failure reports to drive repair.
+
+But poster success does not transfer directly to slides. Slides are not “a poster split into pages.” They rewrite the paper into a speaking rhythm. Each page should answer one question, transitions should carry the audience forward, and the viewer should not have to rediscover the main thread on every page.
+
+Web pages are different again. A web page can be longer than slides and more explanatory than a poster. It needs navigation, anchors, responsive layout, and section hierarchy. A page with a polished first view and a pile of cards below it is not a strong paper web page.
+
+Video is not just an export target either. Video turns the artifact from a spatial problem into a temporal problem. Caption windows, shot duration, figure order, transitions, and narration rhythm all affect understanding.
+
+## A Better Unified Pipeline
+
+I would split paper2any into shared layers and artifact-specific layers.
+
+| Layer | Shared or Split | Role |
+|---|---|---|
+| Source ingestion | shared | parse paper sections, figures, formulas, claims, and tables |
+| Content memory | shared | store contributions, methods, experiments, limitations, and evidence |
+| Semantic blocks | shared | form problem, method, evidence, takeaway, and related blocks |
+| Artifact contract | split | define reading units and acceptance tests for poster/slides/web/video |
+| Layout compiler | partly shared | HTML/CSS can be reused, but layout strategy changes |
+| Renderer | partly shared | all can render pages or views, but export targets differ |
+| Evaluator | split | the rubric must know the current artifact type |
+| Repair route | split | posters repair panels, slides repair story arcs, videos repair scene timing |
+
+This structure keeps the system from starting from scratch for every new artifact, while also avoiding the false assumption that all artifacts are the same task.
+
+## What This Means for Agent Design
+
+If coding agents or design agents are going to optimize the pipeline automatically, they need to see three boundaries:
+
+1. **Shared representation boundary**: what can be reused, such as source packs, semantic blocks, HTML rendering, and DOM audits.
+2. **Artifact contract boundary**: what must split, such as poster panels, slide pages, web sections, and video scenes.
+3. **Evaluator boundary**: which metrics are valid only for the current artifact and should not be copied across formats.
+
+Many failures come from mixing these boundaries. Poster density metrics can create overloaded decks. Landing-page visual metrics can weaken source evidence in paper web pages. Image-heavy references can make benchmark posters over-reward image area.
+
+## Takeaway
+
+HTML-first is a strong engineering base because it makes multimodal artifacts renderable, editable, inspectable, and repairable.
+
+But Paper2Any is not only about unifying output format. The harder research question is whether the system can recognize different reading modes, quality standards, and failure types across artifacts.
+
+A stable long-horizon multimodal agentic system should share source understanding and rendering infrastructure, while splitting the contracts, rubrics, and repair routes for posters, slides, web pages, and videos.

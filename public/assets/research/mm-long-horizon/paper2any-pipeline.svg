@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 660" role="img" aria-labelledby="title desc">
+  <title id="title">Paper2Any HTML-first pipeline</title>
+  <desc id="desc">A sanitized pipeline diagram showing how documents become posters, slides, web pages, and video scenes through an HTML-first harness.</desc>
+  <rect width="1200" height="660" fill="#f8fbfa"/>
+  <rect x="54" y="54" width="1092" height="552" rx="22" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="86" y="104" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">Paper2Any as an HTML-First Harness</text>
+  <text x="86" y="138" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">One source document, multiple artifact contracts, shared rendering and verification infrastructure.</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3a514d"/>
+    </marker>
+  </defs>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="90" y="218" width="150" height="92" rx="12" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="165" y="252" text-anchor="middle" font-size="17" font-weight="700" fill="#0b4c40">Sources</text>
+    <text x="165" y="278" text-anchor="middle" font-size="13" fill="#31524b">paper, doc, web,</text>
+    <text x="165" y="297" text-anchor="middle" font-size="13" fill="#31524b">figures, tables</text>
+
+    <rect x="300" y="218" width="150" height="92" rx="12" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="375" y="252" text-anchor="middle" font-size="17" font-weight="700" fill="#213f8b">Ingest</text>
+    <text x="375" y="278" text-anchor="middle" font-size="13" fill="#405078">parse, crop, OCR,</text>
+    <text x="375" y="297" text-anchor="middle" font-size="13" fill="#405078">source packs</text>
+
+    <rect x="510" y="218" width="150" height="92" rx="12" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="585" y="252" text-anchor="middle" font-size="17" font-weight="700" fill="#7b3f13">Plan</text>
+    <text x="585" y="278" text-anchor="middle" font-size="13" fill="#6d543f">sections, panels,</text>
+    <text x="585" y="297" text-anchor="middle" font-size="13" fill="#6d543f">artifact contract</text>
+
+    <rect x="720" y="218" width="150" height="92" rx="12" fill="#f1edf8" stroke="#8467b8" stroke-width="2"/>
+    <text x="795" y="252" text-anchor="middle" font-size="17" font-weight="700" fill="#513c7e">Compile</text>
+    <text x="795" y="278" text-anchor="middle" font-size="13" fill="#5f536f">HTML scene, CSS,</text>
+    <text x="795" y="297" text-anchor="middle" font-size="13" fill="#5f536f">data blocks</text>
+
+    <rect x="930" y="218" width="150" height="92" rx="12" fill="#e9f2f5" stroke="#2e6f87" stroke-width="2"/>
+    <text x="1005" y="252" text-anchor="middle" font-size="17" font-weight="700" fill="#1d4b5c">Render</text>
+    <text x="1005" y="278" text-anchor="middle" font-size="13" fill="#375866">preview, export,</text>
+    <text x="1005" y="297" text-anchor="middle" font-size="13" fill="#375866">screenshot QA</text>
+
+    <path d="M240 264 H300" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M450 264 H510" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M660 264 H720" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M870 264 H930" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <rect x="174" y="398" width="172" height="84" rx="12" fill="#fbfdfc" stroke="#d5dfdd"/>
+    <text x="260" y="431" text-anchor="middle" font-size="16" font-weight="700" fill="#14302b">Poster</text>
+    <text x="260" y="456" text-anchor="middle" font-size="13" fill="#52625f">dense scan path</text>
+
+    <rect x="393" y="398" width="172" height="84" rx="12" fill="#fbfdfc" stroke="#d5dfdd"/>
+    <text x="479" y="431" text-anchor="middle" font-size="16" font-weight="700" fill="#14302b">Slides</text>
+    <text x="479" y="456" text-anchor="middle" font-size="13" fill="#52625f">speaker flow</text>
+
+    <rect x="612" y="398" width="172" height="84" rx="12" fill="#fbfdfc" stroke="#d5dfdd"/>
+    <text x="698" y="431" text-anchor="middle" font-size="16" font-weight="700" fill="#14302b">Web page</text>
+    <text x="698" y="456" text-anchor="middle" font-size="13" fill="#52625f">responsive reading</text>
+
+    <rect x="831" y="398" width="172" height="84" rx="12" fill="#fbfdfc" stroke="#d5dfdd"/>
+    <text x="917" y="431" text-anchor="middle" font-size="16" font-weight="700" fill="#14302b">Video scene</text>
+    <text x="917" y="456" text-anchor="middle" font-size="13" fill="#52625f">timeline and captions</text>
+
+    <path d="M1005 310 C1005 360 917 360 917 398" fill="none" stroke="#2e6f87" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M1005 310 C1005 360 698 360 698 398" fill="none" stroke="#2e6f87" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M1005 310 C1005 360 479 360 479 398" fill="none" stroke="#2e6f87" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M1005 310 C1005 360 260 360 260 398" fill="none" stroke="#2e6f87" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <text x="600" y="548" text-anchor="middle" font-size="15" fill="#52625f">Shared HTML base, artifact-specific rubrics.</text>
+  </g>
+</svg>

@@ -44,7 +44,7 @@ sidebar:
 | 每周讨论内容 | 每周同步的父目录。 | 用作时间线，不作为独立文章。 |
 | 内容梳理 | 论文/项目写作框架：不是单独 design agent，而是 design-domain Codex/Claude Code style harness；列 contribution、related work、method、experiment。 | 公开表达时应强调 design harness，而不是闭源产品或公司项目。 |
 | 手机操纵远程工作流 | 用移动端监督远程 coding agents、管理 worktree、降低异步操作成本。 | 长程 agent 系统还需要“操作界面”和异步监督机制，不只是模型能力。 |
-| 在.env里配置公司的API | 内部 API 和模型配置。 | 不进入公开站点。只抽象成一条经验：运行时配置必须隔离、脱敏、可替换。 |
+| 运行时配置文档 | 内部模型和服务配置。 | 不进入公开站点。只抽象成一条经验：运行时配置必须隔离、脱敏、可替换。 |
 | 整个系统Harness的改进 | 把人类质量判断拆成 planning constraint、deterministic QA、independent evaluator、stage-aware repair、benchmark loop。 | Harness 的价值是把“人觉得不好”变成 agent 能执行的失败信号。 |
 | Benchmarks里的生成可视化 | 多类别论文生成效果的旧版/新版视觉对比。 | benchmark 需要可视化样本墙，帮助发现风格收敛、信息密度和类别偏差。 |
 | 生成的效果跟别的Design Agent的对比 | 对比不同 design agent 在同一 paper2poster prompt 下的输出。 | 对比不应该只做排行榜，要看输入约束、artifact 类型、可编辑性、忠实性和失败模式。 |
@@ -91,11 +91,17 @@ KM 中有意义的图片主要分成五类：
 | 版本选择 preview | 版本挑选 | 可改写成选择标准表，不直接贴内网图 |
 | 远程工作流截图 | 手机操纵远程工作流 | 可重画为操作流，不公开原截图 |
 
+已经重绘成公开安全资产的图：
+
+- `harness-loop.svg`：长程多模态 agent harness 闭环。
+- `paper2any-pipeline.svg`：Paper2Any 的 HTML-first pipeline。
+- `self-improving-loop.svg`：自动迭代瓶颈迁移和系统自改进。
+- `evaluation-matrix.svg`：benchmark、verification、regression 的评价矩阵。
+
 ## 可以立刻扩写的文章
 
 - [为什么长程多模态智能体需要 Harness](./harness-centered-design-agents/)
-- 从“一次生成”到“持续变好”：自优化设计智能体的闭环。
+- [从“一次生成”到“持续变好”：自优化设计智能体的闭环](./self-improving-design-agents/)。
 - 海报生成任务拆分：把审美问题变成可迭代系统问题。
 - Verifier 与 Benchmark：如何评估多模态生成系统。
 - Slides、Poster、Webpage 和 Video 为什么能共用 HTML 底座但不能共用同一套 rubric。
-

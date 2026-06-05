@@ -1,0 +1,179 @@
+---
+title: 从一次生成到持续变好：自优化设计智能体的闭环
+description: 总结 KM notes 中十轮左右的 design harness 迭代经验，解释为什么长程多模态 agent 的核心是系统自改进闭环。
+date: 2026-06-05
+tags: [self-improving-agents, design-harness, evaluation, iteration]
+status: active
+type: research
+sidebar:
+  order: 4
+  label: 自优化闭环
+---
+
+> 个人声明：本文是个人研究记录，基于公开资料、个人 KM notes 和已脱敏的项目经验整理，不代表任何公司、团队或实习单位的官方观点。文中不包含内部仓库地址、API、密钥配置、未公开数据、客户信息或专有实现细节。
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/self-improving-loop.svg'} alt="自优化设计智能体从布局修复走向内容 grounding 的迭代示意图" class="hero-visual" />
+
+## 核心判断
+
+设计类 long-horizon agent 的“持续变好”不是靠同一个 prompt 反复祈祷，也不是把所有判断都交给一个更强的模型。真正有效的闭环，是让每一轮失败都能改变系统本身：
+
+- 改 artifact contract。
+- 改 reference pool。
+- 改 evaluator rubric。
+- 改 generator 输出结构。
+- 改 deterministic compiler。
+- 改 repair route。
+- 改 regression set。
+
+如果每一轮只是在自然语言里说“再好看一点”，系统不会稳定收敛。相反，越往后越应该把人的偏好变成更具体的 contract、metrics 和 failure report。
+
+## 两层 Harness
+
+这篇文章和上一篇的区别在于：这里的自优化闭环其实有两层。
+
+| 层级 | 服务对象 | 输入信号 | 输出动作 | 成功标准 |
+|---|---|---|---|---|
+| Design harness | 单个 poster、slides、webpage、video artifact | brief、source pack、rendered preview、DOM、截图、rubric | 诊断 artifact 问题并给出 repair route | 当前产物更可读、更准确、更可编辑 |
+| Coding-agent harness | 整个 design pipeline | benchmark report、failure clusters、regression result、人类偏好校准 | 修改 generator、compiler、evaluator、reference pool、metrics | 下一批任务更稳定，旧失败不回归 |
+
+内层解决“这个 artifact 怎么修”；外层解决“为什么系统总是犯这类错”。如果只做内层，容易变成手工 patch 成品；如果只做外层，又缺少足够贴近最终产物的真实失败信号。
+
+## 迭代不是线性变好，而是瓶颈迁移
+
+从 KM notes 里看，自动迭代路线大概经历了几个阶段。
+
+| 阶段 | 主要目标 | 暴露的问题 | 系统应该怎么变 |
+|---|---|---|---|
+| R1-R3 | 先让 artifact 能渲染、能看、少重叠 | 布局不稳、overlap、视觉密度低 | 加入渲染检查、布局 lint、基础 contract |
+| R4-R6 | 重新校准 reward 方向 | reference 太偏截图墙，系统误以为“图多就是好” | 按 artifact archetype 拆 reference，降低视觉面积权重 |
+| R7-R8 | 引入 refiner 和 panel polish | 全局修复容易忽略局部空白、裁切、panel 密度 | 先全局 refine，再逐 panel 做局部检查 |
+| R9 | 缩小模型一次性输出的结构 | 大 DesignSpec 容易字段漂移、局部回退 | 让模型输出小模块，再由 deterministic compiler 合成 |
+| R10+ | 处理内容准确性和重复 | 排版收敛后，文本可能重复、事实错、source grounding 弱 | 加 Section-to-Panel Content Compiler 和事实/去重 metrics |
+
+这个迁移很关键。早期看起来是“版式问题”，中期变成“评价方向问题”，后期变成“内容分配和事实 grounding 问题”。如果 evaluator 只会报一个总分，agent 就不知道系统瓶颈已经换了。
+
+## 最容易走偏的地方
+
+### 1. 把视觉面积当成质量
+
+图多、截图大、色块满，不等于学术 artifact 质量高。对于 paper2poster，很多高价值内容其实是 native text、表格、公式、model card、leaderboard、ablation、limitation 这些结构化信息。
+
+所以 reference pool 不能只放视觉冲击强的样本。更合理的是按类型区分：
+
+- text-heavy editorial synthesis。
+- theory board。
+- benchmark/table-first poster。
+- GUI/video qualitative case。
+- model-card style dense artifact。
+
+不同类型应该用不同的 density prior 和 visual prior。
+
+### 2. DOM 看起来填满，但视觉上仍然空
+
+一个很典型的问题是：程序检查 DOM 会认为某个区块占满了整行，因为它有边框、横线、公式卡或说明文字；但真实截图里，人眼看到的是大面积低信息密度白区。
+
+这说明 verification 不能只看 DOM 和 CSS box。它需要至少三层信号：
+
+| 信号 | 能抓什么 | 抓不到什么 |
+|---|---|---|
+| DOM / source check | 结构、元素数量、可编辑性、资源缺失 | 视觉空洞、裁切错位、阅读路径 |
+| Screenshot QA | overlap、空白、字体大小、图表可读性 | source grounding、事实准确 |
+| Semantic verifier | 重复、错配、source coverage、claim-evidence 关系 | 版面美感和空间利用 |
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/evaluation-matrix.svg'} alt="Benchmark、verification 和 regression 的评价矩阵" class="hero-visual" />
+
+### 3. 指标太泛会乱探索，指标太细会过拟合
+
+如果 evaluator 只说“整体信息密度不够”，generator 可能会到处塞字；如果指标写成“每个方块都必须很多字”，它又可能重复同一句话。评价器需要表达目标，但不能把实现方式写死。
+
+更稳的方式是把指标拆成“结果约束”和“失败解释”：
+
+- 结果约束：每个 panel 应有清楚的 claim、supporting evidence、takeaway。
+- 失败解释：这个 panel 和另一个 panel 重复，或者引用了不属于自己的 source pack。
+- 修复路线：重分配 source pack，而不是盲目增加字数。
+
+## 为什么需要 Content Compiler
+
+一个重要转折是：不能让 planner 从全局 bullet 池里自由挑内容填所有 panel。这样会导致两个问题：
+
+1. 每个 panel 看起来都有内容，但核心信息重复。
+2. 某个 section 的关键信息被拿去填别的 panel，导致 source grounding 混乱。
+
+更稳的做法是先把论文拆成互斥的信息包：
+
+- Introduction。
+- Method。
+- Experiments。
+- Ablation。
+- Limitations。
+- Figures。
+- Tables。
+
+然后每个 panel 只能使用自己的 source pack。这样 panel 之间才可能同时做到“密集”和“不重复”。
+
+这个模块我更愿意叫 **Section-to-Panel Content Compiler**。它不是简单 summarizer，而是把 source evidence 分配给 artifact layout 的中间层。
+
+## Panel Grammar Library
+
+Content compiler 解决“每个 panel 用哪些 source”。但这还不够。不同 panel 本来就应该有不同 grammar：benchmark panel 不该像 method panel，figure evidence panel 也不该像 contribution grid。
+
+| Panel 类型 | 适合承载什么 | 推荐结构 | Evaluator 应检查什么 |
+|---|---|---|---|
+| Contribution grid | 3-5 个核心贡献 | 短 claim + why it matters + evidence tag | 是否覆盖核心贡献，是否和后文重复 |
+| Method flow | 方法流程、模块关系 | step blocks、arrow、input/output labels | 步骤是否有因果顺序，术语是否一致 |
+| Benchmark table | 主要实验结果 | native table、metric bands、best/second-best highlight | 数值是否来自 source，表头是否可读 |
+| Figure evidence | 关键图表和解释 | figure crop + caption + takeaway | 图是否支撑 claim，文字是否只是复述 caption |
+| Limitation panel | 边界、失败、未来工作 | limitation bullet + implication | 是否真实来自论文，不要编造风险 |
+| Dataset/model card | 数据、模型、训练设定 | compact facts、badges、small table | 信息是否结构化，是否避免大段 prose |
+
+这个 library 的意义是避免 evaluator 只说“字少了”或“图少了”。它应该知道一个 panel 类型应该长什么样，以及这个类型的失败应该怎么修。
+
+## 人类在闭环里的真实作用
+
+这个流程并不意味着人不重要。人的作用反而更关键，只是位置变了。
+
+| 人类做什么 | Agent 做什么 |
+|---|---|
+| 定义任务和想要的 artifact | 根据 contract 搭 pipeline |
+| 收集好坏 references | 把 reference 变成 evaluator 的可读信号 |
+| 判断 evaluator 是否和人类直觉对齐 | 修改 rubric、failure report、repair route |
+| 发现新的失败模式 | 加入 regression set 并复测 |
+| 选择下一阶段优化方向 | 批量执行、记录、比较、回归 |
+
+这有点像把 human feedback 用在系统层，而不是直接改模型参数。人指出“这个评价不 align”，coding agent 就可以改 evaluator、改 checker、改 compiler，再跑固定样本验证。
+
+## 一个更实用的闭环
+
+我现在认为比较稳的闭环长这样：
+
+1. **Define artifact contract**：明确输出是什么，必须满足什么结构和质量底线。
+2. **Generate first artifact**：生成 HTML 或其他可渲染中间表示。
+3. **Render and inspect**：产出截图、DOM、导出文件，靠近最终 artifact 检查。
+4. **Produce failure report**：按阶段归因，而不是只给总分。
+5. **Choose repair route**：决定是改内容分配、布局、样式、素材选择，还是 evaluator。
+6. **Patch system, not only output**：尽量把修复沉淀到 pipeline 或 harness，而不是只修一次成品。
+7. **Run regression set**：用固定样本确认没有把旧问题带回来。
+
+这里最重要的是第 6 步。一次性修成品当然有用，但它不一定让系统变强。长程 agentic system 的目标是让下一次更稳。
+
+## 对 paper2any 的启发
+
+poster、slides、webpage、video 可以共享很多底座：HTML 渲染、资源管理、截图检查、VLM critic、source grounding、content compiler。但它们不能共享完全相同的 rubric。
+
+| Artifact | 主要质量问题 | 需要特别检查 |
+|---|---|---|
+| Poster | 信息密度、图文关系、阅读路径 | panel 分配、字体层级、图表证据 |
+| Slides | 节奏、讲述顺序、单页负载 | 每页 message、转场逻辑、speaker flow |
+| Webpage | 信息展开、交互和响应式 | DOM 结构、链接、移动端可读性 |
+| Video scene | 时间轴、镜头节奏、素材同步 | duration、caption、视觉连续性 |
+
+这也是为什么我更喜欢 HTML-first 的统一接口：它让不同 artifact 可以共享渲染和检查工具，同时保留各自的 rubric。
+
+## 小结
+
+自优化设计智能体的关键不是“自动生成很多版本”，而是让每一轮版本都能产生更具体的系统诊断。
+
+当系统从“布局不好”进化到“Method panel 重复 Introduction 的 source pack，figure relevance 权重压过了 semantic synthesis，DOM 占满但 screenshot 仍有低信息密度白区”这种诊断时，agent 才真正有东西可改。
+
+所以我对 long-horizon multimodal agent 的理解是：**它不是单个模型的长上下文能力，而是一套能把失败变成下一轮系统改进的工程环境**。

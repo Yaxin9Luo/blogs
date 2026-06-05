@@ -1,0 +1,179 @@
+---
+title: From One-Shot Generation to Self-Improving Design Agents
+description: Lessons from roughly ten rounds of design-harness iteration, focusing on how long-horizon multimodal agents improve through system-level feedback.
+date: 2026-06-05
+tags: [self-improving-agents, design-harness, evaluation, iteration]
+status: active
+type: research
+sidebar:
+  order: 4
+  label: Self-Improving Loop
+---
+
+> Personal note: This article is based on public materials, personal KM notes, and sanitized project experience. It does not represent the official view of any company, team, or internship host. It does not include internal repository links, APIs, secret configuration, private data, customer information, or proprietary implementation details.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/self-improving-loop.svg'} alt="A self-improving design-agent loop moving from layout repair to content grounding" class="hero-visual" />
+
+## Core Claim
+
+A design-oriented long-horizon agent does not keep improving because the same prompt is repeated with more hope, or because every judgment is delegated to a stronger model. A useful loop changes the system itself:
+
+- the artifact contract;
+- the reference pool;
+- the evaluator rubric;
+- the generator output structure;
+- the deterministic compiler;
+- the repair route;
+- the regression set.
+
+If every round only says “make it look better,” the system will not converge reliably. As the loop matures, human preferences should become more specific contracts, metrics, and failure reports.
+
+## Two Nested Harnesses
+
+The self-improving loop has two layers.
+
+| Layer | Object | Input Signal | Output Action | Success Criterion |
+|---|---|---|---|---|
+| Design harness | one poster, slide deck, web page, or video artifact | brief, source pack, rendered preview, DOM, screenshot, rubric | diagnose artifact failures and propose repair routes | the current artifact becomes more readable, accurate, and editable |
+| Coding-agent harness | the whole design pipeline | benchmark report, failure clusters, regression result, human preference calibration | modify generator, compiler, evaluator, reference pool, and metrics | the next task batch becomes more stable, without old failures returning |
+
+The inner loop answers “how should this artifact be repaired?” The outer loop answers “why does the system keep making this class of mistake?” If only the inner loop exists, the process becomes manual patching. If only the outer loop exists, it loses the artifact-level failure signals needed for grounded improvement.
+
+## Iteration Is Bottleneck Migration
+
+The KM notes suggest a staged pattern.
+
+| Stage | Main Goal | Exposed Problem | How the System Should Change |
+|---|---|---|---|
+| R1-R3 | Make the artifact render and reduce obvious overlap | unstable layout, overlap, low visual density | add render checks, layout lint, and basic contracts |
+| R4-R6 | Recalibrate the reward target | references overemphasize screenshot walls, so the system treats image area as quality | split references by artifact archetype and lower visual-area weight |
+| R7-R8 | Add refiner and panel polish | global repair misses local whitespace, cropping, and panel density | run global refinement first, then panel-level inspection |
+| R9 | Shrink the model’s one-shot output surface | large DesignSpec objects drift and partially regress | emit smaller modules and assemble them with a deterministic compiler |
+| R10+ | Improve content accuracy and deduplication | layout converges, but text repeats and source grounding is weak | add a Section-to-Panel Content Compiler plus factual and dedupe metrics |
+
+This migration matters. Early failures look like layout problems. Midway, the real issue becomes evaluation direction. Later, it becomes content allocation and factual grounding. If the evaluator only returns one score, the agent cannot tell that the bottleneck has moved.
+
+## Where the Loop Goes Wrong
+
+### 1. Treating visual area as quality
+
+More images, larger screenshots, and fuller color blocks do not automatically mean a better academic artifact. For paper2poster, high-value content often lives in native text, tables, formulas, model cards, leaderboards, ablations, and limitations.
+
+The reference pool should not only contain visually striking examples. It should separate:
+
+- text-heavy editorial synthesis;
+- theory boards;
+- benchmark/table-first posters;
+- GUI or video qualitative cases;
+- model-card style dense artifacts.
+
+Each archetype needs its own density prior and visual prior.
+
+### 2. DOM looks full while the screenshot is still empty
+
+A common failure mode is that programmatic DOM checks think a region is full because it contains borders, dividers, formula cards, or captions. But the rendered screenshot still shows large low-information whitespace.
+
+This means verification cannot rely on DOM and CSS boxes alone. It needs at least three signal layers:
+
+| Signal | What It Catches | What It Misses |
+|---|---|---|
+| DOM / source check | structure, element count, editability, missing assets | visual emptiness, bad cropping, reading path |
+| Screenshot QA | overlap, whitespace, font size, chart readability | source grounding, factual accuracy |
+| Semantic verifier | repetition, mismatch, source coverage, claim-evidence relation | visual taste and spatial use |
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/evaluation-matrix.svg'} alt="Evaluation matrix separating benchmark, verification, and regression signals" class="hero-visual" />
+
+### 3. Metrics that are too broad or too narrow
+
+If the evaluator only says “information density is too low,” the generator may stuff text everywhere. If the metric says “every panel must contain many words,” it may repeat the same point.
+
+A steadier evaluator separates outcome constraints from failure explanations:
+
+- Outcome constraint: each panel should have a clear claim, supporting evidence, and takeaway.
+- Failure explanation: this panel repeats another panel, or it uses evidence from the wrong source pack.
+- Repair route: redistribute source packs, not blindly add text.
+
+## Why a Content Compiler Is Needed
+
+One key transition is that the planner should not freely pull from a global bullet pool for every panel. That causes two failures:
+
+1. each panel appears populated, but core information repeats;
+2. source evidence gets assigned to the wrong section, weakening grounding.
+
+A more stable approach first splits the paper into mutually exclusive information packs:
+
+- Introduction;
+- Method;
+- Experiments;
+- Ablation;
+- Limitations;
+- Figures;
+- Tables.
+
+Then each panel can only use its own source pack. This is how panels can be dense without repeating each other.
+
+I would call this middle layer a **Section-to-Panel Content Compiler**. It is not just a summarizer. It maps source evidence onto artifact layout.
+
+## Panel Grammar Library
+
+The content compiler decides which source pack each panel can use. But different panels also need different grammar. A benchmark panel should not look like a method panel, and a figure-evidence panel should not look like a contribution grid.
+
+| Panel Type | Best For | Suggested Structure | What the Evaluator Should Check |
+|---|---|---|---|
+| Contribution grid | 3-5 core contributions | short claim + why it matters + evidence tag | whether core contributions are covered without repeating later panels |
+| Method flow | method steps and module relations | step blocks, arrows, input/output labels | whether steps have causal order and consistent terms |
+| Benchmark table | main experimental results | native table, metric bands, best/second-best highlights | whether numbers are sourced and headers are readable |
+| Figure evidence | key figures and explanations | figure crop + caption + takeaway | whether the figure supports the claim and text does more than repeat the caption |
+| Limitation panel | boundaries, failures, and future work | limitation bullet + implication | whether limitations come from the source instead of being invented |
+| Dataset/model card | data, model, and training setup | compact facts, badges, small table | whether information is structured instead of becoming long prose |
+
+This library prevents the evaluator from only saying “add more words” or “add more images.” It should know what each panel type is supposed to look like, and how that type should be repaired.
+
+## The Real Role of Humans
+
+This loop does not make humans irrelevant. It moves human work earlier.
+
+| Human Role | Agent Role |
+|---|---|
+| define the task and desired artifact | build the pipeline from the contract |
+| collect good and bad references | turn references into evaluator-readable signals |
+| judge whether evaluator output aligns with human taste | modify rubric, failure report, and repair route |
+| identify new failure modes | add them to the regression set and rerun |
+| choose the next optimization stage | execute, log, compare, and regress |
+
+This is similar to applying human feedback at the system level rather than directly updating model weights. When humans say “this evaluator is not aligned,” a coding agent can revise the evaluator, checker, compiler, or repair route, then test the change on a fixed sample set.
+
+## A Practical Loop
+
+The loop I currently trust looks like this:
+
+1. **Define artifact contract**: specify the output type, structure, and quality floor.
+2. **Generate first artifact**: produce HTML or another renderable intermediate representation.
+3. **Render and inspect**: produce screenshots, DOM, exports, and final-artifact checks.
+4. **Produce failure report**: attribute failures by stage instead of returning one score.
+5. **Choose repair route**: decide whether to change content allocation, layout, style, asset selection, or evaluator.
+6. **Patch system, not only output**: turn repairs into pipeline or harness changes when possible.
+7. **Run regression set**: check that old failures did not return.
+
+Step 6 is the important one. Fixing one artifact can be useful, but it may not make the system stronger. A long-horizon agentic system should make the next run more stable.
+
+## Implications for Paper2Any
+
+Posters, slides, web pages, and video scenes can share a lot: HTML rendering, asset management, screenshot checks, VLM critique, source grounding, and content compilation. But they cannot share one identical rubric.
+
+| Artifact | Main Quality Problem | Special Checks |
+|---|---|---|
+| Poster | density, image-text relation, reading path | panel allocation, type hierarchy, figure evidence |
+| Slides | pacing, narrative sequence, per-slide load | slide message, transition logic, speaker flow |
+| Webpage | information expansion, interaction, responsiveness | DOM structure, links, mobile readability |
+| Video scene | timeline, shot rhythm, asset sync | duration, captions, visual continuity |
+
+This is why I prefer an HTML-first interface: different artifacts can share rendering and checking infrastructure while keeping their own rubrics.
+
+## Summary
+
+The key to self-improving design agents is not automatically producing many versions. It is making every version produce a more specific system diagnosis.
+
+When the system evolves from “layout is bad” to “the Method panel repeats the Introduction source pack, figure relevance is overweighted against semantic synthesis, and the DOM is full while the screenshot still has low-information whitespace,” the agent finally has something actionable to change.
+
+So my current understanding of long-horizon multimodal agents is: **they are not just models with long context; they are engineering environments that turn failures into the next system improvement**.

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Self-improving design agent loop</title>
+  <desc id="desc">A staged diagram showing how a design agent loop moves from layout repair to content grounding and evaluator calibration.</desc>
+  <rect width="1200" height="680" fill="#f8fbfa"/>
+  <rect x="50" y="50" width="1100" height="580" rx="22" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="88" y="104" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">From One-Shot Generation to Self-Improving Agents</text>
+  <text x="88" y="138" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">The loop improves the system, not just the prompt: contract, generator, verifier, repair route, and regression set.</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3a514d"/>
+    </marker>
+  </defs>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="92" y="214" width="180" height="116" rx="14" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="182" y="250" text-anchor="middle" font-size="18" font-weight="700" fill="#0b4c40">R1-R3</text>
+    <text x="182" y="279" text-anchor="middle" font-size="15" fill="#31524b">Make it render</text>
+    <text x="182" y="302" text-anchor="middle" font-size="13" fill="#31524b">layout, overlap,</text>
+    <text x="182" y="321" text-anchor="middle" font-size="13" fill="#31524b">basic density</text>
+
+    <rect x="322" y="214" width="180" height="116" rx="14" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="412" y="250" text-anchor="middle" font-size="18" font-weight="700" fill="#213f8b">R4-R6</text>
+    <text x="412" y="279" text-anchor="middle" font-size="15" fill="#405078">Fix reward target</text>
+    <text x="412" y="302" text-anchor="middle" font-size="13" fill="#405078">references, density,</text>
+    <text x="412" y="321" text-anchor="middle" font-size="13" fill="#405078">visual area weights</text>
+
+    <rect x="552" y="214" width="180" height="116" rx="14" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="642" y="250" text-anchor="middle" font-size="18" font-weight="700" fill="#7b3f13">R7-R8</text>
+    <text x="642" y="279" text-anchor="middle" font-size="15" fill="#6d543f">Add refiner</text>
+    <text x="642" y="302" text-anchor="middle" font-size="13" fill="#6d543f">global pass plus</text>
+    <text x="642" y="321" text-anchor="middle" font-size="13" fill="#6d543f">panel polish</text>
+
+    <rect x="782" y="214" width="180" height="116" rx="14" fill="#f1edf8" stroke="#8467b8" stroke-width="2"/>
+    <text x="872" y="250" text-anchor="middle" font-size="18" font-weight="700" fill="#513c7e">R9</text>
+    <text x="872" y="279" text-anchor="middle" font-size="15" fill="#5f536f">Compile modules</text>
+    <text x="872" y="302" text-anchor="middle" font-size="13" fill="#5f536f">smaller outputs,</text>
+    <text x="872" y="321" text-anchor="middle" font-size="13" fill="#5f536f">deterministic merge</text>
+
+    <rect x="1012" y="214" width="96" height="116" rx="14" fill="#e9f2f5" stroke="#2e6f87" stroke-width="2"/>
+    <text x="1060" y="250" text-anchor="middle" font-size="18" font-weight="700" fill="#1d4b5c">R10+</text>
+    <text x="1060" y="279" text-anchor="middle" font-size="14" fill="#375866">Ground</text>
+    <text x="1060" y="302" text-anchor="middle" font-size="13" fill="#375866">facts and</text>
+    <text x="1060" y="321" text-anchor="middle" font-size="13" fill="#375866">dedupe</text>
+
+    <path d="M272 272 H322" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M502 272 H552" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M732 272 H782" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M962 272 H1012" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <rect x="126" y="410" width="948" height="116" rx="16" fill="#fbfdfc" stroke="#d5dfdd" stroke-width="2"/>
+    <text x="600" y="445" text-anchor="middle" font-size="18" font-weight="700" fill="#14302b">What improves over time</text>
+    <text x="224" y="484" text-anchor="middle" font-size="14" fill="#52625f">artifact contract</text>
+    <text x="412" y="484" text-anchor="middle" font-size="14" fill="#52625f">reference pool</text>
+    <text x="600" y="484" text-anchor="middle" font-size="14" fill="#52625f">verifier rubric</text>
+    <text x="788" y="484" text-anchor="middle" font-size="14" fill="#52625f">repair route</text>
+    <text x="976" y="484" text-anchor="middle" font-size="14" fill="#52625f">regression set</text>
+
+    <path d="M224 466 v-30" stroke="#168064" stroke-width="3"/>
+    <path d="M412 466 v-30" stroke="#5278d6" stroke-width="3"/>
+    <path d="M600 466 v-30" stroke="#c8712c" stroke-width="3"/>
+    <path d="M788 466 v-30" stroke="#8467b8" stroke-width="3"/>
+    <path d="M976 466 v-30" stroke="#2e6f87" stroke-width="3"/>
+
+    <text x="600" y="580" text-anchor="middle" font-size="15" fill="#52625f">A good loop makes failure more specific after every round.</text>
+  </g>
+</svg>

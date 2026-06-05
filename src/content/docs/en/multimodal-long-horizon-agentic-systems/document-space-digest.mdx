@@ -44,7 +44,7 @@ The center of gravity is clear: **how to turn multimodal design generation from 
 | Weekly Discussions | Parent directory for weekly sync notes. | Use as a timeline, not a standalone article. |
 | Content Synthesis | Writing frame for a project/paper: not a standalone design agent, but a design-domain Codex/Claude Code style harness. | Public positioning should emphasize design harness instead of a closed product or company project. |
 | Mobile-Controlled Remote Workflow | Mobile supervision of remote coding agents, worktree management, and asynchronous operations. | Long-horizon agent systems also need an operational interface, not only model capability. |
-| Company API in .env | Internal API and model configuration. | Excluded from public content. Only abstract the lesson: runtime configuration must be isolated, sanitized, and replaceable. |
+| Runtime configuration note | Internal model and service configuration. | Excluded from public content. Only abstract the lesson: runtime configuration must be isolated, sanitized, and replaceable. |
 | Whole-System Harness Improvements | Breaks human quality judgment into planning constraints, deterministic QA, independent evaluator, stage-aware repair, and benchmark loop. | Harness turns “this looks wrong” into failure signals agents can act on. |
 | Benchmark Generation Visualization | Visual comparison of old and new generations across paper categories. | Benchmark visualization helps reveal style convergence, density issues, and category bias. |
 | Comparison with Other Design Agents | Compares outputs from different design agents under one paper2poster prompt. | Comparison should inspect constraints, artifact type, editability, faithfulness, and failure modes rather than becoming a leaderboard. |
@@ -89,11 +89,17 @@ Early issues are layout, overlap, and rendering. Later issues become text repeti
 | Version-selection previews | Version Selection | Convert into selection criteria instead of embedding raw images |
 | Remote workflow screenshots | Mobile-Controlled Remote Workflow | Redraw as an operation flow |
 
+Public-safe figures already recreated:
+
+- `harness-loop.svg`: the multimodal long-horizon agent harness loop.
+- `paper2any-pipeline.svg`: an HTML-first Paper2Any pipeline.
+- `self-improving-loop.svg`: bottleneck migration during automatic iteration.
+- `evaluation-matrix.svg`: the benchmark, verification, and regression matrix.
+
 ## Ready-to-Expand Articles
 
 - [Why Long-Horizon Multimodal Agents Need a Harness](./harness-centered-design-agents/)
-- From one-shot generation to self-improving design agents.
+- [From one-shot generation to self-improving design agents](./self-improving-design-agents/).
 - Poster generation as an iterative systems problem.
 - Verifiers and benchmarks for multimodal generation systems.
 - Why slides, posters, web pages, and videos can share an HTML base but need different rubrics.
-

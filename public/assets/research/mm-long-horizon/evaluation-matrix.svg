@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">Benchmark and verification matrix</title>
+  <desc id="desc">A matrix separating benchmark comparison from artifact verification across semantic, structural, visual, and workflow signals.</desc>
+  <rect width="1200" height="620" fill="#f8fbfa"/>
+  <rect x="54" y="54" width="1092" height="512" rx="20" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="86" y="104" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">Evaluation Matrix for Artifact-Producing Agents</text>
+  <text x="86" y="138" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">Benchmark answers who is better. Verification answers whether this artifact is deliverable.</text>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="170" y="202" width="840" height="268" rx="14" fill="#fbfdfc" stroke="#d5dfdd"/>
+    <line x1="170" y1="269" x2="1010" y2="269" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="170" y1="336" x2="1010" y2="336" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="170" y1="403" x2="1010" y2="403" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="380" y1="202" x2="380" y2="470" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="590" y1="202" x2="590" y2="470" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="800" y1="202" x2="800" y2="470" stroke="#d5dfdd" stroke-width="2"/>
+
+    <text x="275" y="241" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Semantic</text>
+    <text x="485" y="241" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Structural</text>
+    <text x="695" y="241" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Visual</text>
+    <text x="905" y="241" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Workflow</text>
+
+    <text x="100" y="310" text-anchor="middle" font-size="16" font-weight="700" fill="#168064">Benchmark</text>
+    <text x="100" y="377" text-anchor="middle" font-size="16" font-weight="700" fill="#8467b8">Verification</text>
+    <text x="100" y="444" text-anchor="middle" font-size="16" font-weight="700" fill="#c8712c">Regression</text>
+
+    <text x="275" y="309" text-anchor="middle" font-size="13" fill="#52625f">quiz, faithfulness</text>
+    <text x="485" y="309" text-anchor="middle" font-size="13" fill="#52625f">schema, coverage</text>
+    <text x="695" y="309" text-anchor="middle" font-size="13" fill="#52625f">rubric, samples</text>
+    <text x="905" y="309" text-anchor="middle" font-size="13" fill="#52625f">cost, time, success</text>
+
+    <text x="275" y="376" text-anchor="middle" font-size="13" fill="#52625f">source grounding</text>
+    <text x="485" y="376" text-anchor="middle" font-size="13" fill="#52625f">DOM, PPT, PDF</text>
+    <text x="695" y="376" text-anchor="middle" font-size="13" fill="#52625f">screenshot QA</text>
+    <text x="905" y="376" text-anchor="middle" font-size="13" fill="#52625f">editable output</text>
+
+    <text x="275" y="443" text-anchor="middle" font-size="13" fill="#52625f">no repeated claims</text>
+    <text x="485" y="443" text-anchor="middle" font-size="13" fill="#52625f">stable compiler</text>
+    <text x="695" y="443" text-anchor="middle" font-size="13" fill="#52625f">no overlap drift</text>
+    <text x="905" y="443" text-anchor="middle" font-size="13" fill="#52625f">fixed gold set</text>
+
+    <text x="600" y="526" text-anchor="middle" font-size="15" fill="#52625f">A robust harness needs all rows. One row alone creates blind spots.</text>
+  </g>
+</svg>

@@ -1,0 +1,19 @@
+---
+interface Props {
+  paper?: string;
+  authors?: string;
+  venue?: string;
+  link?: string;
+  status?: string;
+}
+
+const { paper, authors, venue, link, status = 'reading' } = Astro.props;
+---
+
+<section class="reading-meta">
+  {paper && <div><span>Paper</span><strong>{paper}</strong></div>}
+  {authors && <div><span>Authors</span><strong>{authors}</strong></div>}
+  {venue && <div><span>Venue</span><strong>{venue}</strong></div>}
+  <div><span>Status</span><strong>{status}</strong></div>
+  {link && <a href={link}>Open source</a>}
+</section>

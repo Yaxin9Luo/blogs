@@ -1,0 +1,61 @@
+---
+title: 笔记入口
+description: 个人研究笔记、工程日志、实习复盘和长期想法的统一入口。
+date: 2026-06-05
+tags: [index, knowledge-base]
+status: active
+type: meta
+sidebar:
+  order: 1
+  label: 首页
+---
+
+import Insight from '../../components/Insight.astro';
+
+<section class="hero">
+  <div>
+    <p class="eyebrow">Personal Research Notebook</p>
+    <h1>把研究、工程和经历沉淀成一个长期可维护的知识系统。</h1>
+    <div class="tagline">
+      这里不是普通日记流，而是一个可复用的技术档案：论文怎么读、项目怎么做、实习里学到了什么、哪些想法值得继续追。
+    </div>
+  </div>
+  <img src={import.meta.env.BASE_URL + 'knowledge-map.svg'} alt="研究、工程、实习、想法和长文之间的知识地图" class="hero-visual" />
+</section>
+
+<Insight title="站点原则" tone="research">
+每篇文章先保留真实问题和判断链路，再补充背景、推导、代码、经验和反思。这样以后回看时，能看到当时为什么这么想，而不仅是一个结论。
+</Insight>
+
+## 内容分区
+
+<div class="knowledge-grid">
+  <a href="./research/">
+    <strong>Research Notes</strong>
+    <span>论文阅读、模型理解、研究问题和可能的实验。</span>
+  </a>
+  <a href="./engineering/">
+    <strong>Engineering Logs</strong>
+    <span>项目实现、调试记录、系统设计和工程取舍。</span>
+  </a>
+  <a href="./internship/">
+    <strong>Internship</strong>
+    <span>实习项目、协作经验、技术成长和阶段复盘。</span>
+  </a>
+  <a href="./ideas/">
+    <strong>Ideas</strong>
+    <span>还没完全成型但值得保存的研究直觉和产品想法。</span>
+  </a>
+  <a href="./essays/">
+    <strong>Essays</strong>
+    <span>长期判断、方法论、阅读和职业思考。</span>
+  </a>
+</div>
+
+## 写作工作流
+
+1. 先写骨架：背景、问题、核心判断、证据、反思。
+2. 再扩正文：把上下文补齐，把关键概念讲清楚。
+3. 最后做维护：补 tags、状态、链接和下一步问题。
+
+你可以把每篇文章看成一个持续迭代的工程对象：`seed` 是想法种子，`active` 是正在扩写，`polished` 是可以公开传播，`archived` 是暂时冻结。

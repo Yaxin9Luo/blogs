@@ -1,0 +1,49 @@
+---
+title: Internship
+description: 实习项目、协作经验和阶段复盘。
+date: 2026-06-05
+tags: [internship]
+status: active
+type: internship
+sidebar:
+  order: 1
+  label: 索引
+---
+
+import ExperienceTimeline from '../../../components/ExperienceTimeline.astro';
+import Insight from '../../../components/Insight.astro';
+
+实习复盘建议按项目和能力拆开，而不是只按时间回忆。这样未来写简历、面试、申请或总结时，可以直接复用材料。
+
+<ExperienceTimeline
+  items={[
+    {
+      period: 'Week 1-2',
+      title: '进入问题域',
+      detail: '整理项目背景、数据流、模型接口和已有失败案例。'
+    },
+    {
+      period: 'Week 3-6',
+      title: '负责一个可交付模块',
+      detail: '把任务拆成可验证的里程碑，记录关键技术判断。'
+    },
+    {
+      period: 'Week 7+',
+      title: '沉淀复盘',
+      detail: '总结技术能力、协作方式、文档习惯和下一阶段短板。'
+    }
+  ]}
+/>
+
+<Insight title="复盘重点" tone="reflection">
+不要只写“我做了什么”，要写“我原来怎么理解，后来为什么改变，以及这个变化以后还能复用到哪里”。
+</Insight>
+
+## 实习文章结构
+
+- 项目背景
+- 自己负责的边界
+- 技术方案和取舍
+- 最关键的坑
+- 与 mentor/团队协作方式
+- 对自己能力模型的更新

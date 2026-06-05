@@ -1,0 +1,34 @@
+<svg width="1200" height="520" viewBox="0 0 1200 520" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Personal knowledge map</title>
+  <desc id="desc">A structured map connecting research, engineering, internship, ideas, and essays.</desc>
+  <rect width="1200" height="520" rx="28" fill="#111716"/>
+  <path d="M156 390C298 273 442 333 594 232C747 131 912 152 1044 87" stroke="#168064" stroke-width="8" stroke-linecap="round"/>
+  <path d="M160 136C310 220 454 164 608 252C762 339 907 309 1042 421" stroke="#2F73D6" stroke-width="6" stroke-linecap="round" stroke-dasharray="18 18"/>
+  <g fill="#FBFCFB">
+    <circle cx="186" cy="368" r="26"/>
+    <circle cx="354" cy="304" r="22"/>
+    <circle cx="594" cy="232" r="34"/>
+    <circle cx="796" cy="164" r="22"/>
+    <circle cx="1030" cy="94" r="26"/>
+  </g>
+  <g fill="#C55A31">
+    <circle cx="200" cy="158" r="18"/>
+    <circle cx="432" cy="174" r="18"/>
+    <circle cx="705" cy="306" r="18"/>
+    <circle cx="1008" cy="404" r="18"/>
+  </g>
+  <g font-family="Inter, system-ui, sans-serif" font-weight="700" fill="#FBFCFB">
+    <text x="110" y="454" font-size="34">Research</text>
+    <text x="301" y="257" font-size="30">Engineering</text>
+    <text x="520" y="317" font-size="38">Notebook</text>
+    <text x="746" y="122" font-size="30">Internship</text>
+    <text x="973" y="166" font-size="34">Ideas</text>
+  </g>
+  <g font-family="Inter, system-ui, sans-serif" fill="#9AA9A6">
+    <text x="110" y="490" font-size="22">papers, models, notes</text>
+    <text x="301" y="285" font-size="20">systems and code</text>
+    <text x="520" y="349" font-size="22">one durable archive</text>
+    <text x="746" y="150" font-size="20">projects and lessons</text>
+    <text x="973" y="196" font-size="22">long-term thinking</text>
+  </g>
+</svg>

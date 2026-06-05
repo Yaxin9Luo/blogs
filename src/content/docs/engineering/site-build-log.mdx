@@ -1,0 +1,76 @@
+---
+title: 本站搭建执行方案
+description: Astro + Starlight + MDX + Pagefind + GitHub Pages 的第一版落地计划。
+date: 2026-06-05
+tags: [astro, starlight, mdx, github-pages]
+status: active
+type: engineering
+sidebar:
+  order: 2
+  label: 本站搭建方案
+---
+
+import Insight from '../../../components/Insight.astro';
+
+这篇记录用于约束本站第一阶段的技术路线。目标不是一次性做成复杂个人主页，而是先搭一个稳定、可写、可部署、可持续扩展的技术文档站。
+
+## 目标
+
+第一版只解决四件事：
+
+1. 能用 MDX 写研究笔记、工程日志、实习复盘和想法。
+2. 能用 Astro 组件扩展局部版式，而不是每篇手写重复 HTML。
+3. 能构建成静态 HTML，并通过 GitHub Pages 发布。
+4. 能生成 Pagefind 搜索索引，让中文内容可检索。
+
+<Insight title="核心取舍" tone="engineering">
+源码不追求纯 HTML 文件，而是追求 HTML-first 的写作体验：正文用 MDX，特殊结构用 Astro 组件，最终产物是静态 HTML。这样既有设计自由度，也不会牺牲长期维护性。
+</Insight>
+
+## 技术栈
+
+- **Astro**：静态站点构建、组件系统和部署基础。
+- **Starlight**：技术文档外壳，提供侧边栏、目录、搜索、主题和内容集合。
+- **MDX**：文章主体格式，支持 Markdown 和组件混写。
+- **Pagefind**：构建后生成静态搜索索引。
+- **GitHub Pages**：免费静态托管和自动部署。
+
+## 信息架构
+
+```text
+src/content/docs/
+  index.mdx
+  research/
+  engineering/
+  internship/
+  ideas/
+  essays/
+```
+
+每篇文章使用统一 frontmatter：
+
+```yaml
+title:
+description:
+date:
+tags: []
+status: seed | active | polished | archived
+type: research | engineering | internship | idea | essay | meta
+```
+
+## 迭代顺序
+
+1. **原型期**：确定栏目、模板、组件和部署方式。
+2. **内容期**：先写 10-15 篇真实文章，验证栏目是否够用。
+3. **设计期**：根据真实内容调整首页、列表、卡片和文章模板。
+4. **维护期**：加入 RSS、标签页、近期更新或个人项目索引。
+
+## 暂不做的事
+
+- 不接 CMS。
+- 不加评论系统。
+- 不做复杂标签归档。
+- 不做过度视觉设计。
+- 不为单个页面写一次性布局。
+
+这些功能都可以以后补，但第一版不应该阻塞“持续写作”。

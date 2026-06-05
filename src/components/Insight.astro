@@ -1,0 +1,15 @@
+---
+interface Props {
+  title?: string;
+  tone?: 'research' | 'engineering' | 'reflection';
+}
+
+const { title = 'Insight', tone = 'research' } = Astro.props;
+---
+
+<aside class={`insight insight-${tone}`}>
+  <div class="insight-title">{title}</div>
+  <div class="insight-body">
+    <slot />
+  </div>
+</aside>

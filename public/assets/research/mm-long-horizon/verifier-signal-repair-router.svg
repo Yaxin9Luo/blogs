@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">Verifier signal repair router</title>
+  <desc id="desc">A sanitized diagram mapping verifier signals to failure owners and concrete repair actions.</desc>
+  <rect width="1200" height="620" fill="#f8fbfa"/>
+  <rect x="54" y="46" width="1092" height="526" rx="22" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="86" y="98" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">From Verifier Signal to Repair Route</text>
+  <text x="86" y="132" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">A verifier is useful only when its finding changes the next system action.</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3a514d"/>
+    </marker>
+  </defs>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="94" y="168" width="288" height="336" rx="16" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="238" y="206" text-anchor="middle" font-size="20" font-weight="700" fill="#213f8b">Verifier Signals</text>
+    <rect x="130" y="238" width="216" height="34" rx="10" fill="#ffffff" stroke="#bccbf0"/>
+    <text x="238" y="260" text-anchor="middle" font-size="14" fill="#405078">unsupported claim</text>
+    <rect x="130" y="286" width="216" height="34" rx="10" fill="#ffffff" stroke="#bccbf0"/>
+    <text x="238" y="308" text-anchor="middle" font-size="14" fill="#405078">layout overlap</text>
+    <rect x="130" y="334" width="216" height="34" rx="10" fill="#ffffff" stroke="#bccbf0"/>
+    <text x="238" y="356" text-anchor="middle" font-size="14" fill="#405078">missing source</text>
+    <rect x="130" y="382" width="216" height="34" rx="10" fill="#ffffff" stroke="#bccbf0"/>
+    <text x="238" y="404" text-anchor="middle" font-size="14" fill="#405078">weak visual evidence</text>
+    <rect x="130" y="430" width="216" height="34" rx="10" fill="#ffffff" stroke="#bccbf0"/>
+    <text x="238" y="452" text-anchor="middle" font-size="14" fill="#405078">regression drift</text>
+
+    <rect x="456" y="168" width="288" height="336" rx="16" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="600" y="206" text-anchor="middle" font-size="20" font-weight="700" fill="#7b3f13">Failure Owner</text>
+    <rect x="492" y="238" width="216" height="34" rx="10" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="600" y="260" text-anchor="middle" font-size="14" fill="#6d543f">content compiler</text>
+    <rect x="492" y="286" width="216" height="34" rx="10" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="600" y="308" text-anchor="middle" font-size="14" fill="#6d543f">artifact contract</text>
+    <rect x="492" y="334" width="216" height="34" rx="10" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="600" y="356" text-anchor="middle" font-size="14" fill="#6d543f">layout engine</text>
+    <rect x="492" y="382" width="216" height="34" rx="10" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="600" y="404" text-anchor="middle" font-size="14" fill="#6d543f">rubric / reference pool</text>
+    <rect x="492" y="430" width="216" height="34" rx="10" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="600" y="452" text-anchor="middle" font-size="14" fill="#6d543f">regression set</text>
+
+    <rect x="818" y="168" width="288" height="336" rx="16" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="962" y="206" text-anchor="middle" font-size="20" font-weight="700" fill="#0b4c40">Repair Action</text>
+    <rect x="854" y="238" width="216" height="34" rx="10" fill="#ffffff" stroke="#b9dcd2"/>
+    <text x="962" y="260" text-anchor="middle" font-size="14" fill="#31524b">reassign evidence</text>
+    <rect x="854" y="286" width="216" height="34" rx="10" fill="#ffffff" stroke="#b9dcd2"/>
+    <text x="962" y="308" text-anchor="middle" font-size="14" fill="#31524b">tighten contract</text>
+    <rect x="854" y="334" width="216" height="34" rx="10" fill="#ffffff" stroke="#b9dcd2"/>
+    <text x="962" y="356" text-anchor="middle" font-size="14" fill="#31524b">patch renderer</text>
+    <rect x="854" y="382" width="216" height="34" rx="10" fill="#ffffff" stroke="#b9dcd2"/>
+    <text x="962" y="404" text-anchor="middle" font-size="14" fill="#31524b">calibrate metric</text>
+    <rect x="854" y="430" width="216" height="34" rx="10" fill="#ffffff" stroke="#b9dcd2"/>
+    <text x="962" y="452" text-anchor="middle" font-size="14" fill="#31524b">add fixed case</text>
+
+    <path d="M382 336 H456" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M744 336 H818" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="419" y="319" text-anchor="middle" font-size="13" fill="#52625f">diagnose</text>
+    <text x="781" y="319" text-anchor="middle" font-size="13" fill="#52625f">route</text>
+  </g>
+</svg>

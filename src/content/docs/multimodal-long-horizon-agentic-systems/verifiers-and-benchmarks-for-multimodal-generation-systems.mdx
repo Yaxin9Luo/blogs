@@ -1,0 +1,172 @@
+---
+title: Verifier 与 Benchmark：多模态生成系统到底该怎么评估
+description: 总结多模态 artifact 生成系统里的 verification、benchmark、regression 三层评价，以及它们如何影响系统优化方向。
+date: 2026-06-05
+tags: [verification, benchmark, evaluation, multimodal-generation]
+status: active
+type: research
+sidebar:
+  order: 6
+  label: 评测与 Benchmark
+---
+
+> 个人声明：本文是个人研究记录，基于公开资料、个人 KM notes 和已脱敏的项目经验整理，不代表任何公司、团队或实习单位的官方观点。文中不包含内部仓库地址、API、密钥配置、未公开数据、客户信息或专有实现细节。
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/verifier-benchmark-evaluation-stack.svg'} alt="多模态生成系统中 verifier、benchmark 和 regression memory 的评价栈示意图" class="hero-visual" />
+
+## 核心判断
+
+多模态生成系统的评价不是一个总分，而是一套会改变系统优化方向的反馈机制。
+
+如果 evaluator 只输出“7.5/10”，agent 很难知道下一轮该改哪里。更有用的评价系统应该同时服务三件事：
+
+- **Verification**：判断单个 artifact 能不能交付。
+- **Benchmark**：比较一个系统在一批任务上的稳定能力。
+- **Regression**：确认一次系统修改没有让旧失败回来。
+
+这三件事可以共享很多底层信号，但不能混成一个评价入口。混在一起之后，系统往往会出现两种坏结果：在线修复不知道该改哪个模块，离线 benchmark 又变成漂亮 demo 排行榜。
+
+## 三层评价不是一回事
+
+我现在更愿意把 evaluation 拆成三层。
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/evaluation-matrix.svg'} alt="Benchmark、verification 和 regression 在语义、结构、视觉、工作流信号上的区别" class="hero-visual" />
+
+| 层级 | 关心的问题 | 输入 | 输出 |
+|---|---|---|---|
+| Verification | 这个 artifact 能不能直接给人用？ | 单个 artifact、source pack、渲染结果、contract | pass/fail、质量问题、repair route |
+| Benchmark | 这个系统在任务分布上强不强？ | 固定任务集、统一输入约束、统一 evaluator | 横向比较、失败分布、版本变化 |
+| Regression | 这次系统修改有没有破坏旧能力？ | 固定难例、旧失败簇、关键质量门槛 | 是否回归、哪个 owner 出问题 |
+
+Verifier 更像上线前检查；benchmark 更像系统能力画像；regression 更像长期演化的保险丝。
+
+## 单个产物怎么判定可交付
+
+Artifact-level verification 要尽量靠近最终产物，而不是只检查生成过程中的中间文本。
+
+| 信号 | 适合检查什么 | 盲点 |
+|---|---|---|
+| Deterministic checks | 文件是否存在、链接是否断、元素是否缺失、导出是否成功 | 主观质量、阅读路径、事实准确性 |
+| Rendered screenshot QA | overlap、裁切、字体大小、低信息密度白区、视觉层级 | source grounding、数字是否编造 |
+| Structural inspection | DOM/PPT/PDF 结构、可编辑性、source id、panel coverage | 人眼是否觉得自然、图文关系是否强 |
+| Semantic verifier | claim 是否有来源、内容是否重复、信息是否回答 brief | 视觉美感、布局舒适度 |
+| Human-readability proxy | 人类还需要多少手动工作才能使用 | 难以完全自动化，需要校准 |
+
+这里的经验是：**任何看起来像最终产物的东西，都要真的渲染成最终产物附近的证据再评估**。HTML 要截图，PPT 要看 slide image 或导出，PDF 要看页面，video 要看时间轴上的关键帧和字幕。只看源文件会漏掉太多视觉问题。
+
+## Rubric 不能跨 Artifact 硬套
+
+Paper2Any 的底座可以共用 HTML、截图、导出、verifier 和 benchmark infrastructure，但 rubric 不能完全共用。
+
+| Artifact | 主要质量问题 | 评价权重应该偏向 |
+|---|---|---|
+| Poster | 信息密度、图文证据、阅读路径、表格重建 | panel coverage、source fidelity、visual hierarchy |
+| Slides | 讲述节奏、单页负载、前后逻辑 | slide message、speaker flow、progressive disclosure |
+| Web page | 信息展开、响应式、链接和交互 | DOM structure、mobile readability、navigation |
+| Video scene | 时间轴、字幕、镜头连续性、叙事节奏 | frame readability、caption grounding、temporal coherence |
+
+同一个“好看”的指标放到不同 artifact 上会变形。poster 的高信息密度，放到 slides 里可能就是单页过载；webpage 的可展开内容，放到 video 里可能就是节奏拖慢。
+
+所以 evaluator 需要先知道 artifact contract，再选择对应 rubric。否则它会把所有产物都拉向同一种风格。
+
+## Reference Pool 是隐式 Reward Model
+
+Reference pool 不是装饰素材库。它会直接塑造系统认为“好”的方向。
+
+如果参考样本太偏 screenshot wall，generator 会学到“图越多越好”。如果好样本全是高密度文字板，系统又可能把“信息密度”误解成“到处塞字”。这类偏差比单个 prompt 更难发现，因为它会在每轮自动迭代里稳定放大。
+
+更稳的做法是按 artifact archetype 拆 reference：
+
+| Reference archetype | 适合校准什么 |
+|---|---|
+| Text-heavy synthesis | dense native text、表格、model card、章节组织 |
+| Theory board | theorem、assumption、proof intuition、少图但逻辑强 |
+| Benchmark/table-first | leaderboard、ablation、metric bands、表格可读性 |
+| GUI/video evidence | screenshot strip、process band、qualitative cases |
+| Multi-view matrix | matrix、graph wall、method/result split |
+
+这样 evaluator 才能说：“这个 artifact 不需要更多图片，它需要更像 benchmark/table-first；另一个 artifact 不是字少，而是 figure evidence 没有支撑 claim。”
+
+## Paper Quiz 和 Source Fidelity
+
+多模态 artifact 容易出现一种假成功：视觉上看起来专业，但数字、图表、claim 没有来源支撑。对研究型 artifact 来说，这比排版丑更严重。
+
+一种有用的信号是 **Paper Quiz**：让评估器只根据 artifact 可见内容回答与 source 相关的问题，并要求指出证据位置。它能检查 artifact 是否真的传达了关键信息，而不是只生成了漂亮壳子。
+
+但 Paper Quiz 不是万能指标。
+
+| 优点 | 风险 |
+|---|---|
+| 能测试信息是否被 artifact 传达 | 可能奖励把大量原文塞进页面 |
+| 能发现 claim 没有 evidence | 可能忽略视觉层级和可读性 |
+| 能压低“靠常识猜中”的分数 | 需要和 source fidelity、density、layout 一起看 |
+
+更合理的做法是把它作为 source fidelity 的一部分，而不是让它决定全部质量。
+
+## Manual Work Proxy
+
+我越来越觉得 manual work proxy 是一个很重要的评价维度：一个熟练人类还要花多少时间，才能把这个 artifact 变成可用版本？
+
+这个信号比“图多不多”“字多不多”更接近真实价值。
+
+| 系统动作 | 省下的人工工作 |
+|---|---|
+| 提炼 problem、method、evidence、takeaway | 读论文和抽取主线 |
+| 重建 native table 或 metric band | 手工整理实验结果 |
+| 绑定 figure、caption、takeaway、source | 建立图文证据关系 |
+| 设计 panel grammar 和阅读路径 | 学术表达和版式规划 |
+| 输出可编辑 HTML/PPT/PDF 结构 | 后续修改和复用 |
+
+如果系统只是把截图拼在一起，它省下的是低价值工作；如果它完成了内容重组和证据绑定，它才真正减少了人类的高成本工作。
+
+## 从分数到 Repair Route
+
+评价系统最重要的输出不是分数，而是 repair route。
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/verifier-signal-repair-router.svg'} alt="Verifier 信号如何定位 failure owner 并路由到修复动作" class="hero-visual" />
+
+| Verifier 发现 | Failure owner | 下一步动作 |
+|---|---|---|
+| claim 没有 source 支撑 | content compiler | 重新分配 evidence，收紧 source grounding |
+| DOM 占满但截图空 | layout / render checker | 增加 screenshot-level density check |
+| 多个 panel 重复同一结论 | panel planner | 改 source pack 分配和去重策略 |
+| 图片面积过高但信息弱 | reference pool / rubric | 降低 visual area 权重，换 archetype |
+| 修复后旧问题回来 | regression set | 把失败加入固定样本，复测旧 owner |
+
+如果 evaluator 只能给总分，coding agent 会到处乱改。如果它能指出 owner，agent 才能决定是修 content compiler、artifact contract、layout engine、rubric、reference pool，还是 regression set。
+
+## Benchmark 可视化不应该只是排行榜
+
+Benchmark 的结果当然可以有 main table，但 main table 不是全部。对 long-horizon multimodal agent 来说，更有价值的是失败模式分布和版本变化。
+
+我会更想看这些视图：
+
+| 可视化 | 它回答什么 |
+|---|---|
+| Failure cluster map | 系统主要失败在 content、layout、render、source grounding 还是 rubric？ |
+| Before/after grid | 新版本到底修了什么，是否只是风格变了？ |
+| Artifact-type breakdown | poster、slides、webpage、video 的失败是否不同？ |
+| Regression heatmap | 哪些旧问题在新版本里回来了？ |
+| Human calibration panel | evaluator 和人的判断在哪些维度不一致？ |
+
+这也是为什么 benchmark 不能只追求漂亮样本墙。样本墙适合直观看趋势，但如果没有 failure cluster 和 regression 信息，很容易变成展示页面，而不是研究工具。
+
+## 人类在评价闭环里的位置
+
+人类不应该每一轮都手工修 artifact。更有效的位置是校准评价系统：
+
+- 定义什么叫可交付。
+- 收集好坏 reference。
+- 指出 evaluator 哪些判断不 align。
+- 把新失败模式加入 regression。
+- 决定下一阶段优化是内容、视觉、布局、source fidelity，还是成本。
+
+这有点像把 feedback 用在系统层。人不是直接把某一张 poster 改好，而是让 evaluator、rubric、reference pool 和 regression set 变得更接近真实审美与真实使用需求。
+
+## 小结
+
+多模态生成系统的 evaluation 不应该被理解成“找一个强 judge 打分”。它是一套决定系统如何继续进化的接口。
+
+Verification 确认单个 artifact 能不能交付；benchmark 比较系统能力；regression 保护已经修好的能力。它们必须分开设计，但应该共享 rendered evidence、source grounding、failure report 和 human calibration。
+
+如果评价系统能把“分数低”翻译成“source fidelity 不足、figure evidence 权重错、HTML 渲染后低信息密度、旧 overlap 问题回归”，那么 long-horizon agent 才真正知道下一步该怎么改。

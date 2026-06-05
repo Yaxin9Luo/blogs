@@ -52,7 +52,7 @@ sidebar:
 | （Backup）路线1:人工去按拆分的问题和features迭代 | 空文档或备份入口。 | 可作为“人工迭代路线”在自优化文章里对照，不单独成文。 |
 | （主要）路线2: 让coding agent根据eval自动优化 | 记录十轮左右的 harness 迭代：reference pool、文本密度、panel compiler、重复率、content accuracy、模块化输出。 | 从一次性 DesignSpec 到 deterministic compiler，是长程系统稳定性的关键工程转折。 |
 | 每周同步-0525 | 记录排版密集、模块化输出、文本准确、memory 机制、content compiler 等进展。 | 当视觉布局收敛后，系统瓶颈会转向内容分配、事实准确和去重。 |
-| 每周同步-0601 | 记录 benchmark 类别、100 篇 paper 规划、poster 问题、slides/web/video 延伸、设计 memory。 | paper2any 可以共享 HTML/harness 底座，但每种 artifact 的 rubric 不同。 |
+| 每周同步-0601 | 记录 benchmark 类别、多类别固定样本池规划、poster 问题、slides/web/video 延伸、设计 memory。 | paper2any 可以共享 HTML/harness 底座，但每种 artifact 的 rubric 不同。 |
 | 每周同步-0608 | 周报模板占位。 | 不单独成文。 |
 | 版本挑选 | 多个 preview 版本对比。 | 适合写成“版本挑选不是审美投票，而是 benchmark sample selection”的方法论。 |
 | Harness Evolving Agent System经验 | 总结先搭 harness、再让 coding agent 迭代 pipeline；evaluator 可被人类反馈校准；HTML 是统一输出格式。 | 人类主要定义任务、正反例和评价对齐，agent 负责把这些反馈固化成系统改进。 |
@@ -99,11 +99,13 @@ KM 中有意义的图片主要分成五类：
 - `evaluation-matrix.svg`：benchmark、verification、regression 的评价矩阵。
 - `poster-generation-task-graph.svg`：Paper2Poster 从 source pack 到 failure report 的任务拆分。
 - `poster-feedback-translator.svg`：模糊审美反馈到可观察信号和修复动作的翻译器。
+- `verifier-benchmark-evaluation-stack.svg`：多模态生成系统的 verifier、benchmark 和 regression 评价栈。
+- `verifier-signal-repair-router.svg`：verifier 信号到 failure owner 和 repair action 的路由器。
 
 ## 可以立刻扩写的文章
 
 - [为什么长程多模态智能体需要 Harness](./harness-centered-design-agents/)
 - [从“一次生成”到“持续变好”：自优化设计智能体的闭环](./self-improving-design-agents/)。
 - [海报生成不是审美问题，而是可迭代的系统问题](./poster-generation-iterative-systems-problem/)。
-- Verifier 与 Benchmark：如何评估多模态生成系统。
+- [Verifier 与 Benchmark：多模态生成系统到底该怎么评估](./verifiers-and-benchmarks-for-multimodal-generation-systems/)。
 - Slides、Poster、Webpage 和 Video 为什么能共用 HTML 底座但不能共用同一套 rubric。

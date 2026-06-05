@@ -1,0 +1,172 @@
+---
+title: Verifiers and Benchmarks for Multimodal Generation Systems
+description: A research note on verification, benchmarking, and regression for multimodal artifact generation systems.
+date: 2026-06-05
+tags: [verification, benchmark, evaluation, multimodal-generation]
+status: active
+type: research
+sidebar:
+  order: 6
+  label: Verifier & Benchmark
+---
+
+> Personal note: This article is based on public materials, personal KM notes, and sanitized project experience. It does not represent the official view of any company, team, or internship host. It does not include internal repository links, APIs, secret configuration, private data, customer information, or proprietary implementation details.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/verifier-benchmark-evaluation-stack.svg'} alt="Evaluation stack showing verifiers, benchmarks, and regression memory for multimodal generation systems" class="hero-visual" />
+
+## Core Claim
+
+Evaluation for multimodal generation systems is not a single score. It is a feedback mechanism that shapes where the system optimizes next.
+
+If an evaluator only returns “7.5/10,” the agent does not know what to change in the next iteration. A useful evaluation system should support three jobs:
+
+- **Verification**: decide whether one artifact is deliverable.
+- **Benchmarking**: compare system capability across a task distribution.
+- **Regression**: make sure a system change does not bring old failures back.
+
+These layers can share many signals, but they should not collapse into one entry point. When they are collapsed, online repair cannot find the right owner, and offline benchmarks drift into attractive demo ranking.
+
+## Three Evaluation Layers
+
+I now separate evaluation into three layers.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/evaluation-matrix.svg'} alt="Matrix separating benchmark, verification, and regression across semantic, structural, visual, and workflow signals" class="hero-visual" />
+
+| Layer | Question | Input | Output |
+|---|---|---|---|
+| Verification | Can this artifact be handed to a user? | one artifact, source pack, rendered output, contract | pass/fail, quality issues, repair route |
+| Benchmark | How strong is this system across a task distribution? | fixed tasks, unified constraints, unified evaluator | comparison, failure distribution, version trend |
+| Regression | Did this system change break an old capability? | fixed hard cases, old failure clusters, quality gates | regression status and failure owner |
+
+Verification is a pre-delivery check. Benchmarking is a capability portrait. Regression is the fuse that protects long-term iteration.
+
+## Artifact-Level Verification
+
+Artifact-level verification should stay close to the final artifact, not only inspect intermediate planning text.
+
+| Signal | Good At | Blind Spot |
+|---|---|---|
+| Deterministic checks | missing files, broken links, absent elements, failed exports | subjective quality, reading path, factual accuracy |
+| Rendered screenshot QA | overlap, clipping, font size, low-information whitespace, visual hierarchy | source grounding, fabricated numbers |
+| Structural inspection | DOM/PPT/PDF structure, editability, source ids, panel coverage | whether the result feels natural to a human |
+| Semantic verifier | claim grounding, duplication, brief coverage | visual craft and layout comfort |
+| Human-readability proxy | how much manual work remains before use | hard to automate fully; needs calibration |
+
+The practical lesson is: **anything that claims to be a final artifact should be rendered into evidence close to the final artifact before evaluation**. HTML should be screenshotted, slide decks should be viewed as slide images or exports, PDFs should be inspected as pages, and video scenes should expose key frames and captions. Source files alone miss too many visual failures.
+
+## Rubrics Must Be Artifact-Specific
+
+Paper2Any can share an HTML base, screenshots, exports, verifiers, and benchmark infrastructure. It should not share one universal rubric.
+
+| Artifact | Main Quality Problem | Rubric Should Emphasize |
+|---|---|---|
+| Poster | information density, figure-evidence relation, reading path, table reconstruction | panel coverage, source fidelity, visual hierarchy |
+| Slides | narrative pacing, per-slide load, sequence logic | slide message, speaker flow, progressive disclosure |
+| Web page | information expansion, responsiveness, links and interaction | DOM structure, mobile readability, navigation |
+| Video scene | timeline, captions, continuity, narrative rhythm | frame readability, caption grounding, temporal coherence |
+
+The same quality metric mutates across artifact types. High information density is good for posters but can overload slides. Expandable web content may become slow pacing in video.
+
+The evaluator should first know the artifact contract, then choose the matching rubric. Otherwise, it pulls all outputs toward the same style.
+
+## Reference Pools Are Implicit Reward Models
+
+A reference pool is not a decoration library. It directly shapes what the system learns as “good.”
+
+If references are dominated by screenshot walls, the generator learns that more image area is better. If good examples are all dense text boards, the system may interpret information density as stuffing text everywhere. This bias is harder to notice than a bad prompt because automatic iteration can amplify it every round.
+
+A better pattern is to split references by artifact archetype:
+
+| Reference Archetype | What It Calibrates |
+|---|---|
+| Text-heavy synthesis | dense native text, tables, model-card facts, section organization |
+| Theory board | theorem, assumption, proof intuition, logic-first layouts |
+| Benchmark/table-first | leaderboards, ablations, metric bands, readable tables |
+| GUI/video evidence | screenshot strips, process bands, qualitative cases |
+| Multi-view matrix | matrix views, graph walls, method/result split |
+
+Then the evaluator can say: “This artifact does not need more images; it needs to be closer to benchmark/table-first,” or “the issue is not word count; the figure evidence does not support the claim.”
+
+## Paper Quiz and Source Fidelity
+
+Multimodal artifacts can produce a dangerous false success: visually professional, but unsupported numbers, figures, or claims. For research artifacts, that is worse than rough typography.
+
+One useful signal is a **Paper Quiz**: ask an evaluator to answer source-related questions using only visible artifact information, ideally with evidence locations. This tests whether the artifact actually communicates the paper rather than only creating a polished shell.
+
+But Paper Quiz is not a complete quality metric.
+
+| Strength | Risk |
+|---|---|
+| tests whether key information reached the artifact | may reward copying too much source text |
+| catches claims without evidence | may ignore visual hierarchy and readability |
+| reduces credit for guessing from general knowledge | must be paired with source fidelity, density, and layout checks |
+
+It is better treated as part of source fidelity, not as the whole evaluation.
+
+## Manual Work Proxy
+
+I increasingly see manual work proxy as an important signal: how much skilled human work remains before the artifact is usable?
+
+This is closer to real value than “more images” or “more words.”
+
+| System Action | Human Work Saved |
+|---|---|
+| extracting problem, method, evidence, takeaway | reading the paper and finding the main thread |
+| rebuilding native tables or metric bands | manually organizing results |
+| binding figure, caption, takeaway, and source | creating figure-evidence relationships |
+| choosing panel grammar and reading path | academic communication and layout planning |
+| producing editable HTML/PPT/PDF structure | future modification and reuse |
+
+If the system only stitches screenshots together, it saves low-value work. If it synthesizes content and binds evidence, it removes the high-cost work.
+
+## From Score to Repair Route
+
+The most important evaluator output is not the score. It is the repair route.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/verifier-signal-repair-router.svg'} alt="Verifier signals mapped to failure owners and repair actions" class="hero-visual" />
+
+| Verifier Finding | Failure Owner | Next Action |
+|---|---|---|
+| claim has no source support | content compiler | reassign evidence and tighten grounding |
+| DOM is full but screenshot is empty | layout / render checker | add screenshot-level density checks |
+| multiple panels repeat the same conclusion | panel planner | change source-pack allocation and dedupe |
+| image area is high but evidence is weak | reference pool / rubric | lower visual-area weight and switch archetype |
+| old failure returns after a patch | regression set | add the failure to fixed cases and rerun old owner |
+
+If an evaluator only returns a score, the coding agent will modify random surfaces. If it points to an owner, the agent can decide whether to change the content compiler, artifact contract, layout engine, rubric, reference pool, or regression set.
+
+## Benchmark Visualization Should Not Only Be a Leaderboard
+
+A benchmark can have a main table, but the main table is not the whole story. For long-horizon multimodal agents, failure distributions and version changes are often more useful.
+
+These views are more informative:
+
+| Visualization | Question It Answers |
+|---|---|
+| Failure cluster map | Is the system failing on content, layout, rendering, source grounding, or rubric alignment? |
+| Before/after grid | What did the new version actually fix? Did it only change style? |
+| Artifact-type breakdown | Do posters, slides, web pages, and videos fail differently? |
+| Regression heatmap | Which old problems returned in the new version? |
+| Human calibration panel | Where does evaluator judgment differ from human judgment? |
+
+This is why a benchmark should not become a pretty sample wall. A sample wall is useful for seeing trends, but without failure clusters and regression signals, it becomes a showcase rather than a research instrument.
+
+## The Human Role in the Evaluation Loop
+
+Humans should not manually repair every artifact in every round. The more useful role is to calibrate the evaluation system:
+
+- define what “deliverable” means;
+- collect good and bad references;
+- identify evaluator judgments that do not align with human taste;
+- add new failure modes to regression;
+- choose whether the next optimization stage is content, visuals, layout, source fidelity, or cost.
+
+This uses feedback at the system level. The human is not merely fixing one poster. The human is making the evaluator, rubric, reference pool, and regression set closer to real taste and real usage.
+
+## Takeaway
+
+Evaluation for multimodal generation systems should not mean “ask a strong judge for a score.” It is the interface through which the system continues to evolve.
+
+Verification decides whether one artifact is deliverable. Benchmarking compares capability. Regression protects improvements already made. They should be designed separately, while sharing rendered evidence, source grounding, failure reports, and human calibration.
+
+When an evaluation system can translate “low score” into “weak source fidelity, wrong figure-evidence weighting, low-information whitespace after HTML rendering, and returned overlap regression,” a long-horizon agent finally knows what to repair next.

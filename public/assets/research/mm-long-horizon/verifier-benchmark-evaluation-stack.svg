@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Evaluation stack for multimodal generation systems</title>
+  <desc id="desc">A sanitized diagram showing inputs, artifact verifiers, benchmark protocol, regression memory, and improvement outputs.</desc>
+  <rect width="1200" height="680" fill="#f8fbfa"/>
+  <rect x="50" y="46" width="1100" height="588" rx="22" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="86" y="98" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">Verifier and Benchmark Evaluation Stack</text>
+  <text x="86" y="132" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">Evaluation is not a score; it is a routing system for improvement.</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3a514d"/>
+    </marker>
+  </defs>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="88" y="212" width="178" height="64" rx="12" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="177" y="238" text-anchor="middle" font-size="16" font-weight="700" fill="#0b4c40">Task Set</text>
+    <text x="177" y="260" text-anchor="middle" font-size="13" fill="#31524b">distribution and prompts</text>
+
+    <rect x="88" y="316" width="178" height="64" rx="12" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="177" y="342" text-anchor="middle" font-size="16" font-weight="700" fill="#213f8b">Source Pack</text>
+    <text x="177" y="364" text-anchor="middle" font-size="13" fill="#405078">claims, figures, tables</text>
+
+    <rect x="88" y="420" width="178" height="64" rx="12" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="177" y="446" text-anchor="middle" font-size="16" font-weight="700" fill="#7b3f13">Reference Pool</text>
+    <text x="177" y="468" text-anchor="middle" font-size="13" fill="#6d543f">archetypes and taste</text>
+
+    <rect x="512" y="170" width="176" height="72" rx="14" fill="#fbfdfc" stroke="#3a514d" stroke-width="2"/>
+    <text x="600" y="199" text-anchor="middle" font-size="17" font-weight="700" fill="#14302b">Artifact</text>
+    <text x="600" y="222" text-anchor="middle" font-size="17" font-weight="700" fill="#14302b">Under Test</text>
+
+    <rect x="362" y="278" width="476" height="76" rx="14" fill="#f1edf8" stroke="#8467b8" stroke-width="2"/>
+    <text x="600" y="305" text-anchor="middle" font-size="18" font-weight="700" fill="#513c7e">Benchmark Protocol</text>
+    <text x="600" y="330" text-anchor="middle" font-size="13" fill="#5f536f">task distribution | comparison metric | human baseline</text>
+
+    <rect x="362" y="376" width="476" height="76" rx="14" fill="#e9f2f5" stroke="#2e6f87" stroke-width="2"/>
+    <text x="600" y="403" text-anchor="middle" font-size="18" font-weight="700" fill="#1d4b5c">Artifact Verifiers</text>
+    <text x="600" y="428" text-anchor="middle" font-size="13" fill="#375866">source grounding | render integrity | structure checks</text>
+
+    <rect x="362" y="474" width="476" height="76" rx="14" fill="#fff1ef" stroke="#b3583d" stroke-width="2"/>
+    <text x="600" y="501" text-anchor="middle" font-size="18" font-weight="700" fill="#7a2e1e">Regression Memory</text>
+    <text x="600" y="526" text-anchor="middle" font-size="13" fill="#795143">fixed cases | failure clusters | no old drift</text>
+
+    <rect x="934" y="212" width="178" height="64" rx="12" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="1023" y="238" text-anchor="middle" font-size="16" font-weight="700" fill="#0b4c40">Scorecard</text>
+    <text x="1023" y="260" text-anchor="middle" font-size="13" fill="#31524b">comparable signals</text>
+
+    <rect x="934" y="316" width="178" height="64" rx="12" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="1023" y="342" text-anchor="middle" font-size="16" font-weight="700" fill="#213f8b">Failure Report</text>
+    <text x="1023" y="364" text-anchor="middle" font-size="13" fill="#405078">stage-aware findings</text>
+
+    <rect x="934" y="420" width="178" height="64" rx="12" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="1023" y="446" text-anchor="middle" font-size="16" font-weight="700" fill="#7b3f13">Repair Route</text>
+    <text x="1023" y="468" text-anchor="middle" font-size="13" fill="#6d543f">next system action</text>
+
+    <path d="M266 244 C318 244 318 316 362 316" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M266 348 H362" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M266 452 C318 452 318 414 362 414" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <path d="M600 242 V278" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M600 354 V376" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M600 452 V474" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <path d="M838 316 C888 316 888 244 934 244" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M838 414 C888 414 888 348 934 348" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M838 512 C888 512 888 452 934 452" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <text x="600" y="594" text-anchor="middle" font-size="15" fill="#52625f">Good evaluation compares systems, verifies artifacts, and preserves hard-won fixes.</text>
+  </g>
+</svg>

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">Long-horizon understanding is not long context</title>
+  <desc id="desc">A sanitized diagram contrasting passive long context with a stateful loop of observation, state update, planning, action, verification, and repair.</desc>
+  <rect width="1200" height="700" fill="#f8fbfa"/>
+  <rect x="52" y="48" width="1096" height="604" rx="22" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="86" y="104" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">Long-Horizon Understanding Is Not Long Context</text>
+  <text x="86" y="138" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">Context is input capacity; understanding is stateful work.</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3a514d"/>
+    </marker>
+    <marker id="repairArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#b3583d"/>
+    </marker>
+  </defs>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="98" y="230" width="278" height="274" rx="18" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="237" y="270" text-anchor="middle" font-size="21" font-weight="700" fill="#213f8b">Long Context Window</text>
+    <rect x="138" y="312" width="198" height="34" rx="10" fill="#ffffff" stroke="#c9d6fa"/>
+    <text x="237" y="334" text-anchor="middle" font-size="13" fill="#405078">More Input</text>
+    <rect x="138" y="364" width="198" height="34" rx="10" fill="#ffffff" stroke="#c9d6fa"/>
+    <text x="237" y="386" text-anchor="middle" font-size="13" fill="#405078">Passive Recall</text>
+    <rect x="138" y="416" width="198" height="34" rx="10" fill="#ffffff" stroke="#c9d6fa"/>
+    <text x="237" y="438" text-anchor="middle" font-size="13" fill="#405078">Single Answer</text>
+
+    <rect x="454" y="324" width="120" height="48" rx="24" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="514" y="354" text-anchor="middle" font-size="14" font-weight="700" fill="#7b3f13">Not Enough</text>
+
+    <circle cx="774" cy="236" r="50" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="774" y="242" text-anchor="middle" font-size="14" font-weight="700" fill="#0b4c40">Observe</text>
+
+    <circle cx="932" cy="292" r="58" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="932" y="288" text-anchor="middle" font-size="14" font-weight="700" fill="#7b3f13">Update</text>
+    <text x="932" y="308" text-anchor="middle" font-size="13" fill="#6d543f">State</text>
+
+    <circle cx="972" cy="450" r="50" fill="#f1edf8" stroke="#8467b8" stroke-width="2"/>
+    <text x="972" y="456" text-anchor="middle" font-size="14" font-weight="700" fill="#513c7e">Plan</text>
+
+    <circle cx="774" cy="508" r="50" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="774" y="514" text-anchor="middle" font-size="14" font-weight="700" fill="#213f8b">Act</text>
+
+    <circle cx="636" cy="402" r="54" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="636" y="398" text-anchor="middle" font-size="14" font-weight="700" fill="#0b4c40">Verify</text>
+    <text x="636" y="418" text-anchor="middle" font-size="13" fill="#31524b">Repair</text>
+
+    <path d="M814 264 C846 268 872 276 884 284" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M954 346 C966 376 972 398 972 400" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M934 482 C894 510 844 516 824 514" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M724 490 C684 468 658 436 652 424" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M642 350 C660 292 704 258 730 246" fill="none" stroke="#b3583d" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#repairArrow)"/>
+
+    <rect x="700" y="596" width="146" height="34" rx="17" fill="#e8f5f1" stroke="#b9dcd2"/>
+    <text x="773" y="618" text-anchor="middle" font-size="13" fill="#31524b">Task State</text>
+    <rect x="866" y="596" width="170" height="34" rx="17" fill="#fff5e8" stroke="#e1c2a5"/>
+    <text x="951" y="618" text-anchor="middle" font-size="13" fill="#6d543f">Evidence Memory</text>
+
+    <text x="600" y="568" text-anchor="middle" font-size="15" fill="#52625f">Long-horizon agents need an environment that remembers, checks, and repairs.</text>
+  </g>
+</svg>

@@ -1,0 +1,154 @@
+---
+title: "Long-Horizon Understanding Is Not Long Context: From Game Agents to Paper2Any"
+description: A paper-reading note on what GameWorld, lmgame-Bench, Orak, and VideoGameBench suggest about long-horizon understanding, Paper2Any, artifact generation, and design harnesses.
+date: 2026-06-05
+tags: [paper-reading, long-horizon-understanding, game-agents, paper2any]
+status: active
+type: research
+sidebar:
+  order: 9
+  label: Long-Horizon Understanding
+---
+
+> Personal note: This article is based on public arXiv papers, public project materials, and sanitized personal KM notes. It does not represent the official view of any company, team, or internship host. It does not include internal repository links, APIs, secret configuration, private draft links, unpublished data, real benchmark samples/scores, personal identifiers, or raw screenshots.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/long-horizon-understanding-not-long-context.svg'} alt="Long-horizon understanding as a loop of observe, update state, plan, act, verify, and repair rather than long context alone" class="hero-visual" />
+
+## Core Claim
+
+Long-horizon understanding is not “put more material into context.” The hard part is maintaining executable task state:
+
+- what the current goal is;
+- what evidence has been read;
+- which claims are source-grounded;
+- whether the next action is valid;
+- whether the final result can be verified;
+- whether failure should route back to reading, planning, generation, or evaluation.
+
+This article follows [why long-horizon multimodal agents need a harness](./harness-centered-design-agents/) and [why HTML-first is not a universal rubric](./html-first-artifact-contracts/). Games and paper2poster look far apart, but they share a systems problem: the input is multimodal state, actions change the environment, feedback can be sparse, the task requires many steps, and the outcome must be verifiable.
+
+## Why Game Agents Matter for Long-Horizon Understanding
+
+Games are useful long-horizon agent testbeds because they bind several capabilities together:
+
+| In Games | In Paper2Any |
+|---|---|
+| Perception | extracting useful information from PDFs, figures, formulas, and rendered pages |
+| Memory | maintaining source packs, claim graphs, and figure/table evidence |
+| Planning | choosing poster panels, slide sequences, web sections, or video scenes |
+| Action validity | checking each generation step against an artifact contract |
+| Latency and recovery | localizing and repairing failure without rerunning everything |
+| Outcome verification | checking whether the final artifact renders, reads, edits, and traces correctly |
+
+The most useful lesson is not which game agent ranks higher. It is how these papers build environments, interfaces, memory, trajectories, and verification mechanisms.
+
+## Four Paper Anchors
+
+| Paper | Public Signal | Paper2Any Takeaway |
+|---|---|---|
+| [GameWorld](https://arxiv.org/abs/2604.07429) | Evaluates multimodal game agents in browser game environments, emphasizing standardized interfaces and state-verifiable outcomes. | Paper2Any also needs state-verifiable artifacts: inspect final DOM, rendered views, source traces, and failure reports, not only generation logs. |
+| [lmgame-Bench](https://arxiv.org/abs/2505.15146) | Wraps games in a Gym-style API and adds perception / memory scaffolds to stabilize evaluation. | A good harness reduces prompt variance. For paper generation, source packs, content memory, and section-to-panel compilers are scaffolds. |
+| [Orak](https://arxiv.org/abs/2506.03610) | Covers multiple game genres, uses a plug-and-play interface, and studies agentic modules, strategies, and gameplay trajectories. | Artifact generation should support module-level ablation: reader, visual selector, layout compiler, repair loop, and evaluator should be separable. |
+| [VideoGameBench](https://arxiv.org/abs/2505.18134) | Stresses raw visual input, real-time interaction, spatial navigation, and memory management. | Reading a paper into a text summary is not enough. Figures, layout, visual evidence, and cross-page relations must enter the reading state. |
+
+Together, these papers point to one practical definition: long-horizon understanding is **state + action + verification**.
+
+## From Game State to Artifact State
+
+A game agent does not only need to “see the current screen.” It needs to know where it is, what the objective is, what happened before, and which actions are likely to fail. Paper2Any needs the same kind of maintained state.
+
+If the system turns a paper into one summary paragraph, poster or slide generation quickly runs into problems:
+
+- the same contribution appears in multiple panels;
+- table numbers have no source trace;
+- a figure is included but does not support the current claim;
+- a method panel lacks input/output structure;
+- limitations become generic filler;
+- the final artifact looks complete but covers the paper unevenly.
+
+A more stable approach is to maintain artifact state:
+
+| State | Contains | Prevents |
+|---|---|---|
+| Claim graph | relations among problem, method, result, and limitation | linear summary thinking |
+| Evidence map | which figure, table, or section supports each claim | unsupported claims and weak image-text binding |
+| Asset slots | which visuals fit poster, slides, web page, or video | random visual selection |
+| Coverage status | which source packs have been assigned to each artifact slot | repetition, omission, low-density filling |
+| Repair history | which failures appeared and what changed last round | regression and repeated local patches |
+
+This is how I define long-horizon reading: not finishing the paper, but maintaining usable information for future actions.
+
+## Reading Harness Beats Reading Prompt
+
+Paper reading should not be just a prompt that says “summarize this paper.” The useful layer is a reading harness.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/source-pack-compiler.svg'} alt="Paper sections compiled into mutually exclusive source packs, then allocated to artifact contracts and regression checks" class="hero-visual" />
+
+That harness needs at least three pieces:
+
+| Component | Role |
+|---|---|
+| Source pack compiler | splits Introduction, Method, Experiments, Ablation, Limitations, Figures, and Tables into mutually exclusive information packs |
+| Evidence allocator | assigns usable evidence to each panel, slide, section, or scene |
+| Coverage verifier | checks duplicate claims, unsupported claims, missing evidence, and source drift |
+
+One lesson from poster iteration is that duplicate checking alone is not enough. If the planner can freely pick from one global bullet pool, it will reuse the same kind of information across panels. The system needs mutually exclusive source packs first; then each artifact slot should use its assigned evidence range.
+
+## Why Raw Visual Input Is Hard
+
+VideoGameBench is a useful reminder that text-only state underestimates visual understanding. In games, raw visual input creates problems in spatial navigation, object recognition, reaction timing, and memory. Paper artifacts have similar problems.
+
+Paper2Any visual information is not only “attached images”:
+
+- axes, legends, curves, and numeric relations inside plots;
+- spatial relations between sections and figures in a PDF;
+- the role of formulas and symbols in method explanation;
+- qualitative cases and visual evidence;
+- image-text adjacency and reading paths in the final artifact.
+
+If the reading system compresses all of that into a text summary, the generator is forced to guess. A better system stores visual evidence in source state, so the artifact plan knows which figure supports which claim, which artifact it fits, and what caption or takeaway it needs.
+
+## Verifiable Environments Matter More Than Rankings
+
+GameWorld makes the idea of verifiable outcomes concrete. In long tasks, if the final result cannot be verified, long reasoning does not become a reliable system.
+
+For Paper2Any, verification should not stop at fluent text. It should ask:
+
+| Verification Question | Example |
+|---|---|
+| Source grounding | Do key numbers, claims, and figures come from the source pack? |
+| Artifact validity | Does the output satisfy the poster, slides, web page, or video contract? |
+| Visual readability | Does the rendered view contain overlap, clipping, or low-density regions? |
+| Evidence binding | Does the nearby figure actually support the current claim? |
+| Repairability | Can the failure route back to reading, compiler, layout, rubric, or reference pool? |
+
+This is also why I do not want benchmarks to collapse into one leaderboard, the same point made in [comparing design agents without turning results into a leaderboard](./comparing-design-agents-without-leaderboards/). The environment should tell the agent which step failed, why it failed, and what should change next.
+
+## Design Implications for Paper2Any
+
+This reading list leads to one design principle:
+
+> Long-horizon multimodal agents should not only optimize the next response. They should maintain task state that tools can use, verifiers can inspect, and repair loops can rewrite.
+
+For Paper2Any, I would map it this way:
+
+| Game-agent Idea | Paper2Any Design |
+|---|---|
+| game state | source pack + artifact state |
+| action interface | artifact contract + compiler API |
+| memory scaffold | claim graph + evidence map |
+| expert trajectory | successful repair route + regression case |
+| outcome verification | rendered artifact verifier |
+| module ablation | swap reader, planner, layout, evaluator, repair owner |
+
+This also explains why HTML-first is only the base. HTML can make artifacts renderable, editable, inspectable, and repairable, but the reading state decides whether the result has real source grounding. Once the system starts improving itself, it still needs the failure reports, repair routes, and regression loops discussed in [verifiers and benchmarks](./verifiers-and-benchmarks-for-multimodal-generation-systems/) and [self-improving design agents](./self-improving-design-agents/).
+
+## Takeaway
+
+Long-horizon understanding is not long context.
+
+If a system reads more content but does not maintain claims, evidence, artifact slots, coverage, and repair history, it will still repeat, omit, fabricate, or repair the wrong layer.
+
+Game-agent benchmarks suggest that Paper2Any should be built as an operational and verifiable environment. For artifact generation, that environment is **reading harness + source pack compiler + artifact contract + rendered verifier + repair loop**.
+
+That is the kind of long-horizon multimodal agentic system I want to study: not one that finishes reading a paper once, but one that turns every reading step into state that future generation and repair can use.

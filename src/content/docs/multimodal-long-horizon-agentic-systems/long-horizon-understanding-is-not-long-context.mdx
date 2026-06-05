@@ -1,0 +1,154 @@
+---
+title: 长程理解不是长上下文：从游戏智能体到 Paper2Any
+description: 基于 GameWorld、lmgame-Bench、Orak 和 VideoGameBench 这组公开论文阅读，整理 long-horizon understanding 对 Paper2Any、artifact generation 和 design harness 的启发。
+date: 2026-06-05
+tags: [paper-reading, long-horizon-understanding, game-agents, paper2any]
+status: active
+type: research
+sidebar:
+  order: 9
+  label: 长程理解
+---
+
+> 个人声明：本文是个人论文阅读记录，基于公开 arXiv 论文、公开项目材料和个人 KM notes 的脱敏整理，不代表任何公司、团队或实习单位的官方观点。文中不包含内部仓库地址、API、密钥配置、私有草稿链接、未公开数据、真实 benchmark 样本/分数、人员标识或原始截图。
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/long-horizon-understanding-not-long-context.svg'} alt="长程理解不是长上下文，而是 observe、update state、plan、act、verify、repair 的状态闭环" class="hero-visual" />
+
+## 核心判断
+
+长程理解不是“把更多材料塞进上下文”。真正难的是让系统在一个长任务里维护可执行状态：
+
+- 当前目标是什么。
+- 已经读到了哪些证据。
+- 哪些 claim 有来源支撑。
+- 下一步动作是否合法。
+- 最终结果能不能被验证。
+- 失败应该回到 reading、planning、generation 还是 evaluator。
+
+这篇接在 [为什么长程多模态智能体需要 Harness](./harness-centered-design-agents/) 和 [HTML-first 不是万能格式](./html-first-artifact-contracts/) 后面。游戏和 paper2poster 看起来差很远，但它们共享同一个系统问题：输入是多模态状态，动作会改变环境，反馈可能稀疏，任务需要很多步，最后结果必须可验证。
+
+## 为什么从游戏智能体看长程理解
+
+游戏是一个很好的 long-horizon agent 试验场，因为它把几个能力绑在一起：
+
+| 游戏里的能力 | Paper2Any 里的对应问题 |
+|---|---|
+| Perception | 从论文 PDF、图表、公式、页面截图中抽取可用信息 |
+| Memory | 保存 source pack、claim graph、figure/table evidence |
+| Planning | 决定 poster panel、slide sequence、web section 或 video scene |
+| Action validity | 每一步生成是否符合 artifact contract |
+| Latency and recovery | 失败能否快速定位并修复，而不是全量重跑 |
+| Outcome verification | 最终 artifact 是否能被渲染、阅读、编辑、追溯 |
+
+所以这类论文对我最有价值的地方，不是“游戏 agent 排名”，而是它们如何构造环境、接口、记忆、轨迹和验证机制。
+
+## 四篇论文给我的启发
+
+| 论文 | 公开信息 | 对 Paper2Any 的启发 |
+|---|---|---|
+| [GameWorld](https://arxiv.org/abs/2604.07429) | 用浏览器游戏环境评估 multimodal game agents，强调标准化接口和 state-verifiable outcome。 | Paper2Any 也需要 state-verifiable artifact：不是只看生成日志，而是检查最终 DOM、渲染视图、source trace 和 failure report。 |
+| [lmgame-Bench](https://arxiv.org/abs/2505.15146) | 把游戏包装成 Gym-style API，并加入 perception / memory scaffolds 来稳定评测。 | 好的 harness 会降低 prompt variance。对论文生成来说，source pack、content memory 和 section-to-panel compiler 就是 scaffold。 |
+| [Orak](https://arxiv.org/abs/2506.03610) | 覆盖多个游戏类型，使用 plug-and-play interface，研究 agentic modules、策略和训练轨迹。 | Artifact 生成也应该能做 module-level ablation：读论文、选图、排版、修复、评估都应能单独替换和诊断。 |
+| [VideoGameBench](https://arxiv.org/abs/2505.18134) | 强调 raw visual input、实时交互、空间导航和记忆管理带来的困难。 | 只把论文读成文本摘要不够。图表、版面、视觉证据和跨页面关系也必须进入 reading state。 |
+
+这四篇合在一起，给我一个很直接的判断：长程理解的核心不是上下文窗口，而是 **state + action + verification**。
+
+## 从 Game State 到 Artifact State
+
+游戏 agent 不只需要“看见当前画面”，还要理解自己在哪、目标是什么、前面做过什么、哪些动作会失败。Paper2Any 也一样。
+
+如果系统只把论文读成一段 summary，后面生成 poster 或 slides 时就会遇到这些问题：
+
+- 同一个贡献在多个 panel 里重复出现。
+- 表格数字没有 source trace。
+- 图放进来了，但不支撑当前 claim。
+- method panel 缺少 input/output 关系。
+- limitation 被写成空泛总结。
+- final artifact 看起来完整，但内容覆盖不均衡。
+
+更稳的做法是维护一个 artifact state：
+
+| State | 包含什么 | 用来避免什么 |
+|---|---|---|
+| Claim graph | problem、method、result、limitation 之间的关系 | 把论文读成线性摘要 |
+| Evidence map | 每个 claim 绑定哪些 figure、table、section | unsupported claim 和图文错配 |
+| Asset slots | 哪些图表适合 poster、slides、webpage、video | 随机选图或只选大图 |
+| Coverage status | 每个 artifact slot 已使用哪些 source pack | 重复、遗漏和低信息密度 |
+| Repair history | 哪些失败已经出现过，上一轮改了什么 | regression 和反复局部修补 |
+
+这就是我理解的 long-horizon reading：不是读完，而是把可用信息维护成后续动作能调用的状态。
+
+## Reading Harness 比 Reading Prompt 更重要
+
+Paper Reading 不能只靠一个“请总结论文”的 prompt。真正有用的是 reading harness。
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/source-pack-compiler.svg'} alt="把论文 section 编译成互斥 source pack，再分配到 artifact contract 和 regression checks" class="hero-visual" />
+
+这个 harness 至少要做三件事：
+
+| 组件 | 作用 |
+|---|---|
+| Source pack compiler | 把 Introduction、Method、Experiments、Ablation、Limitations、Figures、Tables 编译成互斥信息包 |
+| Evidence allocator | 给每个 panel、slide、section 或 scene 分配可用证据 |
+| Coverage verifier | 检查重复 claim、unsupported claim、missing evidence 和 source drift |
+
+我在 poster 迭代里最大的一个经验就是：只检查重复还不够。如果 planner 可以从全局 bullet 池里随便挑内容，它会在多个 panel 里重复拿同一类信息。必须先让内容变成互斥 source pack，再让每个 artifact slot 只能使用自己的证据范围。
+
+## 为什么 Raw Visual Input 很难
+
+VideoGameBench 对我有一个提醒：只看文字化状态会低估视觉理解的难度。游戏里 raw visual input 会带来空间导航、对象识别、实时反应和记忆管理的问题；论文 artifact 里也有类似问题。
+
+Paper2Any 的视觉信息不只是“图片附件”：
+
+- 图表里的坐标轴、legend、曲线和数值关系。
+- PDF 版面里 section 和 figure 的位置关系。
+- 公式和符号在 method 叙事里的作用。
+- 截图或 qualitative case 的证据价值。
+- 最终 artifact 里的图文邻近关系和阅读路径。
+
+如果 reading system 把这些都压成纯文本 summary，后续 generator 就只能靠猜。更合理的是把 visual evidence 放进 source state，让 artifact plan 能明确知道“这个 figure 支撑哪个 claim，适合放在哪种 artifact 里，需要什么 caption 和 takeaway”。
+
+## 可验证环境比排行榜更重要
+
+GameWorld 让我特别关注 `verifiable outcome`。长程任务里，如果最后结果无法验证，前面的推理再长也很难形成可靠系统。
+
+对 Paper2Any 来说，验证不应该停在“文本是否流畅”。至少要问：
+
+| 验证问题 | 例子 |
+|---|---|
+| Source grounding | 关键数字、结论、图表是否来自 source pack？ |
+| Artifact validity | 输出是否满足 poster、slides、webpage、video 的 contract？ |
+| Visual readability | 渲染后是否有 overlap、裁切、低信息密度区域？ |
+| Evidence binding | 当前图表是否真的支撑旁边的 claim？ |
+| Repairability | 失败能否路由回 reading、compiler、layout、rubric 或 reference pool？ |
+
+这也是我不想把 benchmark 写成单一排行榜的原因，这点和 [生成效果对比不是排行榜](./comparing-design-agents-without-leaderboards/) 是同一条线。更重要的是环境能不能告诉 agent：哪一步错了、为什么错、下一轮应该改哪里。
+
+## 对 Paper2Any 的系统设计启发
+
+这组 reading 最后落到一个设计原则：
+
+> 长程多模态 agent 不应该只优化“下一次回答”，而应该维护一个能被工具调用、被 verifier 检查、被 repair loop 改写的任务状态。
+
+映射到 Paper2Any，我会这样拆：
+
+| Game-agent idea | Paper2Any design |
+|---|---|
+| game state | source pack + artifact state |
+| action interface | artifact contract + compiler API |
+| memory scaffold | claim graph + evidence map |
+| expert trajectory | successful repair route + regression case |
+| outcome verification | rendered artifact verifier |
+| module ablation | swap reader、planner、layout、evaluator、repair owner |
+
+这个思路也解释了为什么 HTML-first 只是底座，不能解决全部问题。HTML 能让结果可渲染、可编辑、可检查，但 reading state 决定了结果有没有内容依据。真正进入系统迭代时，还要接上 [Verifier 与 Benchmark](./verifiers-and-benchmarks-for-multimodal-generation-systems/) 和 [自优化闭环](./self-improving-design-agents/) 里讨论的 failure report、repair route 与 regression loop。
+
+## 小结
+
+长程理解不是长上下文。
+
+如果系统只是读进更多内容，但没有维护 claim、evidence、artifact slot、coverage 和 repair history，它还是会在长任务里重复、遗漏、编造或修错地方。
+
+游戏智能体 benchmark 给 Paper2Any 的启发是：把任务做成一个可操作、可验证、可复盘的环境。对 artifact generation 来说，这个环境就是 **reading harness + source pack compiler + artifact contract + rendered verifier + repair loop**。
+
+这才是我理解的 long-horizon multimodal agentic system：不是一次把论文读完，而是让每一次阅读都变成后续生成和修复能使用的状态。

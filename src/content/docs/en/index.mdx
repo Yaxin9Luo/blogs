@@ -1,0 +1,61 @@
+---
+title: Home
+description: A unified entry point for research notes, engineering logs, internship reflections, and long-form ideas.
+date: 2026-06-05
+tags: [index, knowledge-base]
+status: active
+type: meta
+sidebar:
+  order: 1
+  label: Home
+---
+
+import Insight from '../../../components/Insight.astro';
+
+<section class="hero">
+  <div>
+    <p class="eyebrow">Personal Research Notebook</p>
+    <h1>Turn research, engineering, and lived experience into a durable knowledge system.</h1>
+    <div class="tagline">
+      This is not a chronological diary. It is a reusable technical archive: how papers are read, how projects are built, what internships teach, and which ideas are worth revisiting.
+    </div>
+  </div>
+  <img src={import.meta.env.BASE_URL + 'knowledge-map.svg'} alt="A knowledge map connecting research, engineering, internship, ideas, and essays" class="hero-visual" />
+</section>
+
+<Insight title="Site Principle" tone="research">
+Each article should preserve the real problem and reasoning chain first, then add background, derivation, code, experience, and reflection. When I revisit it later, I should recover why I believed something, not just the conclusion.
+</Insight>
+
+## Sections
+
+<div class="knowledge-grid">
+  <a href="./research/">
+    <strong>Research Notes</strong>
+    <span>Paper reading, model understanding, research questions, and possible experiments.</span>
+  </a>
+  <a href="./engineering/">
+    <strong>Engineering Logs</strong>
+    <span>Implementation notes, debugging records, system design, and tradeoffs.</span>
+  </a>
+  <a href="./internship/">
+    <strong>Internship</strong>
+    <span>Project experience, collaboration lessons, technical growth, and retrospectives.</span>
+  </a>
+  <a href="./ideas/">
+    <strong>Ideas</strong>
+    <span>Research intuitions and product ideas that are not yet fully developed.</span>
+  </a>
+  <a href="./essays/">
+    <strong>Essays</strong>
+    <span>Long-term judgments, methods, reading notes, and career thinking.</span>
+  </a>
+</div>
+
+## Writing Workflow
+
+1. Start with the skeleton: context, problem, core judgment, evidence, and reflection.
+2. Expand the body: fill in the background and make key concepts explicit.
+3. Maintain the note: update tags, status, links, and next questions.
+
+Treat each article as an evolving engineering artifact: `seed` is a raw idea, `active` is in progress, `polished` is ready to share, and `archived` is temporarily frozen.

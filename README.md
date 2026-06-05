@@ -20,14 +20,30 @@ http://127.0.0.1:4321/
 内容都放在 `src/content/docs/`：
 
 ```text
-research/      论文阅读、模型理解、研究问题
-engineering/   工程日志、系统设计、调试记录
-internship/    实习复盘、项目经验
-ideas/         研究直觉、想法池
-essays/        长文、方法论、个人判断
+research/         中文：论文阅读、模型理解、研究问题
+engineering/      中文：工程日志、系统设计、调试记录
+internship/       中文：实习复盘、项目经验
+ideas/            中文：研究直觉、想法池
+essays/           中文：长文、方法论、个人判断
+en/research/      English: paper reading, model notes, research questions
+en/engineering/   English: engineering logs, system design, debugging notes
+en/internship/    English: internship retrospectives and project experience
+en/ideas/         English: research intuitions and idea pool
+en/essays/        English: essays, methods, and long-term judgment
 ```
 
 文章可以用 `.mdx`，需要特殊版式时从 `src/components/` 引入组件。
+
+## 双语规则
+
+中文是根路径，英文放在 `/en/`：
+
+```text
+src/content/docs/research/doc-mllm-reading.mdx
+src/content/docs/en/research/doc-mllm-reading.mdx
+```
+
+保持同名 slug 后，Starlight 的语言切换器会自动在两种语言之间跳转。
 
 ## 构建
 

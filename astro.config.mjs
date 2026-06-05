@@ -16,14 +16,22 @@ export default defineConfig({
   base,
   integrations: [
     starlight({
-      title: 'Yaxin Notes',
+      title: {
+        'zh-CN': 'Yaxin Notes',
+        en: 'Yaxin Notes'
+      },
       description: 'Research notes, engineering logs, internship reflections, and long-form ideas.',
       favicon: '/favicon.svg',
       pagefind: true,
+      defaultLocale: 'root',
       locales: {
         root: {
           label: '简体中文',
           lang: 'zh-CN'
+        },
+        en: {
+          label: 'English',
+          lang: 'en'
         }
       },
       customCss: ['/src/styles/custom.css'],
@@ -36,29 +44,35 @@ export default defineConfig({
       ],
       sidebar: [
         {
-          label: 'Start',
+          label: '开始',
+          translations: { en: 'Start' },
           items: [
-            { label: '首页', slug: 'index' }
+            { label: '首页', translations: { en: 'Home' }, slug: 'index' }
           ]
         },
         {
-          label: 'Research Notes',
+          label: '研究笔记',
+          translations: { en: 'Research Notes' },
           items: [{ autogenerate: { directory: 'research' } }]
         },
         {
-          label: 'Engineering Logs',
+          label: '工程日志',
+          translations: { en: 'Engineering Logs' },
           items: [{ autogenerate: { directory: 'engineering' } }]
         },
         {
-          label: 'Internship',
+          label: '实习复盘',
+          translations: { en: 'Internship' },
           items: [{ autogenerate: { directory: 'internship' } }]
         },
         {
-          label: 'Ideas',
+          label: '想法池',
+          translations: { en: 'Ideas' },
           items: [{ autogenerate: { directory: 'ideas' } }]
         },
         {
-          label: 'Essays',
+          label: '长文',
+          translations: { en: 'Essays' },
           items: [{ autogenerate: { directory: 'essays' } }]
         }
       ]

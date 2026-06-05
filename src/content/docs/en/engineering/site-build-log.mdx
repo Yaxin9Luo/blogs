@@ -1,0 +1,82 @@
+---
+title: Site Build Execution Plan
+description: The first implementation plan for Astro + Starlight + MDX + Pagefind + GitHub Pages.
+date: 2026-06-05
+tags: [astro, starlight, mdx, github-pages]
+status: active
+type: engineering
+sidebar:
+  order: 2
+  label: Site Build Plan
+---
+
+import Insight from '../../../../components/Insight.astro';
+
+This note constrains the first stage of this site. The goal is not to build a complicated personal homepage immediately, but to create a stable, writable, deployable, and extensible technical documentation site.
+
+## Goals
+
+The first version solves four things:
+
+1. Write research notes, engineering logs, internship reflections, and ideas in MDX.
+2. Use Astro components for local layout needs instead of rewriting repeated HTML in every article.
+3. Build static HTML and publish it with GitHub Pages.
+4. Generate a Pagefind search index so Chinese and English content can be searched.
+
+<Insight title="Core Tradeoff" tone="engineering">
+The source does not need to be pure HTML files. It should provide an HTML-first authoring experience: body content in MDX, special structures in Astro components, and static HTML as the final output. This keeps design freedom without sacrificing maintainability.
+</Insight>
+
+## Stack
+
+- **Astro**: static site build, component model, and deployment base.
+- **Starlight**: technical documentation shell with sidebar, table of contents, search, theme, and content collections.
+- **MDX**: article format that mixes Markdown with components.
+- **Pagefind**: static search index generated after build.
+- **GitHub Pages**: free static hosting and automatic deployment.
+
+## Information Architecture
+
+```text
+src/content/docs/
+  index.mdx
+  en/index.mdx
+  research/
+  en/research/
+  engineering/
+  en/engineering/
+  internship/
+  en/internship/
+  ideas/
+  en/ideas/
+  essays/
+  en/essays/
+```
+
+Each article uses a shared frontmatter pattern:
+
+```yaml
+title:
+description:
+date:
+tags: []
+status: seed | active | polished | archived
+type: research | engineering | internship | idea | essay | meta
+```
+
+## Iteration Order
+
+1. **Prototype**: define sections, templates, components, and deployment.
+2. **Content**: write 10-15 real articles to validate the structure.
+3. **Design**: adjust homepage, lists, cards, and article templates based on real content.
+4. **Maintenance**: add RSS, tag pages, recent updates, or a project index.
+
+## Not in the First Version
+
+- No CMS.
+- No comment system.
+- No complex tag archive.
+- No heavy visual design.
+- No one-off layout for a single page.
+
+These can be added later, but they should not block the writing loop.

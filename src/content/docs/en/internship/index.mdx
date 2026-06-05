@@ -1,0 +1,49 @@
+---
+title: Internship
+description: Internship projects, collaboration lessons, and stage retrospectives.
+date: 2026-06-05
+tags: [internship]
+status: active
+type: internship
+sidebar:
+  order: 1
+  label: Index
+---
+
+import ExperienceTimeline from '../../../../components/ExperienceTimeline.astro';
+import Insight from '../../../../components/Insight.astro';
+
+Internship reflections should be organized by project and capability, not only by time. This makes the material reusable later for resumes, interviews, applications, and personal summaries.
+
+<ExperienceTimeline
+  items={[
+    {
+      period: 'Week 1-2',
+      title: 'Enter the problem domain',
+      detail: 'Understand the project context, data flow, model interfaces, and known failure cases.'
+    },
+    {
+      period: 'Week 3-6',
+      title: 'Own a deliverable module',
+      detail: 'Break the task into verifiable milestones and record key technical judgments.'
+    },
+    {
+      period: 'Week 7+',
+      title: 'Consolidate the retrospective',
+      detail: 'Summarize technical ability, collaboration style, documentation habits, and next-stage gaps.'
+    }
+  ]}
+/>
+
+<Insight title="Retrospective Focus" tone="reflection">
+Do not only write what I did. Write how I understood the problem at first, why that understanding changed, and where the change can be reused later.
+</Insight>
+
+## Internship Article Structure
+
+- Project background
+- My responsibility boundary
+- Technical plan and tradeoffs
+- The most important pitfalls
+- Collaboration with mentors and teammates
+- Updates to my own capability model

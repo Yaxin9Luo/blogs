@@ -1,0 +1,52 @@
+---
+title: Document MLLM Reading Template
+description: An MDX template for reading papers about document understanding, layout modeling, and multimodal generation.
+date: 2026-06-05
+tags: [multimodal, document-ai, template]
+status: seed
+type: research
+sidebar:
+  order: 2
+  label: Document MLLM Template
+---
+
+import Insight from '../../../../components/Insight.astro';
+import ReadingMeta from '../../../../components/ReadingMeta.astro';
+
+<ReadingMeta
+  paper="Paper title here"
+  authors="Author list"
+  venue="Conference / arXiv"
+  status="seed"
+/>
+
+## Background
+
+These papers are usually not just about placing images next to a language model. They deal with a harder structure problem: pages contain layout, paragraphs, charts, formulas, reading order, and cross-page dependencies. When reading, first decide whether the method actually models document structure or merely wraps a visual encoder with a language interface.
+
+<Insight title="Questions to Ask First">
+Do visual tokens preserve layout relations? Can text tokens map back to page coordinates? Does the model only answer questions, or can it generate editable, locatable, and verifiable document artifacts?
+</Insight>
+
+## Core Questions
+
+- How is the input document represented: full-page image, cropped region, OCR token, layout token, or a mixed representation?
+- How are vision and text aligned: cross-attention, unified token sequence, coordinate embedding, or post-processing?
+- Does the training objective cover real tasks: understanding, extraction, QA, layout recovery, generation, and editing?
+
+## Method Breakdown
+
+1. Input encoding: record image resolution, patch strategy, OCR usage, and coordinate encoding.
+2. Fusion layer: record where and how visual features enter the language model.
+3. Output constraint: record whether the model emits structured JSON, HTML, Markdown, coordinates, or natural language.
+4. Evaluation setup: record datasets, metrics, failure cases, and whether there is human usability evaluation.
+
+## Relation to My Work
+
+This section should explain why the paper deserves to stay in the knowledge base. It may contain a modeling insight or an engineering warning. For example, if the goal is editable document generation, QA metrics alone are insufficient; structure, localization, and editing cost must also be checked.
+
+## Next Step After Reading
+
+- Find a minimal reproduction task.
+- Map the paper’s method to my own project problem.
+- Write at least one counterexample or failure case.

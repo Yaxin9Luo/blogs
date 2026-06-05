@@ -1,0 +1,203 @@
+---
+title: "Not Another Design Agent: Paper2Any as an Editable Artifact Workbench"
+description: A research-positioning note that reframes multimodal artifact generation from building one design agent into building an editable artifact workbench with a design-domain harness, artifact kernel, primitives, feedback signals, and regression loops.
+date: 2026-06-05
+tags: [research-positioning, design-harness, paper2any, editable-artifacts]
+status: active
+type: research
+sidebar:
+  order: 12
+  label: Artifact Workbench
+---
+
+> Personal note: This article is based on public materials, personal notes, and sanitized project experience. It does not represent the official view of any company, team, or internship host. It does not include internal repository links, APIs, secret configuration, intranet links, real evaluation samples/scores, closed-product details, or proprietary implementation details.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/design-harness-positioning.svg'} alt="A design-domain harness is a horizontal workbench across posters, slides, web pages, and other artifacts, not a single design agent" class="hero-visual" />
+
+## Core Claim
+
+This direction is easy to misread as "another design agent." I now prefer to position it as:
+
+> an editable artifact workbench where different agents can generate, observe, evaluate, repair, and keep improving inside the same design-domain harness.
+
+The important word is harness, not agent.
+
+If I only say "design agent," readers will imagine an end-to-end generator: prompt or paper PDF in, poster, slides, web page, or video out. That framing is too narrow. It compresses the research contribution into "does the output look good?"
+
+The better research object is the executable environment around complex multimodal artifact work: how an agent sees facts, calls tools, renders results, receives feedback, localizes failures, repairs the system, and turns interactions into regression memory.
+
+## Narrow Scope: Paper2Any, Not the Whole AI Design Landscape
+
+This article keeps the scope narrow: paper-to-poster, paper-to-slides, paper-to-artifact, and editable design generation.
+
+That is not the same as the whole AI design landscape. General design SaaS, marketing-image generation, brand systems, Figma plugins, and text-to-image tools are all adjacent, but including them too early would dilute the thesis. The center here is:
+
+- how a high-information paper becomes different deliverable artifacts,
+- how those artifacts preserve editable structure,
+- how agents see failures through real rendering and verifiers,
+- how repairs become regression memory.
+
+So this article is research positioning, not a full related-work survey. A paper version should verify and cite each neighbor carefully; this version first fixes the problem coordinates.
+
+## Why This Is Not Just Another Generator
+
+A generator has a simple boundary:
+
+- take a brief or document,
+- produce an artifact,
+- let a human judge the result,
+- retry or edit if unsatisfied.
+
+That can make a demo, but it is weak for long-horizon research. A failure remains just one failure; it does not necessarily improve the next run.
+
+A design harness has a different boundary:
+
+| Question | Generator View | Harness View |
+|---|---|---|
+| Input | prompt / document | source pack, asset registry, evidence map |
+| Output | poster / slides / web page | editable artifact + trace + report |
+| Quality | human likes it or not | contract, verifier, rendered checks, failure route |
+| Iteration | retry or local edit | modify pipeline, update evaluator, rerun regressions |
+| Memory | current context | session events, artifact snapshots, regression cases |
+
+This is why I keep returning to [artifact contracts](./html-first-artifact-contracts/), [verifiers](./verifiers-and-benchmarks-for-multimodal-generation-systems/), and [field notes](./internship-harness-evolution-retrospective/). They are not supporting details. They are the research problem.
+
+## Vertical Pipelines and Horizontal Harnesses
+
+Paper-to-poster, paper-to-slides, and paper-to-webpage can each become strong pipelines. Each can have its own parser, planner, layout system, critic, and renderer.
+
+But if every task starts from scratch, the system repeatedly reinvents the same parts:
+
+- document ingestion,
+- figure and visual asset extraction,
+- claim/evidence alignment,
+- HTML or visual scene graphs,
+- rendering and export,
+- visual linting,
+- VLM critique,
+- feedback normalization,
+- regression loops.
+
+The design harness goal is to turn these into a horizontal base. Different artifact types can grow on top, while the lower layer shares executable primitives.
+
+| Layer | Vertical Task-Specific Pipeline | Horizontal Design Harness |
+|---|---|---|
+| Scope | one artifact type | posters, decks, landing pages, video scenes, and more |
+| Representation | customized for one task | shared editable artifact kernel |
+| Feedback | one task-specific critic | reusable verifiers plus artifact-specific rubrics |
+| Iteration | improve one pipeline | coding agents can modify generator, compiler, evaluator, repair route |
+| Accumulated data | task logs | design-session events and regression memory |
+
+This positioning also avoids another trap: claiming to build a universal design agent. A safer claim is that the system is an environment where multiple design agents and artifact pipelines can be built, inspected, and improved.
+
+## Design-Domain Primitives
+
+I would describe the design harness as a set of primitives rather than one large prompt.
+
+| Primitive | Role |
+|---|---|
+| Document ingestion | convert papers, reports, web pages, and images into source packs |
+| Content structuring | form claim graphs, evidence maps, and coverage plans |
+| Visual asset registry | store figures, screenshots, formulas, tables, and reusable visuals |
+| Artifact contract | define done conditions for poster panels, slides, web sections, or video scenes |
+| Editable scene graph | represent artifacts as frames, blocks, layers, and source ids |
+| Renderer / exporter | render previews and export PDF, slides, web pages, or video frames |
+| Deterministic lint | check overlap, clipping, whitespace, responsive breaks, and source ids |
+| VLM critic | judge hierarchy, evidence binding, and readability from the rendered view |
+| Feedback normalizer | translate vague human feedback into failure routes |
+| Regression loop | keep fixed cases, track trends, and prevent repaired behavior from regressing |
+
+These primitives are tools for agents, not just features for users. A coding agent can use them to run, diagnose, and upgrade lower-level design agents.
+
+## The Editable Artifact Kernel
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/editable-artifact-kernel.svg'} alt="An editable artifact kernel connects source packs, scene graph, rendering, evaluation, export/editing, and session events" class="hero-visual" />
+
+The real value of HTML-first is not that web pages are easy to write. It is that HTML can become an editable artifact kernel.
+
+The kernel should preserve:
+
+| Kernel Field | Why It Matters |
+|---|---|
+| Frames | posters, slides, web sections, and video scenes can all become spatial or temporal frames |
+| Blocks | titles, claims, evidence, figures, tables, captions, and takeaways can be located |
+| Layers | visual hierarchy, editable objects, and layout relationships can be inspected |
+| Source ids | each claim and asset can trace back to a source pack |
+| Render state | DOM and final screenshots can be used together as the truth set |
+| Edit handles | humans or agents can modify locally instead of regenerating everything |
+| Session events | edits, failures, exports, and repairs can enter regression memory |
+
+That is the difference between HTML as a final format and HTML as a harness substrate. If the HTML carries source trace, semantic blocks, edit handles, and render reports, it becomes a working surface for long-horizon agents.
+
+## What the Coding Agent Does
+
+In this framing, the coding agent is not the user-facing designer. It is a system improver.
+
+It can:
+
+- modify the renderer based on evaluator reports,
+- add a content compiler when repeated text appears,
+- improve rendered visual audits when whitespace slips through DOM checks,
+- update artifact-specific rubrics from user preferences,
+- decide whether a repair improves regression results,
+- add a new contract and exporter for a new artifact type.
+
+This is why [From Effective Agents to Design Harnesses](./effective-agents-to-design-harnesses/) matters for this direction. Long-horizon multimodal systems do not need a role that merely says "I will design." They need agents that can keep improving the environment.
+
+## Benchmark Emerges From the Harness
+
+Many benchmarks are external: give the system tasks, collect outputs, compute scores.
+
+In a design harness, a benchmark can become a byproduct of the system:
+
+1. User goals, input documents, and artifact contracts form task cases.
+2. Generation runs leave session events.
+3. Verifiers record failure types.
+4. Human preferences calibrate evaluators.
+5. Repairs create before/after regression pairs.
+6. Repeated iterations become reusable benchmark cases.
+
+This benchmark should not only serve a leaderboard. It should help the system evolve: which failure type is common, which repair route works, which artifact contract drifts, and which inputs need a stronger reading harness.
+
+This matches the argument in [Comparing Design Agents Without Leaderboards](./comparing-design-agents-without-leaderboards/). Ranking can exist, but diagnosis matters more.
+
+## How to Compare Related Work
+
+To keep the research positioning clear, I do not want the related-work section to become a broad AI design landscape. The useful comparison set is narrower:
+
+| Neighbor | Shared Ground | Core Difference |
+|---|---|---|
+| paper-to-poster systems | both generate academic posters from papers | most are vertical poster pipelines; a design harness focuses on cross-artifact editable substrates and system iteration |
+| paper-to-slides systems | both reorganize a paper narrative | slides are one artifact contract; the harness also supports posters, web pages, videos, and split rubrics |
+| presentation editing agents | both care about editable output | many editing agents start from an existing deck; the harness spans source understanding, generation, editing, export, and regression |
+| rendered-feedback agents | both use rendered results for reflection and repair | the harness turns rendered feedback into reusable verifiers, repair routes, and session memory |
+| design benchmarks | both evaluate artifact quality | benchmarks are one output of the harness, not the only target |
+
+The point is not to claim superiority over every system. The point is to clarify the thesis: the contribution is a horizontal harness, not another vertical generator.
+
+## Research Contributions
+
+If I write this direction as a paper or research statement, I would start with four contributions:
+
+1. **Design-agent harness**: reframes design generation from one-shot prompt-to-artifact into an executable, observable, evaluable, and iterative agent-engineering environment.
+2. **Unified editable artifact kernel**: represents posters, decks, web pages, and video scenes through a shared scene graph so different artifacts can reuse source grounding, rendering, editing, and export.
+3. **Design-domain primitives and feedback signals**: provides ingestion, content structuring, asset registry, contracts, rendering, linting, critique, feedback normalization, and repair routing.
+4. **Iteration-oriented regression loop**: records user intent, agent behavior, quality failures, human edits, repairs, and exports as session events that become regression memory and design-agent benchmark cases.
+
+The order matters. Harness must be the first contribution, or the system will read like another design generator.
+
+## Takeaway
+
+My current positioning is:
+
+> The research question in Paper2Any is not whether one design agent can generate a good-looking result in one pass. It is whether we can build a design-domain harness where different agents generate, observe, evaluate, repair, and keep improving inside the same editable artifact workbench.
+
+This positioning ties together the earlier articles:
+
+- [Why Long-Horizon Multimodal Agents Need a Harness](./harness-centered-design-agents/) gives the system thesis.
+- [Self-Improving Design Agents](./self-improving-design-agents/) explains the iteration loop.
+- [HTML-first and Rubrics](./html-first-artifact-contracts/) defines the artifact kernel and split contracts.
+- [Verifiers and Benchmarks](./verifiers-and-benchmarks-for-multimodal-generation-systems/) explains evaluation and regression.
+- [Field Notes](./internship-harness-evolution-retrospective/) shows how bottlenecks moved in practice.
+
+When I keep writing this direction, I want to organize around what a harness lets agents do, not only what an agent can generate in one pass.

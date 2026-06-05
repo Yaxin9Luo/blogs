@@ -1,0 +1,203 @@
+---
+title: 不是另一个 Design Agent：Paper2Any 作为可编辑 Artifact Workbench
+description: 把多模态 artifact 生成从“做一个设计 agent”改写成可编辑 artifact workbench：design-domain harness、统一 artifact kernel、设计 primitive、反馈信号和 regression loop。
+date: 2026-06-05
+tags: [research-positioning, design-harness, paper2any, editable-artifacts]
+status: active
+type: research
+sidebar:
+  order: 12
+  label: Artifact Workbench
+---
+
+> 个人声明：本文是个人研究定位整理，基于公开资料、个人 notes 和已脱敏的项目经验，不代表任何公司、团队或实习单位的官方观点。文中不包含内部仓库地址、API、密钥配置、内网链接、真实评测样本/分数、闭源产品细节或专有实现。
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/design-harness-positioning.svg'} alt="不是单个 design agent，而是面向 poster、slides、webpage 等多种 artifact 的横向 design-domain harness" class="hero-visual" />
+
+## 核心判断
+
+这个方向最容易被误解成“再做一个 design agent”。我现在更愿意把它定位成：
+
+> 一个可编辑 artifact workbench：让不同 agent 在同一个 design-domain harness 里生成、观察、评估、修复并持续变好。
+
+这句话的重点不是 agent，而是 harness。
+
+如果只说 design agent，读者会自然想到一个端到端生成器：输入 prompt 或论文 PDF，输出 poster、slides、webpage 或 video。这个 framing 太窄，也会把研究贡献压成“生成效果好不好”。
+
+更准确的研究对象是：复杂多模态 artifact 任务需要什么样的可执行环境，才能让 agent 看到事实、调用工具、渲染结果、接受反馈、定位失败、修复系统，并把每次交互沉淀成 regression memory。
+
+## 只讨论 Paper2Any，不讨论泛 AI Design
+
+这篇先把范围压窄：我讨论的是 paper-to-poster、paper-to-slides、paper-to-artifact 和 editable design generation。
+
+这和泛 AI design landscape 不是同一个问题。通用设计 SaaS、营销图生成、品牌视觉系统、Figma 插件、纯文生图工具当然都相关，但如果一开始就拉进来，主线会被稀释。这里的中心问题是：
+
+- 一篇高信息密度论文如何变成不同可交付 artifact。
+- 这些 artifact 如何保留可编辑结构。
+- agent 如何通过真实渲染和 verifier 看到失败。
+- 每次修复如何沉淀成 regression memory。
+
+所以这篇不是 related-work survey，而是 research positioning。正式论文版本可以再逐篇核验和补引用；现在先把问题坐标写清楚。
+
+## 为什么不是“又一个生成器”
+
+单个生成器的边界很清楚：
+
+- 输入一个 brief 或文档。
+- 生成一个 artifact。
+- 人看结果好不好。
+- 不满意就重试或手动改。
+
+这种系统可以做 demo，但很难支撑 long-horizon research。因为它没有把失败变成系统资产：一次失败只是一次失败，不一定能帮助下一轮更好。
+
+Design harness 的边界不同。它关心的是：
+
+| 问题 | 生成器视角 | Harness 视角 |
+|---|---|---|
+| 输入 | prompt / document | source pack、asset registry、evidence map |
+| 输出 | poster / slides / webpage | editable artifact + trace + report |
+| 质量 | 人觉得好不好 | contract、verifier、rendered checks、failure route |
+| 迭代 | 重试或局部修 | 修改 pipeline、更新 evaluator、回归测试 |
+| 记忆 | 当前上下文 | session events、artifact snapshots、regression cases |
+
+这就是为什么我在前几篇一直强调 [artifact contract](./html-first-artifact-contracts/)、[verifier](./verifiers-and-benchmarks-for-multimodal-generation-systems/) 和 [field notes](./internship-harness-evolution-retrospective/)。它们不是附属模块，而是研究问题本身。
+
+## Vertical Pipeline 与 Horizontal Harness
+
+paper-to-poster、paper-to-slides、paper-to-webpage 都可以各自做成强 pipeline。每个 pipeline 都可以有 parser、planner、layout、critic、renderer。
+
+但如果每个任务都从零搭一套，系统会重复发明同样的部件：
+
+- 文档摄取。
+- 图表和视觉资产抽取。
+- claim/evidence 对齐。
+- HTML 或可视化 scene graph。
+- 渲染和导出。
+- 视觉 lint。
+- VLM critic。
+- feedback normalizer。
+- regression loop。
+
+Design harness 的目标，是把这些做成横向底座。上层可以长成不同 artifact，底层共享一批可执行 primitive。
+
+| 层 | Vertical task-specific pipeline | Horizontal design harness |
+|---|---|---|
+| 任务范围 | 单一 artifact 类型 | poster、deck、landing page、video scene 等 |
+| 表示 | 为当前任务定制 | 共享 editable artifact kernel |
+| 反馈 | 当前任务的 critic | 可复用 verifier + artifact-specific rubric |
+| 迭代 | 改当前 pipeline | coding agent 可以改 generator、compiler、evaluator、repair route |
+| 数据沉淀 | 当前任务日志 | design-session events + regression memory |
+
+这个定位也避免了一个陷阱：把系统包装成“全能设计 agent”。更稳的说法是：它是一个让多个设计 agent 和多个 artifact pipeline 可以被构造、检查、改进的环境。
+
+## Design-Domain Primitives
+
+我会把 design harness 拆成一组 primitives，而不是一个巨大 prompt。
+
+| Primitive | 作用 |
+|---|---|
+| Document ingestion | 把论文、报告、网页、图片输入转成 source packs |
+| Content structuring | 形成 claim graph、evidence map、coverage plan |
+| Visual asset registry | 保存图表、截图、公式、表格、可复用图形 |
+| Artifact contract | 定义 poster panel、slide page、web section、video scene 的完成标准 |
+| Editable scene graph | 用 frames、blocks、layers、source ids 表示可编辑 artifact |
+| Renderer / exporter | 渲染预览并导出 PDF、slides、web 或视频帧 |
+| Deterministic lint | 检查 overlap、裁切、空白、responsive break、source id |
+| VLM critic | 从最终渲染视图判断视觉层级、证据绑定、可读性 |
+| Feedback normalizer | 把模糊人类反馈转成 failure route |
+| Regression loop | 固定样本、记录趋势、防止修复带来回退 |
+
+这些 primitive 是给 agent 使用的工具，不只是给人使用的功能。coding agent 可以用它们运行、诊断和升级下层 design agent。
+
+## 统一可编辑 Artifact Kernel
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/editable-artifact-kernel.svg'} alt="统一可编辑 artifact kernel 把 source pack、scene graph、render、evaluate、export/edit 和 session events 连接起来" class="hero-visual" />
+
+HTML-first 的真正价值，不是“网页好写”，而是它能成为一个可编辑 artifact kernel。
+
+这个 kernel 至少要保留：
+
+| Kernel 字段 | 为什么重要 |
+|---|---|
+| Frames | poster、slide、web section、video scene 都能统一成空间/时间 frame |
+| Blocks | title、claim、evidence、figure、table、caption、takeaway 都能定位 |
+| Layers | 视觉层级、可编辑对象和布局关系可以被检查 |
+| Source ids | 每个 claim 和视觉资产能回溯到 source pack |
+| Render state | DOM 结构和最终截图可以一起作为 truth set |
+| Edit handles | 人类或 agent 能局部修改，而不是整张重生成 |
+| Session events | 每次编辑、失败、导出和修复都能进入回归记忆 |
+
+这就是它和单纯 HTML 输出的区别。HTML 如果只是最终页面，就只是格式；HTML 如果带有 source trace、semantic blocks、edit handles 和 render report，它才是 harness 的工作底座。
+
+## Coding Agent 在这里做什么
+
+在这个 framing 里，coding agent 不是“最终用户面对的设计师”，而是系统改进者。
+
+它可以做几类工作：
+
+- 根据 evaluator report 修改 renderer。
+- 根据重复文本问题补 content compiler。
+- 根据空白检测失败补 rendered visual audit。
+- 根据用户偏好更新 artifact-specific rubric。
+- 根据 regression result 判断某个修复是否真的提升。
+- 根据新的 artifact 类型新增 contract 和 exporter。
+
+这也是为什么 [从 Effective Agents 到 Design Harness](./effective-agents-to-design-harnesses/) 对这个方向重要。长程多模态系统需要的不是一个会说“我来设计”的角色，而是一个能在环境里持续改系统的 agent。
+
+## Benchmark 从 Harness 里长出来
+
+很多 benchmark 是外置的：给系统一些题，收集输出，算分。
+
+Design harness 里的 benchmark 更像系统自身的副产品：
+
+1. 用户目标、输入文档和 artifact contract 形成任务样本。
+2. 生成过程留下 session events。
+3. verifier 记录 failure type。
+4. 人类偏好校准 evaluator。
+5. 修复前后形成 regression pair。
+6. 多次迭代沉淀出可复用 benchmark cases。
+
+这种 benchmark 不应该只服务排行榜。它更应该服务系统进化：哪个 failure type 最常见、哪个 repair route 最有效、哪种 artifact contract 最容易漂移、哪类输入需要更强 reading harness。
+
+这和 [生成效果对比不是排行榜](./comparing-design-agents-without-leaderboards/) 是同一条线。排名可以有，但诊断更重要。
+
+## Related Work 应该怎么比
+
+为了保持研究定位清晰，我不想把 related work 扩成“AI 设计产品全景图”。更有用的比较范围是 nearest neighbors：
+
+| 邻近方向 | 共同点 | 核心区别 |
+|---|---|---|
+| paper-to-poster systems | 都从论文生成学术海报 | 多数是 vertical poster pipeline；design harness 关注跨 artifact 的可编辑底座和系统迭代 |
+| paper-to-slides systems | 都要重组论文叙事 | slides 是一种 artifact contract；harness 还要支持 poster、webpage、video 等分化 rubric |
+| presentation editing agents | 都关心可编辑输出 | editing agent 多围绕已有 deck；harness 从 source understanding 到生成、编辑、导出、回归闭环 |
+| rendered-feedback agents | 都用渲染结果反思和修复 | harness 把 rendered feedback 变成可复用 verifier、repair route 和 session memory |
+| design benchmarks | 都评价 artifact 质量 | benchmark 是 harness 的一个输出，而不是唯一目标 |
+
+这张表的目的不是证明“我比所有系统都强”，而是澄清论文或博客的主张：这里的贡献是 horizontal harness，而不是又一个 vertical generator。
+
+## 研究贡献可以怎么写
+
+如果把这个方向写成 paper / research statement，我会先写四个贡献：
+
+1. **Design-agent harness**：把设计生成从一次性 prompt-to-artifact 改写成可执行、可观测、可评测、可迭代的 agent engineering 环境。
+2. **Unified editable artifact kernel**：用共享 scene graph 表示 poster、deck、webpage、video scene，让不同 artifact 复用 source grounding、rendering、editing 和 export。
+3. **Design-domain primitives and feedback signals**：提供 ingestion、content structuring、asset registry、contract、rendering、lint、critic、feedback normalization 和 repair route。
+4. **Iteration-oriented regression loop**：把用户意图、agent 行为、质量失败、人工编辑、修复和导出记录为 session events，沉淀成 regression memory 和 design-agent benchmark。
+
+这四个贡献的顺序也很重要。第一贡献必须是 harness，否则读者很容易把系统理解成一个设计生成器。
+
+## 小结
+
+我现在对这个方向的定位是：
+
+> Paper2Any 的研究问题不是“能不能让一个 design agent 一次生成好看结果”，而是“能不能构造一个 design-domain harness，让不同 agent 在同一个可编辑 artifact workbench 里生成、观察、评估、修复并持续变好”。
+
+这个定位能把前面几篇文章串起来：
+
+- [为什么需要 Harness](./harness-centered-design-agents/) 讲的是系统主张。
+- [自优化设计智能体](./self-improving-design-agents/) 讲的是迭代闭环。
+- [HTML-first 与 Rubric](./html-first-artifact-contracts/) 讲的是 artifact kernel 和分化 contract。
+- [Verifier 与 Benchmark](./verifiers-and-benchmarks-for-multimodal-generation-systems/) 讲的是评价和回归。
+- [实习复盘](./internship-harness-evolution-retrospective/) 讲的是瓶颈如何迁移。
+
+下一步继续写这个方向时，我会尽量围绕“harness 让 agent 能做什么”来组织，而不是围绕“agent 一次能生成什么”来组织。

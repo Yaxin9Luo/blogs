@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Editable artifact kernel</title>
+  <desc id="desc">A sanitized diagram showing an editable artifact kernel connecting source packs, scene graph, rendering, export, evaluation, editing, and session events.</desc>
+  <rect width="1200" height="680" fill="#f7faf8"/>
+  <rect x="54" y="48" width="1092" height="584" rx="22" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="86" y="102" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">Editable Artifact Kernel</text>
+  <text x="86" y="136" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">A shared representation lets different artifact types reuse source grounding, editing, rendering, and regression signals.</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#354f4a"/>
+    </marker>
+  </defs>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="104" y="270" width="194" height="142" rx="16" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="201" y="308" text-anchor="middle" font-size="18" font-weight="700" fill="#0b4c40">Source Packs</text>
+    <text x="201" y="340" text-anchor="middle" font-size="13" fill="#31524b">claims</text>
+    <text x="201" y="364" text-anchor="middle" font-size="13" fill="#31524b">evidence</text>
+    <text x="201" y="388" text-anchor="middle" font-size="13" fill="#31524b">assets</text>
+
+    <rect x="410" y="210" width="380" height="262" rx="22" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="600" y="252" text-anchor="middle" font-size="22" font-weight="700" fill="#7b3f13">Scene Graph Kernel</text>
+    <rect x="462" y="292" width="118" height="42" rx="12" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="521" y="318" text-anchor="middle" font-size="13" fill="#6d543f">frames</text>
+    <rect x="622" y="292" width="118" height="42" rx="12" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="681" y="318" text-anchor="middle" font-size="13" fill="#6d543f">blocks</text>
+    <rect x="462" y="360" width="118" height="42" rx="12" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="521" y="386" text-anchor="middle" font-size="13" fill="#6d543f">layers</text>
+    <rect x="622" y="360" width="118" height="42" rx="12" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="681" y="386" text-anchor="middle" font-size="13" fill="#6d543f">source ids</text>
+
+    <rect x="902" y="170" width="194" height="86" rx="16" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="999" y="204" text-anchor="middle" font-size="17" font-weight="700" fill="#213f8b">Render</text>
+    <text x="999" y="230" text-anchor="middle" font-size="13" fill="#405078">browser preview</text>
+
+    <rect x="902" y="298" width="194" height="86" rx="16" fill="#f1edf8" stroke="#8467b8" stroke-width="2"/>
+    <text x="999" y="332" text-anchor="middle" font-size="17" font-weight="700" fill="#513c7e">Evaluate</text>
+    <text x="999" y="358" text-anchor="middle" font-size="13" fill="#5f536f">lint + critic</text>
+
+    <rect x="902" y="426" width="194" height="86" rx="16" fill="#f8fbfa" stroke="#90a39f" stroke-width="2"/>
+    <text x="999" y="460" text-anchor="middle" font-size="17" font-weight="700" fill="#354f4a">Export/Edit</text>
+    <text x="999" y="486" text-anchor="middle" font-size="13" fill="#52625f">pdf, deck, web</text>
+
+    <path d="M298 341 H410" stroke="#354f4a" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M790 286 C844 258 852 213 902 213" fill="none" stroke="#354f4a" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M790 341 H902" stroke="#354f4a" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M790 396 C844 424 852 469 902 469" fill="none" stroke="#354f4a" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M999 512 C999 584 600 596 600 472" fill="none" stroke="#354f4a" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="600" y="558" text-anchor="middle" font-size="15" fill="#52625f">Every edit, export, failure, and repair can become a session event for the next run.</text>
+  </g>
+</svg>

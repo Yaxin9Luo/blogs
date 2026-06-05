@@ -1,0 +1,139 @@
+---
+title: 海报生成不是审美问题，而是可迭代的系统问题
+description: 从 paper2poster 的任务拆分出发，总结如何把模糊审美反馈转化为 artifact contract、panel grammar、verifier 和 repair route。
+date: 2026-06-05
+tags: [paper2poster, poster-generation, artifact-contract, verification]
+status: active
+type: research
+sidebar:
+  order: 5
+  label: 海报任务拆分
+---
+
+> 个人声明：本文是个人研究记录，基于公开资料、个人 KM notes 和已脱敏的项目经验整理，不代表任何公司、团队或实习单位的官方观点。文中不包含内部仓库地址、API、密钥配置、未公开数据、客户信息或专有实现细节。
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/poster-generation-task-graph.svg'} alt="海报生成从论文输入到失败报告和修复路线的任务拆分图" class="hero-visual" />
+
+## 核心判断
+
+Paper2Poster 最容易被误解成一个审美生成任务：读一篇论文，然后生成一张好看的图。真实难点不是“再漂亮一点”，而是把论文理解、内容重组、视觉证据、布局、渲染和验证拆成一个可观察、可诊断、可迭代的系统。
+
+这篇可以看作前两篇的具体落地：
+
+- [为什么长程多模态智能体需要 Harness](./harness-centered-design-agents/) 讲的是总方法。
+- [从“一次生成”到“持续变好”](./self-improving-design-agents/) 讲的是自优化闭环。
+- 本篇讲 poster 这个具体 artifact：它到底应该怎么被拆成 agent 能修的任务。
+
+## 学术海报不是宣传图
+
+学术海报的目标不是视觉冲击最大化。大背景、大色块、截图墙、图片面积、装饰感，都可能让结果更“显眼”，但不一定更像一张能在学术场景里使用的 poster。
+
+我现在更倾向于把学术海报质量拆成五件事：
+
+| 质量维度 | 好的表现 | 常见失败 |
+|---|---|---|
+| 信息路径 | problem -> method -> evidence -> takeaway 清楚 | abstract 被直接塞进去，读者找不到主线 |
+| 证据选择 | 图、表、公式服务核心 claim | 图片很多，但和 section 关系弱 |
+| 信息密度 | native text、表格、图文解释都足够可扫读 | 大面积留白，或靠重复文字填满 |
+| 学术排版 | 字体层级、网格、分隔线、色彩克制 | 像营销海报，背景喧宾夺主 |
+| 可编辑结构 | HTML/PPT/PDF 可追踪 source，后续能改 | 只有一张图，无法定位和修复内容 |
+
+所以 poster 生成的价值，不是省下一次排版，而是省下“读论文、提炼贡献、重组证据、重建表格、安排阅读路径”的人工工作。
+
+## 从 PDF 到 Poster Contract
+
+一个稳定的 poster pipeline 不能从“生成最终 HTML”开始。它应该先有一个 **Poster Contract**，也就是在 DesignSpec 或页面结构之前生成的任务协议。
+
+| 阶段 | 产物 | 要回答的问题 |
+|---|---|---|
+| Source Pack | section、figure、table、formula、claim evidence | 这篇论文里哪些信息真的值得进入海报？ |
+| Poster Content Brief | problem、method、contribution、evidence、takeaway、limitation | 论文语言如何转成 poster language？ |
+| Poster Contract | subtype、layout archetype、density target、acceptance tests | 这张海报到底要长成哪一类？ |
+| Panel Plan | 每个 panel 的 claim、source pack、visual、takeaway | 信息如何分配，怎样避免重复？ |
+| HTML Poster | native text、tables、figure crops、CSS、source ids | 是否可渲染、可编辑、可检查？ |
+| Render Snapshot | screenshot、PDF、DOM audit | 人眼看到的结果和结构检查是否一致？ |
+| Failure Report | stage-aware findings、repair route | 下一轮该改内容、布局、图表，还是 evaluator？ |
+
+Contract 的意义是提前限制搜索空间。比如学术海报默认不需要高存在感生成背景，而应该优先使用白/浅色画布、弱网格、低对比色块和清晰分隔线。再比如，如果目标是 benchmark/table-first poster，poster contract 就应该允许大表格和 metric bands，而不是把所有内容都压成统一卡片。
+
+## Panel 不是统一卡片网格
+
+一个常见假进步是：每个 panel 都有 claim、bullet、card，看起来很密集，但读下来发现语义重复、证据薄弱、层级单一。
+
+原因是 panel 没有自己的 grammar。不同 panel 应该使用不同的内容结构。
+
+| Panel 类型 | 更合理的结构 | 应该避免 |
+|---|---|---|
+| Contribution grid | 3-5 个独立贡献，每个有 why it matters 和 evidence tag | 每张卡都改写同一句贡献 |
+| Method flow | step blocks、input/output、模块解释 | 只有方法名列表，没有因果路径 |
+| Benchmark panel | 原生表格、metric bands、best/second-best 标记 | 把表格截图当装饰图 |
+| Figure evidence | 图或裁剪图 + caption + takeaway | 图片很大，但文字只是复述 caption |
+| Limitation panel | current limitation、future direction、implication | 编造风险，或只写空泛总结 |
+
+这也是为什么我觉得 **Panel Grammar Library** 比 word count 更重要。指标只要求“字多”，系统就会重复堆字；grammar 要求“这个 panel 应该是什么结构”，系统才会学会换表达方式。
+
+## 把“不好看”翻译成可执行修复
+
+审美反馈本身不是问题，问题是不能停留在审美词。Harness 需要把它翻译成可观察信号，再翻译成修复动作。
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/poster-feedback-translator.svg'} alt="把模糊审美反馈翻译成可观察信号和修复动作的示意图" class="hero-visual" />
+
+| 人类反馈 | 可观察信号 | 修复动作 |
+|---|---|---|
+| 不像学术海报 | 背景过重、字体层级混乱、色块喧宾夺主 | 换 academic poster contract，降低背景和装饰权重 |
+| 信息散 | 缺少 problem -> method -> evidence -> takeaway 路径 | 重写 content brief 和 panel order |
+| 图很多但没用 | figure relevance 低，图和 claim 没绑定 | 重选 figure crop，给每个图绑定 source 和 takeaway |
+| 看起来空 | screenshot 有低信息密度白区，DOM 却显示占满 | 加截图级密度检查和 panel-level polish |
+| 文字很多但重复 | panels 复用同一 bullet 池 | 加 Section-to-Panel Content Compiler |
+
+这里的关键是 stage-aware。低分并不意味着“再 refine 一遍”。有时该局部修补，有时该换 layout archetype，有时该重做 source pack，有时该校准 evaluator。
+
+## Evaluator 会决定系统学到什么
+
+如果 reference pool 太偏 screenshot wall，系统会学到“图片面积越大越好”。如果 evaluator 只奖励文本密度，系统可能会重复贴字。评价器不只是裁判，它本身就是优化目标的一部分。
+
+更稳的 poster evaluator 至少应该区分这些维度：
+
+| 维度 | 关注点 |
+|---|---|
+| Source fidelity | 数字、图表、claim 是否来自 source pack，是否编造 |
+| Information architecture | 是否有清晰阅读路径，panel 是否互补 |
+| Layout integrity | 是否 overlap、裁切、拥挤、字体过小 |
+| Visual quality | 是否专业、克制、一致，不像模板糊出来 |
+| Editability | HTML/PPT 结构是否能定位、复用、修改 |
+| Manual work proxy | 一个熟练人类做到类似质量还需要多少手动工作 |
+
+最后一项很重要。高质量 poster 不只是“看起来不错”，而是体现它替人完成了信息重组、结构化表达和 artifact 生成的难活。
+
+## Repair Route：局部修还是整体换
+
+我现在会把失败修复拆成两类：refine 和 pivot。
+
+| 失败 | 更像 refine | 更像 pivot |
+|---|---|---|
+| 单个 panel 留白 | 加 panel-level polish，重分配局部文本 | 如果多个 panel 都空，重做 content brief |
+| 某个图裁坏 | 换 crop 或重渲染视觉资产 | 如果所有图都弱，重做 visual selection |
+| 字体太小 | 调字号、行距、列宽 | 如果 density target 错，重设 poster contract |
+| 内容重复 | panel 去重和 takeaway rewrite | 如果 source pack 混乱，加入 content compiler |
+| 整体不像学术海报 | 降低装饰、修字体层级 | 换 academic layout archetype |
+
+长程 agent 的价值在于它能判断“这次失败应该改哪里”。如果每次都只重跑 generator，系统会浪费大量迭代；如果每次都只局部修，遇到 contract 错误时又会越修越偏。
+
+## 为什么 HTML-first 适合做这个试验场
+
+Poster 是 paper2any 的一个好试验场，因为它同时要求内容 grounding、视觉密度、图文关系、最终渲染和可编辑性。HTML-first 让这些检查变得实际：
+
+- DOM 可以保存 panel、source id、data block 和可编辑结构。
+- Screenshot 可以暴露 DOM 检查看不到的空白、裁切和视觉层级问题。
+- CSS 和 deterministic compiler 可以减少大 JSON 一次性生成带来的漂移。
+- 同一套渲染链路可以迁移到 slides、web page 和 video scene，只是 rubric 要换。
+
+换句话说，poster 不是终点，而是一个足够具体、足够难、也足够可验证的 long-horizon multimodal agent 试验台。
+
+## 小结
+
+海报生成不是“审美 prompt 工程”，而是一个多阶段系统工程。
+
+当失败报告能从“这张不好看”进化到“benchmark panel 应该是 native table 而不是截图墙；method panel 缺 input/output 路径；figure crop 没有绑定 source evidence；DOM 占满但 screenshot 有低信息密度白区”时，agent 才真正有东西可改。
+
+这也是我对 Paper2Any 的核心判断：**真正有价值的不是一次生成了什么，而是系统能不能把每一次失败变成下一轮更稳定的 contract、compiler、evaluator 和 regression set。**

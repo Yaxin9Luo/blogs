@@ -1,0 +1,139 @@
+---
+title: Poster Generation Is an Iterative Systems Problem, Not an Aesthetic Prompting Problem
+description: A paper2poster note on translating fuzzy design feedback into artifact contracts, panel grammar, verifiers, and repair routes.
+date: 2026-06-05
+tags: [paper2poster, poster-generation, artifact-contract, verification]
+status: active
+type: research
+sidebar:
+  order: 5
+  label: Poster Task Split
+---
+
+> Personal note: This article is based on public materials, personal KM notes, and sanitized project experience. It does not represent the official view of any company, team, or internship host. It does not include internal repository links, APIs, secret configuration, private data, customer information, or proprietary implementation details.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/poster-generation-task-graph.svg'} alt="Task graph for turning source material into a poster artifact, failure report, and repair route" class="hero-visual" />
+
+## Core Claim
+
+Paper2Poster is easy to misread as an aesthetic generation task: read a paper, then make a good-looking image. The real difficulty is not “make it prettier.” It is decomposing paper understanding, content synthesis, visual evidence, layout, rendering, and verification into an observable, diagnosable, iterative system.
+
+This article grounds the previous two notes:
+
+- [Why Long-Horizon Multimodal Agents Need a Harness](./harness-centered-design-agents/) explains the general method.
+- [From One-Shot Generation to Self-Improving Design Agents](./self-improving-design-agents/) explains the self-improving loop.
+- This note focuses on one concrete artifact: how poster generation should be decomposed into tasks an agent can actually repair.
+
+## Academic Posters Are Not Promo Graphics
+
+An academic poster is not optimized for maximum visual impact. Large backgrounds, heavy color blocks, screenshot walls, image area, and decorative polish may make the artifact more noticeable, but they do not necessarily make it useful in an academic setting.
+
+I currently decompose academic-poster quality into five dimensions:
+
+| Quality Dimension | Good Behavior | Common Failure |
+|---|---|---|
+| Information path | problem -> method -> evidence -> takeaway is clear | the abstract is pasted in, and the reader cannot find the thread |
+| Evidence selection | figures, tables, and formulas support core claims | many images appear, but weakly relate to the section |
+| Information density | native text, tables, and figure explanations are scan-friendly | large whitespace, or density created by repeated text |
+| Academic typography | restrained hierarchy, grid, dividers, and color | it feels like a marketing poster |
+| Editable structure | HTML/PPT/PDF can trace sources and be modified later | it is only a flat image and cannot be repaired locally |
+
+The value of poster generation is not merely saving one layout pass. It is saving the human work of reading the paper, extracting contributions, reorganizing evidence, rebuilding tables, and designing a reading path.
+
+## From PDF to Poster Contract
+
+A stable poster pipeline should not start by directly generating final HTML. It should first create a **Poster Contract**: the task agreement that comes before a DesignSpec or page structure.
+
+| Stage | Artifact | Question |
+|---|---|---|
+| Source Pack | sections, figures, tables, formulas, claim evidence | What information from this paper deserves poster space? |
+| Poster Content Brief | problem, method, contribution, evidence, takeaway, limitation | How does paper language become poster language? |
+| Poster Contract | subtype, layout archetype, density target, acceptance tests | What kind of poster is this supposed to be? |
+| Panel Plan | claim, source pack, visual, and takeaway for each panel | How should information be allocated without repetition? |
+| HTML Poster | native text, tables, figure crops, CSS, source ids | Does the artifact render, remain editable, and stay checkable? |
+| Render Snapshot | screenshot, PDF, DOM audit | Does the rendered view match the structural checks? |
+| Failure Report | stage-aware findings, repair route | Should the next round change content, layout, visuals, or evaluator? |
+
+The contract constrains the search space early. For example, an academic poster usually should not use a high-presence generated background; a light canvas, weak grid, low-contrast blocks, and clear dividers are often better defaults. If the target is a benchmark/table-first poster, the contract should allow large native tables and metric bands instead of forcing everything into cards.
+
+## Panels Are Not a Uniform Card Grid
+
+A common false improvement is that every panel has a claim, bullets, and cards. The result looks dense, but the semantics repeat, evidence is thin, and the hierarchy is flat.
+
+The cause is that panels lack their own grammar. Different panels should use different content structures.
+
+| Panel Type | Better Structure | Avoid |
+|---|---|---|
+| Contribution grid | 3-5 independent contributions with why-it-matters and evidence tags | every card paraphrases the same claim |
+| Method flow | step blocks, input/output, module explanations | a list of method names without causal order |
+| Benchmark panel | native tables, metric bands, best/second-best markers | treating a table screenshot as decoration |
+| Figure evidence | figure or crop + caption + takeaway | a large image whose text only repeats the caption |
+| Limitation panel | current limitation, future direction, implication | invented risks or vague summary |
+
+This is why a **Panel Grammar Library** matters more than word count. If the metric asks only for “more words,” the system repeats text. If the grammar says what structure this panel should have, the system can change expression rather than stuffing a uniform template.
+
+## Translating “It Looks Bad” into Repair
+
+Aesthetic feedback is useful. The problem is stopping at aesthetic words. The harness has to translate them into observable signals, then into repair actions.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/poster-feedback-translator.svg'} alt="Diagram translating vague design feedback into observable signals and executable repair actions" class="hero-visual" />
+
+| Human Feedback | Observable Signal | Repair Action |
+|---|---|---|
+| not academic enough | background too heavy, type hierarchy confused, color blocks dominate | switch to an academic-poster contract and lower decoration weight |
+| scattered information | missing problem -> method -> evidence -> takeaway path | rewrite content brief and panel order |
+| many images, weak value | low figure relevance, weak binding between image and claim | reselect figure crops and bind each to a source and takeaway |
+| visually empty | screenshot has low-information whitespace while DOM looks full | add screenshot-level density checks and panel-level polish |
+| lots of repeated text | panels reuse the same global bullet pool | add a Section-to-Panel Content Compiler |
+
+The key is stage awareness. A low score does not always mean “refine again.” Sometimes the system should patch locally, sometimes it should pivot to a new layout archetype, sometimes it should rebuild the source pack, and sometimes it should recalibrate the evaluator.
+
+## The Evaluator Shapes What the System Learns
+
+If the reference pool is dominated by screenshot walls, the system learns that “more image area is better.” If the evaluator rewards only text density, the system may repeat text. The evaluator is not only a judge; it is part of the optimization target.
+
+A stronger poster evaluator should separate these dimensions:
+
+| Dimension | Focus |
+|---|---|
+| Source fidelity | whether numbers, figures, and claims come from the source pack |
+| Information architecture | whether the reading path is clear and panels complement each other |
+| Layout integrity | overlap, clipping, crowding, and too-small type |
+| Visual quality | professional, restrained, consistent artifact quality |
+| Editability | whether HTML/PPT structure can be located, reused, and modified |
+| Manual work proxy | how much skilled human work remains before the artifact is usable |
+
+The last dimension matters. A high-quality poster is not just visually acceptable. It should reflect that the system has done the hard work of synthesis, structure, and artifact production.
+
+## Repair Route: Refine or Pivot
+
+I now split poster repair into two modes: refine and pivot.
+
+| Failure | More Like Refine | More Like Pivot |
+|---|---|---|
+| one panel has whitespace | add panel-level polish and local text redistribution | if many panels are empty, rebuild the content brief |
+| a figure is cropped badly | replace the crop or rerender the visual asset | if all figures are weak, redo visual selection |
+| type is too small | tune font size, line height, and column width | if the density target is wrong, reset the poster contract |
+| content repeats | dedupe panels and rewrite takeaways | if source packs are mixed, add a content compiler |
+| the whole artifact feels non-academic | reduce decoration and repair hierarchy | switch to an academic layout archetype |
+
+The value of a long-horizon agent is that it can decide where the failure belongs. If every round reruns the generator, iteration is wasteful. If every round only patches locally, a wrong contract will keep steering the system in the wrong direction.
+
+## Why HTML-First Works as the Testbed
+
+Poster is a good Paper2Any testbed because it requires content grounding, visual density, figure-text relationships, final rendering, and editability at the same time. HTML-first makes these checks practical:
+
+- DOM can preserve panels, source ids, data blocks, and editable structure.
+- Screenshots reveal whitespace, cropping, and visual hierarchy problems that DOM checks miss.
+- CSS and deterministic compilers reduce drift from large one-shot JSON outputs.
+- The same rendering base can transfer to slides, web pages, and video scenes, while each artifact keeps its own rubric.
+
+In other words, poster generation is not the endpoint. It is a concrete, difficult, and verifiable testbed for long-horizon multimodal agents.
+
+## Takeaway
+
+Poster generation is not aesthetic prompt engineering. It is a multi-stage systems problem.
+
+Once the failure report can move from “this does not look good” to “the benchmark panel should be a native table, not a screenshot wall; the method panel lacks an input/output path; the figure crop is not bound to source evidence; the DOM is full but the screenshot still has low-information whitespace,” the agent finally has something real to repair.
+
+That is my core Paper2Any claim: **the important question is not what one generation produced, but whether the system can turn each failure into a stronger contract, compiler, evaluator, and regression set.**

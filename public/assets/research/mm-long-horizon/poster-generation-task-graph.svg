@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Poster Generation as an Iterative System</title>
+  <desc id="desc">A sanitized task graph showing poster generation as a chain of source packs, contracts, panel plans, rendering, failure reports, and repair routes.</desc>
+  <rect width="1200" height="680" fill="#f8fbfa"/>
+  <rect x="50" y="46" width="1100" height="588" rx="22" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="86" y="98" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">Poster Generation as an Iterative System</text>
+  <text x="86" y="132" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">A poster is not a single image; it is a chain of content, layout, rendering, verification, and repair decisions.</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3a514d"/>
+    </marker>
+    <marker id="repair-arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#b3583d"/>
+    </marker>
+  </defs>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="82" y="218" width="142" height="94" rx="12" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="153" y="253" text-anchor="middle" font-size="17" font-weight="700" fill="#0b4c40">Source Pack</text>
+    <text x="153" y="279" text-anchor="middle" font-size="13" fill="#31524b">paper sections,</text>
+    <text x="153" y="298" text-anchor="middle" font-size="13" fill="#31524b">figures, tables</text>
+
+    <rect x="270" y="218" width="142" height="94" rx="12" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="341" y="253" text-anchor="middle" font-size="17" font-weight="700" fill="#7b3f13">Poster</text>
+    <text x="341" y="274" text-anchor="middle" font-size="17" font-weight="700" fill="#7b3f13">Contract</text>
+    <text x="341" y="298" text-anchor="middle" font-size="13" fill="#6d543f">type and tests</text>
+
+    <rect x="458" y="218" width="142" height="94" rx="12" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="529" y="253" text-anchor="middle" font-size="17" font-weight="700" fill="#213f8b">Panel Plan</text>
+    <text x="529" y="279" text-anchor="middle" font-size="13" fill="#405078">claims, evidence,</text>
+    <text x="529" y="298" text-anchor="middle" font-size="13" fill="#405078">reading path</text>
+
+    <rect x="646" y="218" width="142" height="94" rx="12" fill="#f1edf8" stroke="#8467b8" stroke-width="2"/>
+    <text x="717" y="253" text-anchor="middle" font-size="17" font-weight="700" fill="#513c7e">HTML Poster</text>
+    <text x="717" y="279" text-anchor="middle" font-size="13" fill="#5f536f">native text, CSS,</text>
+    <text x="717" y="298" text-anchor="middle" font-size="13" fill="#5f536f">source ids</text>
+
+    <rect x="834" y="218" width="142" height="94" rx="12" fill="#e9f2f5" stroke="#2e6f87" stroke-width="2"/>
+    <text x="905" y="253" text-anchor="middle" font-size="17" font-weight="700" fill="#1d4b5c">Render</text>
+    <text x="905" y="274" text-anchor="middle" font-size="17" font-weight="700" fill="#1d4b5c">Snapshot</text>
+    <text x="905" y="298" text-anchor="middle" font-size="13" fill="#375866">screenshot QA</text>
+
+    <rect x="1010" y="218" width="106" height="94" rx="12" fill="#fff1ef" stroke="#b3583d" stroke-width="2"/>
+    <text x="1063" y="253" text-anchor="middle" font-size="17" font-weight="700" fill="#7a2e1e">Failure</text>
+    <text x="1063" y="274" text-anchor="middle" font-size="17" font-weight="700" fill="#7a2e1e">Report</text>
+    <text x="1063" y="298" text-anchor="middle" font-size="13" fill="#795143">stage aware</text>
+
+    <path d="M224 265 H270" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M412 265 H458" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M600 265 H646" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M788 265 H834" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M976 265 H1010" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <path d="M1063 312 C1063 404 341 404 341 315" fill="none" stroke="#b3583d" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#repair-arrow)"/>
+    <path d="M1063 312 C1063 360 529 360 529 315" fill="none" stroke="#b3583d" stroke-width="3" stroke-dasharray="8 8" marker-end="url(#repair-arrow)"/>
+    <text x="712" y="386" text-anchor="middle" font-size="15" font-weight="700" fill="#7a2e1e">repair route</text>
+
+    <rect x="112" y="480" width="976" height="92" rx="14" fill="#fbfdfc" stroke="#d5dfdd"/>
+    <text x="600" y="512" text-anchor="middle" font-size="18" font-weight="700" fill="#14302b">What can change each round</text>
+
+    <rect x="158" y="532" width="154" height="28" rx="14" fill="#e8f5f1" stroke="#cbd8d5"/>
+    <text x="235" y="551" text-anchor="middle" font-size="13" fill="#31524b">content allocation</text>
+
+    <rect x="340" y="532" width="132" height="28" rx="14" fill="#edf2ff" stroke="#cbd8d5"/>
+    <text x="406" y="551" text-anchor="middle" font-size="13" fill="#405078">reading path</text>
+
+    <rect x="500" y="532" width="144" height="28" rx="14" fill="#fff5e8" stroke="#cbd8d5"/>
+    <text x="572" y="551" text-anchor="middle" font-size="13" fill="#6d543f">visual hierarchy</text>
+
+    <rect x="672" y="532" width="130" height="28" rx="14" fill="#f1edf8" stroke="#cbd8d5"/>
+    <text x="737" y="551" text-anchor="middle" font-size="13" fill="#5f536f">figure evidence</text>
+
+    <rect x="830" y="532" width="150" height="28" rx="14" fill="#e9f2f5" stroke="#cbd8d5"/>
+    <text x="905" y="551" text-anchor="middle" font-size="13" fill="#375866">source grounding</text>
+  </g>
+</svg>

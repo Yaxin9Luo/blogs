@@ -47,7 +47,7 @@ The center of gravity is clear: **how to turn multimodal design generation from 
 | Runtime configuration note | Internal model and service configuration. | Excluded from public content. Only abstract the lesson: runtime configuration must be isolated, sanitized, and replaceable. |
 | Whole-System Harness Improvements | Breaks human quality judgment into planning constraints, deterministic QA, independent evaluator, stage-aware repair, and benchmark loop. | Harness turns “this looks wrong” into failure signals agents can act on. |
 | Benchmark Generation Visualization | Visual comparison of old and new generations across paper categories. | Benchmark visualization helps reveal style convergence, density issues, and category bias. |
-| Comparison with Other Design Agents | Compares outputs from different design agents under one paper2poster prompt. | Comparison should inspect constraints, artifact type, editability, faithfulness, and failure modes rather than becoming a leaderboard. |
+| Comparison with Other Design Agents | Compares outputs from different design agents under shared paper2poster task constraints. | Comparison should inspect constraints, artifact type, editability, faithfulness, and failure modes rather than becoming a leaderboard. |
 | Paper Reading | Links and notes around gaming/world-model/long-context understanding papers. | Seed for a public reading-list entry. |
 | Backup Route: Manual Iteration | Empty or backup entry. | Use as contrast for the automatic-iteration route. |
 | Main Route: Coding Agent Optimizes from Eval | Around ten rounds of harness iteration: reference pool, text density, panel compiler, repetition, content accuracy, modular output. | Moving from one-shot DesignSpec to deterministic compilation is a key stability shift. |
@@ -99,6 +99,8 @@ Public-safe figures already recreated:
 - `poster-feedback-translator.svg`: translation from fuzzy aesthetic feedback to observable signals and repair actions.
 - `verifier-benchmark-evaluation-stack.svg`: the verifier, benchmark, and regression evaluation stack.
 - `verifier-signal-repair-router.svg`: routing from verifier signals to failure owners and repair actions.
+- `design-agent-comparison-protocol.svg`: shared inputs, evidence packs, and evaluation lenses for design-agent comparison.
+- `design-agent-failure-profile.svg`: a comparison matrix that replaces single rankings with failure profiles.
 
 ## Ready-to-Expand Articles
 
@@ -106,4 +108,5 @@ Public-safe figures already recreated:
 - [From one-shot generation to self-improving design agents](./self-improving-design-agents/).
 - [Poster generation as an iterative systems problem](./poster-generation-iterative-systems-problem/).
 - [Verifiers and benchmarks for multimodal generation systems](./verifiers-and-benchmarks-for-multimodal-generation-systems/).
+- [Comparing design agents without turning it into a leaderboard](./comparing-design-agents-without-leaderboards/).
 - Why slides, posters, web pages, and videos can share an HTML base but need different rubrics.

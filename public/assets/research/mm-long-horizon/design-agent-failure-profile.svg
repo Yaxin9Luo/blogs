@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+  <title id="title">Design agent failure profile</title>
+  <desc id="desc">A sanitized matrix showing how design agent comparisons should map strengths and failures across artifact quality dimensions instead of ranking agents by one score.</desc>
+  <rect width="1200" height="620" fill="#f8fbfa"/>
+  <rect x="54" y="54" width="1092" height="512" rx="20" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="86" y="104" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">Failure Profile Beats Single Rank</text>
+  <text x="86" y="138" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">A comparison should expose where each artifact breaks, regresses, or stays repairable.</text>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="158" y="206" width="902" height="270" rx="14" fill="#fbfdfc" stroke="#d5dfdd"/>
+    <line x1="158" y1="260" x2="1060" y2="260" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="158" y1="314" x2="1060" y2="314" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="158" y1="368" x2="1060" y2="368" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="158" y1="422" x2="1060" y2="422" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="338" y1="206" x2="338" y2="476" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="518" y1="206" x2="518" y2="476" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="698" y1="206" x2="698" y2="476" stroke="#d5dfdd" stroke-width="2"/>
+    <line x1="878" y1="206" x2="878" y2="476" stroke="#d5dfdd" stroke-width="2"/>
+
+    <text x="248" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Source</text>
+    <text x="428" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Layout</text>
+    <text x="608" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Evidence</text>
+    <text x="788" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Editability</text>
+    <text x="968" y="239" text-anchor="middle" font-size="15" font-weight="700" fill="#14302b">Repair</text>
+
+    <text x="92" y="294" text-anchor="middle" font-size="16" font-weight="700" fill="#5278d6">Agent A</text>
+    <text x="92" y="348" text-anchor="middle" font-size="16" font-weight="700" fill="#c8712c">Agent B</text>
+    <text x="92" y="402" text-anchor="middle" font-size="16" font-weight="700" fill="#8467b8">Agent C</text>
+    <text x="92" y="456" text-anchor="middle" font-size="16" font-weight="700" fill="#168064">Agent D</text>
+
+    <circle cx="248" cy="287" r="12" fill="#168064"/>
+    <circle cx="428" cy="287" r="12" fill="#168064"/>
+    <circle cx="608" cy="287" r="12" fill="#c8712c"/>
+    <circle cx="788" cy="287" r="12" fill="#168064"/>
+    <circle cx="968" cy="287" r="12" fill="#5278d6"/>
+
+    <circle cx="248" cy="341" r="12" fill="#c8712c"/>
+    <circle cx="428" cy="341" r="12" fill="#168064"/>
+    <circle cx="608" cy="341" r="12" fill="#168064"/>
+    <circle cx="788" cy="341" r="12" fill="#b3583d"/>
+    <circle cx="968" cy="341" r="12" fill="#c8712c"/>
+
+    <circle cx="248" cy="395" r="12" fill="#168064"/>
+    <circle cx="428" cy="395" r="12" fill="#b3583d"/>
+    <circle cx="608" cy="395" r="12" fill="#c8712c"/>
+    <circle cx="788" cy="395" r="12" fill="#5278d6"/>
+    <circle cx="968" cy="395" r="12" fill="#168064"/>
+
+    <circle cx="248" cy="449" r="12" fill="#5278d6"/>
+    <circle cx="428" cy="449" r="12" fill="#c8712c"/>
+    <circle cx="608" cy="449" r="12" fill="#168064"/>
+    <circle cx="788" cy="449" r="12" fill="#168064"/>
+    <circle cx="968" cy="449" r="12" fill="#5278d6"/>
+
+    <rect x="304" y="512" width="92" height="24" rx="12" fill="#168064"/>
+    <text x="350" y="529" text-anchor="middle" font-size="12" fill="#ffffff">strong</text>
+    <rect x="424" y="512" width="92" height="24" rx="12" fill="#5278d6"/>
+    <text x="470" y="529" text-anchor="middle" font-size="12" fill="#ffffff">mixed</text>
+    <rect x="544" y="512" width="92" height="24" rx="12" fill="#c8712c"/>
+    <text x="590" y="529" text-anchor="middle" font-size="12" fill="#ffffff">weak</text>
+    <rect x="664" y="512" width="92" height="24" rx="12" fill="#b3583d"/>
+    <text x="710" y="529" text-anchor="middle" font-size="12" fill="#ffffff">blocker</text>
+    <text x="600" y="582" text-anchor="middle" font-size="15" fill="#52625f">A failure profile turns comparison into diagnosis rather than a ranking claim.</text>
+  </g>
+</svg>

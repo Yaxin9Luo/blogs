@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680" role="img" aria-labelledby="title desc">
+  <title id="title">Design agent comparison protocol</title>
+  <desc id="desc">A sanitized protocol diagram for comparing design agents through shared task constraints, rendered evidence, and artifact-level evaluation lenses.</desc>
+  <rect width="1200" height="680" fill="#f8fbfa"/>
+  <rect x="50" y="46" width="1100" height="588" rx="22" fill="#ffffff" stroke="#cbd8d5" stroke-width="2"/>
+  <text x="86" y="98" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700" fill="#14302b">Comparison Protocol, Not Leaderboard</text>
+  <text x="86" y="132" font-family="Inter, Arial, sans-serif" font-size="16" fill="#52625f">Compare design agents by controlled inputs, rendered evidence, and failure profiles.</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3a514d"/>
+    </marker>
+  </defs>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <rect x="90" y="224" width="188" height="264" rx="16" fill="#e8f5f1" stroke="#168064" stroke-width="2"/>
+    <text x="184" y="260" text-anchor="middle" font-size="19" font-weight="700" fill="#0b4c40">Shared Setup</text>
+    <rect x="122" y="296" width="124" height="32" rx="10" fill="#ffffff" stroke="#b9dcd2"/>
+    <text x="184" y="317" text-anchor="middle" font-size="13" fill="#31524b">same task</text>
+    <rect x="122" y="344" width="124" height="32" rx="10" fill="#ffffff" stroke="#b9dcd2"/>
+    <text x="184" y="365" text-anchor="middle" font-size="13" fill="#31524b">same source</text>
+    <rect x="122" y="392" width="124" height="32" rx="10" fill="#ffffff" stroke="#b9dcd2"/>
+    <text x="184" y="413" text-anchor="middle" font-size="13" fill="#31524b">same contract</text>
+    <rect x="122" y="440" width="124" height="32" rx="10" fill="#ffffff" stroke="#b9dcd2"/>
+    <text x="184" y="461" text-anchor="middle" font-size="13" fill="#31524b">same budget</text>
+
+    <rect x="358" y="198" width="142" height="72" rx="12" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="429" y="227" text-anchor="middle" font-size="16" font-weight="700" fill="#213f8b">Agent A</text>
+    <text x="429" y="250" text-anchor="middle" font-size="13" fill="#405078">artifact output</text>
+
+    <rect x="358" y="304" width="142" height="72" rx="12" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="429" y="333" text-anchor="middle" font-size="16" font-weight="700" fill="#213f8b">Agent B</text>
+    <text x="429" y="356" text-anchor="middle" font-size="13" fill="#405078">artifact output</text>
+
+    <rect x="358" y="410" width="142" height="72" rx="12" fill="#edf2ff" stroke="#5278d6" stroke-width="2"/>
+    <text x="429" y="439" text-anchor="middle" font-size="16" font-weight="700" fill="#213f8b">Agent C</text>
+    <text x="429" y="462" text-anchor="middle" font-size="13" fill="#405078">artifact output</text>
+
+    <rect x="588" y="224" width="188" height="264" rx="16" fill="#fff5e8" stroke="#c8712c" stroke-width="2"/>
+    <text x="682" y="260" text-anchor="middle" font-size="19" font-weight="700" fill="#7b3f13">Evidence Pack</text>
+    <rect x="620" y="296" width="124" height="32" rx="10" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="682" y="317" text-anchor="middle" font-size="13" fill="#6d543f">rendered view</text>
+    <rect x="620" y="344" width="124" height="32" rx="10" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="682" y="365" text-anchor="middle" font-size="13" fill="#6d543f">source trace</text>
+    <rect x="620" y="392" width="124" height="32" rx="10" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="682" y="413" text-anchor="middle" font-size="13" fill="#6d543f">editable files</text>
+    <rect x="620" y="440" width="124" height="32" rx="10" fill="#ffffff" stroke="#e1c2a5"/>
+    <text x="682" y="461" text-anchor="middle" font-size="13" fill="#6d543f">run notes</text>
+
+    <rect x="866" y="184" width="244" height="344" rx="16" fill="#f1edf8" stroke="#8467b8" stroke-width="2"/>
+    <text x="988" y="222" text-anchor="middle" font-size="19" font-weight="700" fill="#513c7e">Evaluation Lenses</text>
+    <rect x="900" y="260" width="176" height="34" rx="10" fill="#ffffff" stroke="#d0c4e8"/>
+    <text x="988" y="282" text-anchor="middle" font-size="13" fill="#5f536f">source fidelity</text>
+    <rect x="900" y="310" width="176" height="34" rx="10" fill="#ffffff" stroke="#d0c4e8"/>
+    <text x="988" y="332" text-anchor="middle" font-size="13" fill="#5f536f">artifact contract</text>
+    <rect x="900" y="360" width="176" height="34" rx="10" fill="#ffffff" stroke="#d0c4e8"/>
+    <text x="988" y="382" text-anchor="middle" font-size="13" fill="#5f536f">visual integrity</text>
+    <rect x="900" y="410" width="176" height="34" rx="10" fill="#ffffff" stroke="#d0c4e8"/>
+    <text x="988" y="432" text-anchor="middle" font-size="13" fill="#5f536f">editability</text>
+    <rect x="900" y="460" width="176" height="34" rx="10" fill="#ffffff" stroke="#d0c4e8"/>
+    <text x="988" y="482" text-anchor="middle" font-size="13" fill="#5f536f">repairability</text>
+
+    <path d="M278 356 H358" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M500 234 C548 234 548 310 588 310" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M500 340 H588" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M500 446 C548 446 548 400 588 400" fill="none" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M776 356 H866" stroke="#3a514d" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <text x="600" y="586" text-anchor="middle" font-size="15" fill="#52625f">A fair comparison asks what each agent fails at, not only who gets a higher score.</text>
+  </g>
+</svg>

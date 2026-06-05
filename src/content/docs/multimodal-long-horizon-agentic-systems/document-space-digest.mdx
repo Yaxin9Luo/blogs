@@ -47,7 +47,7 @@ sidebar:
 | 运行时配置文档 | 内部模型和服务配置。 | 不进入公开站点。只抽象成一条经验：运行时配置必须隔离、脱敏、可替换。 |
 | 整个系统Harness的改进 | 把人类质量判断拆成 planning constraint、deterministic QA、independent evaluator、stage-aware repair、benchmark loop。 | Harness 的价值是把“人觉得不好”变成 agent 能执行的失败信号。 |
 | Benchmarks里的生成可视化 | 多类别论文生成效果的旧版/新版视觉对比。 | benchmark 需要可视化样本墙，帮助发现风格收敛、信息密度和类别偏差。 |
-| 生成的效果跟别的Design Agent的对比 | 对比不同 design agent 在同一 paper2poster prompt 下的输出。 | 对比不应该只做排行榜，要看输入约束、artifact 类型、可编辑性、忠实性和失败模式。 |
+| 生成的效果跟别的Design Agent的对比 | 对比不同 design agent 在同一 paper2poster 任务约束下的输出。 | 对比不应该只做排行榜，要看输入约束、artifact 类型、可编辑性、忠实性和失败模式。 |
 | Paper Reading | 长程理解方向的论文链接集合。 | 作为 gaming/world model/long-context understanding 的公开阅读清单入口。 |
 | （Backup）路线1:人工去按拆分的问题和features迭代 | 空文档或备份入口。 | 可作为“人工迭代路线”在自优化文章里对照，不单独成文。 |
 | （主要）路线2: 让coding agent根据eval自动优化 | 记录十轮左右的 harness 迭代：reference pool、文本密度、panel compiler、重复率、content accuracy、模块化输出。 | 从一次性 DesignSpec 到 deterministic compiler，是长程系统稳定性的关键工程转折。 |
@@ -101,6 +101,8 @@ KM 中有意义的图片主要分成五类：
 - `poster-feedback-translator.svg`：模糊审美反馈到可观察信号和修复动作的翻译器。
 - `verifier-benchmark-evaluation-stack.svg`：多模态生成系统的 verifier、benchmark 和 regression 评价栈。
 - `verifier-signal-repair-router.svg`：verifier 信号到 failure owner 和 repair action 的路由器。
+- `design-agent-comparison-protocol.svg`：design agent 对比的共享输入、evidence pack 和 evaluation lens。
+- `design-agent-failure-profile.svg`：用 failure profile 取代单一排名的对比矩阵。
 
 ## 可以立刻扩写的文章
 
@@ -108,4 +110,5 @@ KM 中有意义的图片主要分成五类：
 - [从“一次生成”到“持续变好”：自优化设计智能体的闭环](./self-improving-design-agents/)。
 - [海报生成不是审美问题，而是可迭代的系统问题](./poster-generation-iterative-systems-problem/)。
 - [Verifier 与 Benchmark：多模态生成系统到底该怎么评估](./verifiers-and-benchmarks-for-multimodal-generation-systems/)。
+- [生成效果对比不是排行榜：Design Agent 比较的方法论](./comparing-design-agents-without-leaderboards/)。
 - Slides、Poster、Webpage 和 Video 为什么能共用 HTML 底座但不能共用同一套 rubric。

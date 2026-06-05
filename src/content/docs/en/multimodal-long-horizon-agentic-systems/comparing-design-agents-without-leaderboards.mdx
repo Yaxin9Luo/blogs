@@ -1,0 +1,156 @@
+---
+title: Comparing Design Agents Without Turning Results into a Leaderboard
+description: A research note on comparing design agents through evidence profiles, failure modes, editability, and repairability instead of product-style rankings.
+date: 2026-06-05
+tags: [design-agents, comparison, evaluation, paper2any]
+status: active
+type: research
+sidebar:
+  order: 7
+  label: Comparison Method
+---
+
+> Personal note: This article is based on public materials, personal KM notes, and sanitized project experience. It does not represent the official view of any company, team, or internship host. It does not include internal repository links, APIs, secret configuration, private data, customer information, or proprietary implementation details.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/design-agent-comparison-protocol.svg'} alt="Design-agent comparison protocol with shared constraints, evidence packs, and artifact-level evaluation lenses" class="hero-visual" />
+
+## Core Claim
+
+A comparison between design agents should not start with “who won?” A better question is:
+
+> Under the same artifact contract, where is each system stable, where is it fragile, and what should be changed in the next system iteration?
+
+Leaderboards flatten information. They compress source fidelity, visual hierarchy, editable structure, content synthesis, figure-evidence binding, and repair cost into one rank. For long-horizon multimodal agents, that rank is rarely enough to guide engineering decisions.
+
+I prefer comparison outputs that look like **evidence profile + failure mode distribution + repair cost**, not winner tables.
+
+## Align the Protocol Before Comparing Outputs
+
+Using the same short task instruction is not a fair comparison protocol. Design-agent outputs depend on many conditions. If those conditions are not aligned, it is hard to know whether differences come from model ability, tool access, material input, or iteration budget.
+
+| Condition to Align | Why It Matters |
+|---|---|
+| Source pack | systems should see the same paper content, figures, and tables |
+| Artifact contract | poster, slides, web page, and video scene are different tasks |
+| Output format | HTML, PPT, PDF, and flat images differ in editability and checks |
+| Tool access | search, image generation, and code execution change the ceiling |
+| Iteration budget | one-shot output and repaired output should not share one ranking |
+| Evaluation evidence | every system should expose rendered view, source trace, and editable files |
+
+Without this protocol, comparison becomes “which screenshot is more eye-catching.” That may help a demo, but it does not help research or system improvement.
+
+## The Artifact Is the Unit of Comparison
+
+Public discussions often put system names in the first column, then ask which one is best. The real comparison unit should be the artifact.
+
+| Artifact Evidence | What to Inspect |
+|---|---|
+| Rendered screenshot | visual hierarchy, reading path, overlap, clipping, whitespace |
+| Source trace | whether claims, numbers, and figures have source support |
+| Editable structure | whether HTML/PPT/PDF can be located, modified, and reused |
+| Content organization | whether problem, method, evidence, and takeaway are synthesized |
+| Manual work proxy | how much human work remains before delivery |
+| Repair log | whether failures can be assigned to owners and repaired next round |
+
+This is why I keep returning to artifact-first thinking. A system name does not tell us whether the artifact is trustworthy, usable, or repairable. Artifact evidence does.
+
+## From Winner Tables to Failure Matrices
+
+A winner table can exist, but it should not be the only result. A failure matrix is more useful.
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/design-agent-failure-profile.svg'} alt="Design-agent comparison as a failure profile across source, layout, evidence, editability, and repair dimensions" class="hero-visual" />
+
+| Dimension | Question |
+|---|---|
+| Content grounding | Does the artifact use the source faithfully, without fabricated numbers or claims? |
+| Visual evidence | Do figures, tables, and screenshots support the current panel claim? |
+| Layout integrity | Are there overlaps, clipping, too-small type, or broken reading paths? |
+| Typography craft | Does it feel like an academic artifact rather than a templated promo graphic? |
+| Editability | Can the result be modified, or is it only a flat image? |
+| Repairability | Can the failure be routed to contract, compiler, layout, rubric, or reference pool? |
+
+The value of this matrix is that it tells us what the next experiment should be. One system may be visually strong but weak on source grounding. Another may look plain but preserve editable structure and evidence binding. A single score should not erase those differences.
+
+## Visual Appeal Is Not One Capability
+
+“Looks good” contains several different capabilities.
+
+| Capability | Surface Signal | Deeper Question |
+|---|---|---|
+| Visual packaging | polished first view, consistent color | is it only making a cover-like page? |
+| Information synthesis | dense text, complete sections | did it reorganize the source argument? |
+| Table reconstruction | tables and metrics appear | are they native and source-grounded? |
+| Figure-evidence binding | many figures or screenshots | do they support claims, or only decorate? |
+| Long-document understanding | many sections are covered | did it find contributions and limitations? |
+| Iterative repair | later versions improve | did the repair change the system, or only patch one output? |
+
+For research artifacts, visually attractive but untraceable is worse than plain but grounded. A good design agent is not only a visual packaging system. It needs to handle content, evidence, structure, and final rendering together.
+
+## References Shape the Comparison Target
+
+Comparison does not happen in a vacuum. The reference pool is an implicit evaluation standard.
+
+If references are screenshot-heavy, comparison rewards large visual collage. If references are text-heavy, comparison rewards information organization. If references are benchmark/table-first, comparison rewards table reconstruction and metric bands.
+
+The comparison should declare the archetype first:
+
+| Archetype | Better For Comparing |
+|---|---|
+| Text-heavy synthesis | long-document understanding, native text, section organization |
+| Benchmark/table-first | result reconstruction, metric readability, source fidelity |
+| Figure evidence | image-text relation, caption, takeaway |
+| Method flow | module relation, input/output, causal path |
+| GUI/video evidence | qualitative cases, process strips, visual evidence |
+
+Without archetype separation, one visual style can silently become the default answer.
+
+## Version Selection Is Not Aesthetic Voting
+
+Version selection can also turn into “which one looks best.” In a benchmark and regression context, version selection should serve coverage, not showcase quality.
+
+| What to Cover | Purpose |
+|---|---|
+| Representative cases | check ordinary task quality |
+| Hard cases | expose boundaries in long understanding, figure choice, dense layout |
+| Regression cases | make sure old failures do not return |
+| Artifact variants | poster, slides, web page, and video require different rubrics |
+| Style variants | prevent the system from learning only one visual mode |
+
+The prettiest sample wall is not necessarily the best benchmark. A sample set that exposes failures is more useful for system evolution.
+
+## Comparison Should Produce System Actions
+
+The best comparison output is not “Agent A beats Agent B by some margin.” It is a set of system actions.
+
+| Comparison Finding | System Action |
+|---|---|
+| weak source fidelity | improve source-pack allocation and claim-evidence checks |
+| strong layout but weak editability | tighten output-format and editable-structure constraints |
+| good hierarchy but repeated content | add content compiler and panel deduplication |
+| weak figure evidence | improve visual selection and figure-to-claim binding |
+| high repair cost | improve failure-owner routing and repair reports |
+| one artifact type fails repeatedly | split artifact-specific rubric and reference pool |
+
+This is where design-agent comparison becomes useful for research. It does not only explain which artifact looked better; it tells us how the harness, contract, compiler, rubric, reference pool, and regression set should change.
+
+## Public Writing Boundaries
+
+This topic needs extra care. Real comparisons often contain concrete systems, versions, samples, screenshots, and run details, but a public blog does not need those details to explain the method.
+
+I keep the public version at these levels:
+
+- use Agent A / Agent B / system variant as abstract objects;
+- describe the protocol through shared source pack, artifact contract, and iteration budget;
+- discuss differences as failure profiles, not winner claims;
+- include redrawn diagrams and matrices, not raw screenshots;
+- omit sample ids, private task sets, versions, evaluation links, and run logs.
+
+This preserves the research value while keeping personal project notes from becoming unnecessary exposure.
+
+## Takeaway
+
+Design-agent comparison should be a diagnostic tool, not a leaderboard.
+
+If comparison only answers “who is first,” it quickly becomes a showcase. If it answers “this system is strong at content synthesis but weak on visual evidence, another is visually strong but lacks source trace, and a third is editable but expensive to repair,” it can actually move long-horizon multimodal agentic systems forward.
+
+For me, the endpoint of comparison is not to crown a winner. It is to find the owner for the next system improvement.

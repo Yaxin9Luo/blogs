@@ -1,0 +1,156 @@
+---
+title: 生成效果对比不是排行榜：Design Agent 比较的方法论
+description: 总结如何在同一 artifact contract 下比较 design agent，关注 evidence profile、failure mode、editability 和 repairability，而不是给系统排座次。
+date: 2026-06-05
+tags: [design-agents, comparison, evaluation, paper2any]
+status: active
+type: research
+sidebar:
+  order: 7
+  label: 对比方法论
+---
+
+> 个人声明：本文是个人研究记录，基于公开资料、个人 KM notes 和已脱敏的项目经验整理，不代表任何公司、团队或实习单位的官方观点。文中不包含内部仓库地址、API、密钥配置、未公开数据、客户信息或专有实现细节。
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/design-agent-comparison-protocol.svg'} alt="Design agent 对比协议：统一输入约束、产出 evidence pack，再按 artifact-level lens 比较" class="hero-visual" />
+
+## 核心判断
+
+Design agent 的生成效果对比，不应该先问“谁赢了”。更好的问题是：
+
+> 在同一个 artifact contract 下，不同系统分别在哪些能力上稳定，在哪些失败模式上脆弱，下一轮系统改进应该改哪里？
+
+排行榜会压扁信息。它把 source fidelity、视觉层级、可编辑结构、内容重组、图文证据、修复成本这些完全不同的能力，压成一个名次。对 long-horizon multimodal agent 来说，这种名次往往不够指导下一步工程决策。
+
+所以我更愿意把比较结果写成 **evidence profile + failure mode distribution + repair cost**，而不是 winner table。
+
+## 先对齐协议，再比较输出
+
+“同一任务一句话”不等于公平比较。Design agent 的输出受很多条件影响，如果这些条件没有对齐，最后很难解释差异来自模型能力、工具权限、素材输入，还是迭代预算。
+
+| 必须对齐的条件 | 为什么重要 |
+|---|---|
+| Source pack | 不同系统看到的论文内容、图表和表格范围必须一致 |
+| Artifact contract | 必须明确是 poster、slides、webpage 还是 video scene |
+| Output format | HTML、PPT、PDF、图片的可编辑性和检查方式不同 |
+| Tool access | 是否允许检索素材、生成图片、执行代码，会改变上限 |
+| Iteration budget | one-shot 和 repaired output 不能混在一个榜单里 |
+| Evaluation evidence | 每个系统都要输出同类 rendered view、source trace、editable files |
+
+如果没有这些协议，对比就会变成“谁的截图更吸睛”。这对 demo 也许有用，但对研究和系统改进不够。
+
+## 比较单位是 Artifact，不是 Agent 名字
+
+公开讨论里很容易把系统名放在第一列，然后比较谁最好。但真正该被比较的是 artifact 本身。
+
+| Artifact 证据 | 看什么 |
+|---|---|
+| Rendered screenshot | 视觉层级、阅读路径、overlap、裁切、空白 |
+| Source trace | claim、数字、图表是否有来源支撑 |
+| Editable structure | HTML/PPT/PDF 是否能定位、修改、复用 |
+| Content organization | problem、method、evidence、takeaway 是否重组清楚 |
+| Manual work proxy | 人类还要做多少工作才能交付 |
+| Repair log | 失败能否被定位到 owner，并进入下一轮修复 |
+
+这也是我为什么一直强调 artifact-first。Agent 名字本身不能说明产物是否可信、可用、可修。artifact evidence 才能。
+
+## 从 Winner Table 到 Failure Matrix
+
+Winner table 可以存在，但它不能是唯一结果。更有用的是 failure matrix。
+
+<img src={import.meta.env.BASE_URL.replace(/\/$/, '') + '/assets/research/mm-long-horizon/design-agent-failure-profile.svg'} alt="Design agent 对比不做单一排名，而是按 source、layout、evidence、editability、repair 形成失败画像" class="hero-visual" />
+
+| 维度 | 要问的问题 |
+|---|---|
+| Content grounding | 产物是否忠实使用 source，是否编造数字或结论？ |
+| Visual evidence | 图、表、截图是否支撑当前 panel 的 claim？ |
+| Layout integrity | 是否存在 overlap、裁切、字号过小、阅读路径断裂？ |
+| Typography craft | 是否像学术 artifact，而不是模板化宣传图？ |
+| Editability | 结果能不能被修改，而不是只有一张扁平图？ |
+| Repairability | 失败能不能被路由到 contract、compiler、layout、rubric 或 reference pool？ |
+
+这种 matrix 的价值是：它告诉我们下一轮实验该做什么。一个系统可能视觉很强但 source grounding 弱；另一个系统可能不够漂亮，但可编辑结构和证据绑定更好。它们不应该被一个总分直接抹平。
+
+## 视觉吸引力不是一种单一能力
+
+“看起来好”其实包含很多能力。
+
+| 能力 | 表面现象 | 更深的问题 |
+|---|---|---|
+| Visual packaging | 首屏漂亮、色彩统一 | 是否只是在做封面感？ |
+| Information synthesis | 文字密集、结构完整 | 是否真的重组了论文主线？ |
+| Table reconstruction | 有表格和指标 | 是否是 native table，数值是否有来源？ |
+| Figure-evidence binding | 图多、截图多 | 图是否支撑 claim，caption 是否只是复述？ |
+| Long-document understanding | 覆盖章节多 | 是否抓住 contribution 和 limitation？ |
+| Iterative repair | 多轮后更好 | 修复是否沉淀到系统，而不是手工 patch 成品？ |
+
+对学术 artifact 来说，漂亮但不可追溯，不如朴素但证据扎实。真正好的 design agent 不是只会做视觉包装，而是能把内容、证据、结构和最终渲染同时处理好。
+
+## Reference Pool 会影响比较结论
+
+比较不是在真空中发生的。Reference pool 本身就是隐式评价标准。
+
+如果 reference 偏 screenshot wall，对比会奖励大图拼贴；如果 reference 偏 text-heavy synthesis，对比会奖励内容组织；如果 reference 偏 benchmark/table-first，对比会奖励表格重建和 metric bands。
+
+所以比较前要先说明 archetype：
+
+| Archetype | 更适合比较什么 |
+|---|---|
+| Text-heavy synthesis | 长文理解、native text、章节组织 |
+| Benchmark/table-first | 实验结果重建、metric readability、source fidelity |
+| Figure evidence | 图文关系、caption、takeaway |
+| Method flow | 模块关系、输入输出、因果路径 |
+| GUI/video evidence | qualitative case、process strip、visual evidence |
+
+如果不分 archetype，就很容易让某一种视觉风格变成默认答案。
+
+## Version Selection 不是审美投票
+
+版本挑选也容易变成“哪张图最好看”。但在 benchmark 和 regression 语境下，版本选择应该服务覆盖率，而不是展示效果。
+
+| 应该覆盖 | 目的 |
+|---|---|
+| Representative cases | 看系统在常规任务上的基本质量 |
+| Hard cases | 暴露长程理解、图表选择、密集布局的边界 |
+| Regression cases | 确认旧失败没有回来 |
+| Artifact variants | poster、slides、webpage、video 的 rubric 不同 |
+| Style variants | 避免系统只会一种视觉风格 |
+
+最漂亮的样本墙不一定是最好的 benchmark。一个能暴露失败模式的样本集，才更适合驱动系统进化。
+
+## 比较应该产出系统动作
+
+最好的比较输出不是“Agent A 比 Agent B 高多少分”，而是系统动作：
+
+| 比较发现 | 系统动作 |
+|---|---|
+| source fidelity 弱 | 加强 source pack 分配、claim evidence 检查 |
+| layout 强但 editability 弱 | 调整输出格式和可编辑结构约束 |
+| visual hierarchy 好但内容重复 | 加 content compiler 和 panel 去重 |
+| figure evidence 弱 | 改 visual selection 和 figure-to-claim binding |
+| 修复成本高 | 改 failure owner 路由和 repair report |
+| 某类 artifact 总失败 | 拆 artifact-specific rubric 和 reference pool |
+
+这才是 design agent comparison 对研究最有用的地方：它不只是解释谁看起来更好，而是告诉我们 harness、contract、compiler、rubric、reference pool 和 regression set 应该怎么变。
+
+## 公开写作里的边界
+
+这类文章尤其需要谨慎。真实对比往往包含具体系统、版本、样本、截图和运行细节，但公开博客不需要这些才能讲清方法论。
+
+我会把公开表达控制在这几个层面：
+
+- 用 Agent A / Agent B / system variant 这种抽象对象。
+- 用 shared source pack、artifact contract、iteration budget 描述协议。
+- 用 failure profile 描述差异，不写谁赢谁输。
+- 只放重画流程图和矩阵，不放原始截图。
+- 不贴样本编号、内部任务集、版本、评测链接或运行日志。
+
+这样文章保留研究价值，也不会把个人项目记录变成不必要的公开暴露。
+
+## 小结
+
+Design agent 对比不应该是排行榜，而应该是诊断工具。
+
+如果比较只回答“谁第一”，它很快就会变成展示页。如果比较能回答“这个系统擅长内容重组但弱在 visual evidence，另一个系统视觉强但 source trace 不够，第三个系统可编辑性好但修复成本高”，它才真正能推动 long-horizon multimodal agentic system 往前走。
+
+对我来说，比较的终点不是 crown a winner，而是找到下一轮系统改进的 owner。
